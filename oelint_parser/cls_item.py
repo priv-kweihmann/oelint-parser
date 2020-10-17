@@ -118,7 +118,7 @@ class Item():
         Returns:
             list: list of chunks of original string
         """
-        return Item(None, None, None, None)._safe_linesplit(string)
+        return Item(None, None, None, None, None)._safe_linesplit(string)
 
     def _safe_linesplit(self, string):
         return [x for x in re.split(r"\s|\t|\x1b", string) if x]
