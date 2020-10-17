@@ -99,12 +99,14 @@ def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None):
                 break
             raw_line += line
 
+    real_raw = raw_line
     while raw_line.find("${@") != -1:
         _inline_block = raw_line.find("${@")
         repl = get_full_scope(raw_line[_inline_block:], len("${@"), "{", "}")
         _repl = inlinerep(repl) or INLINE_BLOCK
         raw_line = raw_line.replace(repl, _repl)
     res.append({"line": num + 1 + lineOffset, "raw": raw_line,
+                "realraw": real_raw,
                 "cnt": raw_line.replace("\n", "").replace("\\", chr(0x1b))})
     return res
 
@@ -172,7 +174,7 @@ def get_items(stash, _file, lineOffset=0):
             if m:
                 if k == "python":
                     res.append(PythonBlock(
-                        _file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group("funcname")))
+                        _file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group("funcname"), line["realraw"]))
                     good = True
                     break
                 elif k == "vars":
@@ -180,32 +182,32 @@ def get_items(stash, _file, lineOffset=0):
                         _file, line["line"] + includeOffset, line["line"] -
                         lineOffset, line["raw"], m.group(
                             "varname"), m.group("varval"),
-                        m.group("varop"), m.group("ident")))
+                        m.group("varop"), m.group("ident"), line["realraw"]))
                     good = True
                     break
                 elif k == "func":
                     res.append(Function(
                         _file, line["line"] + includeOffset, line["line"] -
                         lineOffset, line["raw"],
-                        m.group("func"), m.group("funcbody"),
+                        m.group("func"), m.group("funcbody"), line["realraw"],
                         m.group("py"), m.group("fr")))
                     good = True
                     break
                 elif k == "comment":
                     res.append(
-                        Comment(_file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"]))
+                        Comment(_file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], line["realraw"]))
                     good = True
                     break
                 elif k == "inherit":
                     res.append(Variable(
                         _file, line["line"] + includeOffset, line["line"] -
-                        lineOffset, line["raw"], "inherit", m.group("inhname"),
+                        lineOffset, line["raw"], "inherit", m.group("inhname"), line["realraw"],
                         "", ""))
                     good = True
                     break
                 elif k == "taskassign":
                     res.append(TaskAssignment(_file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group(
-                        "func"), m.group("ident"), m.group("varval")))
+                        "func"), m.group("ident"), m.group("varval"), line["realraw"]))
                     good = True
                     break
                 elif k == "addtask":
@@ -222,7 +224,7 @@ def get_items(stash, _file, lineOffset=0):
                     else:
                         _a = ""
                     res.append(TaskAdd(
-                        _file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group("func"), _b, _a))
+                        _file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group("func"), line["realraw"], _b, _a))
                     break
                 elif k == "include":
                     _path = find_local_or_in_layer(
@@ -233,10 +235,10 @@ def get_items(stash, _file, lineOffset=0):
                         if any(tmp):
                             includeOffset += max([x.InFileLine for x in tmp])
                     res.append(Include(
-                        _file, line["line"], line["line"] - lineOffset, line["raw"], m.group("incname"), m.group("statement")))
+                        _file, line["line"], line["line"] - lineOffset, line["raw"], m.group("incname"), m.group("statement"), line["realraw"]))
                     good = True
                     break
         if not good:
             res.append(
-                Item(_file, line["line"], line["line"] - lineOffset, line["raw"]))
+                Item(_file, line["line"], line["line"] - lineOffset, line["raw"], line["realraw"]))
     return res

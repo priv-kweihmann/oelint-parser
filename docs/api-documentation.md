@@ -9,6 +9,7 @@
     * [Origin](#oelint_parser.cls_item.Item.Origin)
     * [InFileLine](#oelint_parser.cls_item.Item.InFileLine)
     * [IncludedFrom](#oelint_parser.cls_item.Item.IncludedFrom)
+    * [RealRaw](#oelint_parser.cls_item.Item.RealRaw)
     * [safe\_linesplit](#oelint_parser.cls_item.Item.safe_linesplit)
     * [get\_items](#oelint_parser.cls_item.Item.get_items)
     * [extract\_sub](#oelint_parser.cls_item.Item.extract_sub)
@@ -131,7 +132,7 @@ Base class for all Stash items
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext)
+ | __init__(origin, line, infileline, rawtext, realraw)
 ```
 
 constructor
@@ -141,7 +142,8 @@ constructor
 - `origin` _str_ - Full path of origin file
 - `line` _int_ - Overall line counter
 - `infileline` _int_ - Line number in file
-- `rawtext` _str_ - Raw input string
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
 
 <a name="oelint_parser.cls_item.Item.Line"></a>
 #### Line
@@ -165,7 +167,7 @@ Overall line count
  | Raw()
 ```
 
-Raw string
+Raw string (without inline code blocks)
 
 **Returns**:
 
@@ -226,6 +228,20 @@ Files include this item
 **Returns**:
 
 - `list` - list of files including this item
+
+<a name="oelint_parser.cls_item.Item.RealRaw"></a>
+#### RealRaw
+
+```python
+ | @property
+ | RealRaw()
+```
+
+Completely unprocessed raw text
+
+**Returns**:
+
+- `str` - completely unprocessed raw text
 
 <a name="oelint_parser.cls_item.Item.safe_linesplit"></a>
 #### safe\_linesplit
@@ -347,7 +363,7 @@ Stash item for variables
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, value, operator, flag)
+ | __init__(origin, line, infileline, rawtext, name, value, operator, flag, realraw)
 ```
 
 constructor
@@ -357,7 +373,8 @@ constructor
 - `origin` _str_ - Full path to file of origin
 - `line` _int_ - Overall line counter
 - `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw string
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
 - `name` _str_ - Variable name
 - `value` _str_ - Variable value
 - `operator` _str_ - Operation performed to the variable
@@ -565,7 +582,7 @@ class Comment(Item)
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext)
+ | __init__(origin, line, infileline, rawtext, realraw)
 ```
 
 constructor
@@ -575,7 +592,8 @@ constructor
 - `origin` _str_ - Full path to file of origin
 - `line` _int_ - Overall line counter
 - `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw string
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
 
 <a name="oelint_parser.cls_item.Comment.get_items"></a>
 #### get\_items
@@ -601,7 +619,7 @@ class Include(Item)
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, incname, statement)
+ | __init__(origin, line, infileline, rawtext, incname, statement, realraw)
 ```
 
 constructor
@@ -611,7 +629,8 @@ constructor
 - `origin` _str_ - Full path to file of origin
 - `line` _int_ - Overall line counter
 - `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw string
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
 - `incname` _str_ - raw name of the include file
 - `statement` _str_ - either include or require
 
@@ -667,7 +686,7 @@ class Function(Item)
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, body, python=False, fakeroot=False)
+ | __init__(origin, line, infileline, rawtext, name, body, realraw, python=False, fakeroot=False)
 ```
 
 [summary]
@@ -677,7 +696,8 @@ class Function(Item)
 - `origin` _str_ - Full path to file of origin
 - `line` _int_ - Overall line counter
 - `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw string
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
 - `name` _str_ - Raw function name
 - `body` _str_ - Function body
   
@@ -849,7 +869,7 @@ class PythonBlock(Item)
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name)
+ | __init__(origin, line, infileline, rawtext, name, realraw)
 ```
 
 constructor
@@ -859,7 +879,8 @@ constructor
 - `origin` _str_ - Full path to file of origin
 - `line` _int_ - Overall line counter
 - `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw string
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
 - `name` _str_ - Function name
 
 <a name="oelint_parser.cls_item.PythonBlock.FuncName"></a>
@@ -900,7 +921,7 @@ class TaskAssignment(Item)
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, ident, value)
+ | __init__(origin, line, infileline, rawtext, name, ident, value, realraw)
 ```
 
 constructor
@@ -910,7 +931,8 @@ constructor
 - `origin` _str_ - Full path to file of origin
 - `line` _int_ - Overall line counter
 - `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw string
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
 - `name` _str_ - name of task to be modified
 - `ident` _str_ - task flag
 - `value` _str_ - value of modification
@@ -981,7 +1003,7 @@ class TaskAdd(Item)
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, before="", after="")
+ | __init__(origin, line, infileline, rawtext, name, realraw, before="", after="")
 ```
 
 constructor
@@ -991,7 +1013,8 @@ constructor
 - `origin` _str_ - Full path to file of origin
 - `line` _int_ - Overall line counter
 - `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw string
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
 - `name` _str_ - name of task to be executed
   
 

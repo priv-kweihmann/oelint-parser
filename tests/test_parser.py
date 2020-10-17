@@ -203,5 +203,22 @@ class OelintParserTest(unittest.TestCase):
                                 x.VarValueStripped), "source/SOMEMORE")
             self.assertNotEqual(x.VarValueStripped, "source/SOMEMORE")
 
+    def test_inlinecodeblock(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="INLINECODEBLOCK")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarName, "INLINECODEBLOCK")
+            self.assertEqual(x.VarValueStripped, "systemd-systemctl-native")
+            self.assertNotEqual(x.Raw, x.RealRaw)
+
 if __name__ == "__main__": 
     unittest.main()

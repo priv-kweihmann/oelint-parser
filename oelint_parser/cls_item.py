@@ -15,14 +15,15 @@ class Item():
     CLASSIFIER = "Item"
     ATTR_SUB = "SubItem"
 
-    def __init__(self, origin, line, infileline, rawtext):
+    def __init__(self, origin, line, infileline, rawtext, realraw):
         """constructor
 
         Arguments:
             origin {str} -- Full path of origin file
             line {int} -- Overall line counter
             infileline {int} -- Line number in file
-            rawtext {str} -- Raw input string
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
         """
         self.__Line = line
         self.__Raw = rawtext
@@ -30,6 +31,7 @@ class Item():
         self.__Origin = origin
         self.__InFileLine = infileline
         self.__IncludedFrom = []
+        self.__RealRaw = realraw or rawtext
 
     @property
     def Line(self):
@@ -42,7 +44,7 @@ class Item():
 
     @property
     def Raw(self):
-        """Raw string
+        """Raw string (without inline code blocks)
 
         Returns:
             str: raw string of item
@@ -93,6 +95,18 @@ class Item():
     def IncludedFrom(self, value):
         self.__IncludedFrom = value
 
+    @property
+    def RealRaw(self):
+        """Completely unprocessed raw text
+
+        Returns:
+            str: completely unprocessed raw text
+        """
+        return self.__RealRaw
+
+    @RealRaw.setter
+    def RealRaw(self, value):
+        self.__RealRaw = value
 
     @staticmethod
     def safe_linesplit(string):
@@ -218,20 +232,21 @@ class Variable(Item):
     VAR_VALID_OPERATOR = [" = ", " += ",
                           " ?= ", " ??= ", " := ", " .= ", " =+ ", " =. "]
 
-    def __init__(self, origin, line, infileline, rawtext, name, value, operator, flag):
+    def __init__(self, origin, line, infileline, rawtext, name, value, operator, flag, realraw):
         """constructor
 
         Arguments:
             origin {str} -- Full path to file of origin
             line {int} -- Overall line counter
             infileline {int} -- Line counter in the particular file
-            rawtext {str} -- Raw string
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
             name {str} -- Variable name
             value {str} -- Variable value
             operator {str} -- Operation performed to the variable
             flag {str} -- Optional variable flag
         """
-        super().__init__(origin, line, infileline, rawtext)
+        super().__init__(origin, line, infileline, rawtext, realraw)
         if "inherit" != name:
             self.__VarName, self.__SubItem, self.__PkgSpec = self.extract_sub(name)
             self.__SubItem += " ".join(self.PkgSpec)
@@ -384,16 +399,17 @@ class Variable(Item):
 class Comment(Item):
     CLASSIFIER = "Comment"
 
-    def __init__(self, origin, line, infileline, rawtext):
+    def __init__(self, origin, line, infileline, rawtext, realraw):
         """constructor
 
         Arguments:
             origin {str} -- Full path to file of origin
             line {int} -- Overall line counter
             infileline {int} -- Line counter in the particular file
-            rawtext {str} -- Raw string
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
         """
-        super().__init__(origin, line, infileline, rawtext)
+        super().__init__(origin, line, infileline, rawtext, realraw)
 
     def get_items(self):
         """Get single lines of block
@@ -409,18 +425,19 @@ class Include(Item):
     ATTR_INCNAME = "IncName"
     ATTR_STATEMENT = "Statement"
 
-    def __init__(self, origin, line, infileline, rawtext, incname, statement):
+    def __init__(self, origin, line, infileline, rawtext, incname, statement, realraw):
         """constructor
 
         Arguments:
             origin {str} -- Full path to file of origin
             line {int} -- Overall line counter
             infileline {int} -- Line counter in the particular file
-            rawtext {str} -- Raw string
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
             incname {str} -- raw name of the include file
             statement {str} -- either include or require
         """
-        super().__init__(origin, line, infileline, rawtext)
+        super().__init__(origin, line, infileline, rawtext, realraw)
         self.__IncName = incname
         self.__Statement = statement
 
@@ -456,14 +473,15 @@ class Function(Item):
     ATTR_FUNCBODY = "FuncBody"
     CLASSIFIER = "Function"
 
-    def __init__(self, origin, line, infileline, rawtext, name, body, python=False, fakeroot=False):
+    def __init__(self, origin, line, infileline, rawtext, name, body, realraw, python=False, fakeroot=False):
         """[summary]
 
         Arguments:
             origin {str} -- Full path to file of origin
             line {int} -- Overall line counter
             infileline {int} -- Line counter in the particular file
-            rawtext {str} -- Raw string
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
             name {str} -- Raw function name
             body {str} -- Function body
 
@@ -471,7 +489,7 @@ class Function(Item):
             python {bool} -- python function according to parser (default: {False})
             fakeroot {bool} -- uses fakeroot (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext)
+        super().__init__(origin, line, infileline, rawtext, realraw)
         self.__IsPython = python is not None
         self.__IsFakeroot = fakeroot is not None
         name = name or ""
@@ -587,17 +605,18 @@ class PythonBlock(Item):
     ATTR_FUNCNAME = "FuncName"
     CLASSIFIER = "PythonBlock"
 
-    def __init__(self, origin, line, infileline, rawtext, name):
+    def __init__(self, origin, line, infileline, rawtext, name, realraw):
         """constructor
 
         Arguments:
             origin {str} -- Full path to file of origin
             line {int} -- Overall line counter
             infileline {int} -- Line counter in the particular file
-            rawtext {str} -- Raw string
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
             name {str} -- Function name
         """
-        super().__init__(origin, line, infileline, rawtext)
+        super().__init__(origin, line, infileline, rawtext, realraw)
         self.__FuncName = name
 
     @property
@@ -624,19 +643,20 @@ class TaskAssignment(Item):
     ATTR_VARVAL = "VarValue"
     CLASSIFIER = "TaskAssignment"
 
-    def __init__(self, origin, line, infileline, rawtext, name, ident, value):
+    def __init__(self, origin, line, infileline, rawtext, name, ident, value, realraw):
         """constructor
 
         Arguments:
             origin {str} -- Full path to file of origin
             line {int} -- Overall line counter
             infileline {int} -- Line counter in the particular file
-            rawtext {str} -- Raw string
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
             name {str} -- name of task to be modified
             ident {str} -- task flag
             value {str} -- value of modification
         """
-        super().__init__(origin, line, infileline, rawtext)
+        super().__init__(origin, line, infileline, rawtext, realraw)
         self.__FuncName = name
         self.__VarName = ident
         self.__VarValue = value
@@ -683,21 +703,22 @@ class TaskAdd(Item):
     ATTR_AFTER = "After"
     CLASSIFIER = "TaskAdd"
 
-    def __init__(self, origin, line, infileline, rawtext, name, before="", after=""):
+    def __init__(self, origin, line, infileline, rawtext, name, realraw, before="", after=""):
         """constructor
 
         Arguments:
             origin {str} -- Full path to file of origin
             line {int} -- Overall line counter
             infileline {int} -- Line counter in the particular file
-            rawtext {str} -- Raw string
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
             name {str} -- name of task to be executed
 
         Keyword Arguments:
             before {str} -- before statement (default: {""})
             after {str} -- after statement (default: {""})
         """
-        super().__init__(origin, line, infileline, rawtext)
+        super().__init__(origin, line, infileline, rawtext, realraw)
         self.__FuncName = name
         self.__Before = [x for x in (before or "").split(" ") if x]
         self.__After = [x for x in (after or "").split(" ") if x]
@@ -753,7 +774,7 @@ class MissingFile(Item):
             filename {str} -- filename of the file that can't be found
             statement {str} -- either include or require
         """
-        super().__init__(origin, line, infileline, "")
+        super().__init__(origin, line, infileline, "", "")
         self.__Filename = filename
         self.__Statement = statement
 
