@@ -51,6 +51,10 @@ class Item():
         """
         return self.__Raw
 
+    @Raw.setter
+    def Raw(self, value):
+        self.__Raw = value
+
     @property
     def Links(self):
         """Linked files
@@ -306,6 +310,10 @@ class Variable(Item):
             str: unstripped variable value
         """
         return self.__VarValue
+
+    @VarValue.setter
+    def VarValue(self, value):
+        self.__VarValue = value
 
     @property
     def VarOp(self):
