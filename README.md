@@ -1,5 +1,10 @@
 # oelint-parser
 
+![Build status](https://github.com/priv-kweihmann/oelint-parser/workflows/Python%20package/badge.svg)
+[![PyPI version](https://badge.fury.io/py/oelint-parser.svg)](https://badge.fury.io/py/oelint-parser)
+[![Python version](https://img.shields.io/pypi/pyversions/oelint-parser)](https://img.shields.io/pypi/pyversions/oelint-parser)
+[![Downloads](https://img.shields.io/pypi/dm/oelint-parser)](https://img.shields.io/pypi/dm/oelint-parser)
+
 alternative parser for bitbake recipes
 
 ## API documentation
