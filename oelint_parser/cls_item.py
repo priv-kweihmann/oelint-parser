@@ -1,6 +1,5 @@
 import textwrap
 import re
-import inspect
 
 from oelint_parser.const_func import KNOWN_FUNCS
 from oelint_parser.const_vars import get_known_machines
@@ -214,11 +213,17 @@ class Item():
         Returns:
             dict -- all public attributes and their values
         """
+        T = type(self)
         res = {}
-        classes = inspect.getmembers(self, inspect.isclass)
-        for cls in classes:
-            for x in inspect.getmembers(cls[1], lambda o: isinstance(o, property)):
-                res[x[0]] = x[1].fget(self)
+        for _ in dir(self):
+            try:
+                attr = getattr(T, _)
+            except AttributeError:
+                continue  # Skip dunder attributes, i.e. private attributes
+            else:
+                if isinstance(attr, property):
+                    res[_] = getattr(self, _)
+
         return res
 
     def __repr__(self):
