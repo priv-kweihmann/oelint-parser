@@ -480,6 +480,53 @@ class Include(Item):
         """
         return [self.IncName, self.Statement]
 
+class Export(Item):
+    CLASSIFIER = "Exclude"
+    ATTR_INCNAME = "Name"
+    ATTR_STATEMENT = "Value"
+
+    def __init__(self, origin, line, infileline, rawtext, name, value, realraw):
+        """constructor
+
+        Arguments:
+            origin {str} -- Full path to file of origin
+            line {int} -- Overall line counter
+            infileline {int} -- Line counter in the particular file
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
+            name {str} -- variable name of the export
+            value {str} -- (optional) value of the export
+        """
+        super().__init__(origin, line, infileline, rawtext, realraw)
+        self.__Name = name
+        self.__Value = value
+
+    @property
+    def Name(self):
+        """Name of the exported var
+
+        Returns:
+            str: name of the exported var
+        """
+        return self.__Name
+
+    @property
+    def Value(self):
+        """value of the export
+
+        Returns:
+            str: optional value of the export
+        """
+        return self.__Value
+
+    def get_items(self):
+        """Get items
+
+        Returns:
+            list -- include name, include statement
+        """
+        return [self.Name, self.Value]
+
 
 class Function(Item):
     ATTR_FUNCNAME = "FuncName"

@@ -30,3 +30,6 @@ require another_file.inc
 inherit someclass
 
 do_configure[noexec] = "1"
+
+export lib = "${bindir}/foo"
+export PYTHON_ABI

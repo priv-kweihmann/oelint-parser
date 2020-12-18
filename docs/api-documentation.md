@@ -41,6 +41,11 @@
     * [IncName](#oelint_parser.cls_item.Include.IncName)
     * [Statement](#oelint_parser.cls_item.Include.Statement)
     * [get\_items](#oelint_parser.cls_item.Include.get_items)
+  * [Export](#oelint_parser.cls_item.Export)
+    * [\_\_init\_\_](#oelint_parser.cls_item.Export.__init__)
+    * [Name](#oelint_parser.cls_item.Export.Name)
+    * [Value](#oelint_parser.cls_item.Export.Value)
+    * [get\_items](#oelint_parser.cls_item.Export.get_items)
   * [Function](#oelint_parser.cls_item.Function)
     * [\_\_init\_\_](#oelint_parser.cls_item.Function.__init__)
     * [IsPython](#oelint_parser.cls_item.Function.IsPython)
@@ -663,6 +668,73 @@ statement either include or require
 - `str` - include or require
 
 <a name="oelint_parser.cls_item.Include.get_items"></a>
+#### get\_items
+
+```python
+ | get_items()
+```
+
+Get items
+
+**Returns**:
+
+- `list` - include name, include statement
+
+<a name="oelint_parser.cls_item.Export"></a>
+## Export Objects
+
+```python
+class Export(Item)
+```
+
+<a name="oelint_parser.cls_item.Export.__init__"></a>
+#### \_\_init\_\_
+
+```python
+ | __init__(origin, line, infileline, rawtext, name, value, realraw)
+```
+
+constructor
+
+**Arguments**:
+
+- `origin` _str_ - Full path to file of origin
+- `line` _int_ - Overall line counter
+- `infileline` _int_ - Line counter in the particular file
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
+- `name` _str_ - variable name of the export
+- `value` _str_ - (optional) value of the export
+
+<a name="oelint_parser.cls_item.Export.Name"></a>
+#### Name
+
+```python
+ | @property
+ | Name()
+```
+
+Name of the exported var
+
+**Returns**:
+
+- `str` - name of the exported var
+
+<a name="oelint_parser.cls_item.Export.Value"></a>
+#### Value
+
+```python
+ | @property
+ | Value()
+```
+
+value of the export
+
+**Returns**:
+
+- `str` - optional value of the export
+
+<a name="oelint_parser.cls_item.Export.get_items"></a>
 #### get\_items
 
 ```python

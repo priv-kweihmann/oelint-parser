@@ -71,6 +71,29 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.Raw, "require another_file.inc\n")
             self.assertEqual(x.IncName, "another_file.inc")
             self.assertEqual(x.Statement, "require")
+    
+    def test_export(self):
+        from oelint_parser.cls_item import Export
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Export.CLASSIFIER)
+
+        self.assertTrue(_stash, msg="Stash has no items")
+
+        _withval = [x for x in _stash if x.Value]
+        _woval = [x for x in _stash if not x.Value]
+        self.assertTrue(_withval, msg="One item with value exists")
+        self.assertTrue(_woval, msg="One item without value exists")
+        
+        self.assertEqual(_withval[0].Name, "lib")
+        self.assertEqual(_withval[0].Value, "${bindir}/foo")
+
+        self.assertEqual(_woval[0].Name, "PYTHON_ABI")
+        self.assertEqual(_woval[0].Value, "")
 
     def test_taskassignment(self):
         from oelint_parser.cls_item import TaskAssignment

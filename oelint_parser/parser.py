@@ -3,6 +3,7 @@ import os
 import re
 
 from oelint_parser.cls_item import Comment
+from oelint_parser.cls_item import Export
 from oelint_parser.cls_item import Function
 from oelint_parser.cls_item import Include
 from oelint_parser.cls_item import Item
@@ -10,7 +11,8 @@ from oelint_parser.cls_item import PythonBlock
 from oelint_parser.cls_item import TaskAdd
 from oelint_parser.cls_item import TaskAssignment
 from oelint_parser.cls_item import Variable
-from oelint_parser.helper_files import find_local_or_in_layer, expand_term
+from oelint_parser.helper_files import expand_term
+from oelint_parser.helper_files import find_local_or_in_layer
 from oelint_parser.inlinerep import inlinerep
 
 INLINE_BLOCK = "!!!inlineblock!!!"
@@ -148,6 +150,8 @@ def get_items(stash, _file, lineOffset=0):
     __regex_var = r"^(?P<varname>([A-Z0-9a-z_-]|\$|\{|\})+?)(\[(?P<ident>(\w|-)+)\])*(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
     __regex_func = r"^((?P<py>python)\s+|(?P<fr>fakeroot\s+))*(?P<func>[\w\.\-\+\{\}\$]+)?\s*\(\s*\)\s*\{(?P<funcbody>.*)\s*\}"
     __regex_inherit = r"^.*?inherit(\s+|\t+)(?P<inhname>.+)"
+    __regex_export_wval = r"^.*?export(\s+|\t+)(?P<name>.+)\s*=\s*\"(?P<value>.*)\""
+    __regex_export_woval = r"^.*?export(\s+|\t+)(?P<name>.+)\s*$"
     __regex_comments = r"^(\s|\t)*#+\s*(?P<body>.*)"
     __regex_python = r"^(\s*|\t*)def(\s+|\t+)(?P<funcname>[a-z0-9_]+)(\s*|\t*)\(.*\)\:"
     __regex_include = r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)"
@@ -158,6 +162,8 @@ def get_items(stash, _file, lineOffset=0):
         ("comment", __regex_comments),
         ("func", __regex_func),
         ("inherit", __regex_inherit),
+        ("export", __regex_export_wval),
+        ("export_noval", __regex_export_woval),
         ("python", __regex_python),
         ("include", __regex_include),
         ("addtask", __regex_addtask),
@@ -203,6 +209,18 @@ def get_items(stash, _file, lineOffset=0):
                         _file, line["line"] + includeOffset, line["line"] -
                         lineOffset, line["raw"], "inherit", m.group("inhname"), line["realraw"],
                         "", ""))
+                    good = True
+                    break
+                elif k == "export":
+                    res.append(Export(
+                        _file, line["line"] + includeOffset, line["line"] -
+                        lineOffset, line["raw"], m.group("name").strip() , m.group("value"), line["realraw"]))
+                    good = True
+                    break
+                elif k == "export_noval":
+                    res.append(Export(
+                        _file, line["line"] + includeOffset, line["line"] -
+                        lineOffset, line["raw"], m.group("name").strip(), "", line["realraw"]))
                     good = True
                     break
                 elif k == "taskassign":
