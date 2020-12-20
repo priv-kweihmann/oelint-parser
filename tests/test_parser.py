@@ -243,5 +243,20 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.VarValueStripped, "systemd-systemctl-native")
             self.assertNotEqual(x.Raw, x.RealRaw)
 
+    def test_lineattributerw(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER)
+        self.assertTrue(_stash, msg="Stash has no items")
+        try:
+            _stash[0].Line = 10000
+        except Exception as e:
+            self.fail("Setting Line attribute shouldn't raise an exception")
+
 if __name__ == "__main__": 
     unittest.main()

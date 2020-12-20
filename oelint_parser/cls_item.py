@@ -41,6 +41,10 @@ class Item():
         """
         return self.__Line
 
+    @Line.setter
+    def Line(self, value):
+        self.__Line = value
+    
     @property
     def Raw(self):
         """Raw string (without inline code blocks)
