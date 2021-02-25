@@ -91,6 +91,8 @@
   * [get\_protected\_append\_vars](#oelint_parser.const_vars.get_protected_append_vars)
   * [get\_known\_vars](#oelint_parser.const_vars.get_known_vars)
   * [get\_known\_machines](#oelint_parser.const_vars.get_known_machines)
+  * [get\_image\_classes](#oelint_parser.const_vars.get_image_classes)
+  * [get\_image\_variables](#oelint_parser.const_vars.get_image_variables)
   * [get\_base\_varset](#oelint_parser.const_vars.get_base_varset)
 * [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
 * [oelint\_parser.cls\_stash](#oelint_parser.cls_stash)
@@ -114,6 +116,8 @@
   * [expand\_term](#oelint_parser.helper_files.expand_term)
   * [get\_valid\_package\_names](#oelint_parser.helper_files.get_valid_package_names)
   * [get\_valid\_named\_resources](#oelint_parser.helper_files.get_valid_named_resources)
+  * [is\_image](#oelint_parser.helper_files.is_image)
+  * [is\_packagegroup](#oelint_parser.helper_files.is_packagegroup)
 * [oelint\_parser.const\_func](#oelint_parser.const_func)
 * [oelint\_parser.parser](#oelint_parser.parser)
   * [get\_full\_scope](#oelint_parser.parser.get_full_scope)
@@ -1350,6 +1354,32 @@ get known machines
 
 - `list` - list of known machine names
 
+<a name="oelint_parser.const_vars.get_image_classes"></a>
+#### get\_image\_classes
+
+```python
+get_image_classes()
+```
+
+get known classes used exclusively in an image
+
+**Returns**:
+
+- `list` - list of known class names
+
+<a name="oelint_parser.const_vars.get_image_variables"></a>
+#### get\_image\_variables
+
+```python
+get_image_variables()
+```
+
+get known variables used exclusively in an image
+
+**Returns**:
+
+- `list` - list of known variable names
+
 <a name="oelint_parser.const_vars.get_base_varset"></a>
 #### get\_base\_varset
 
@@ -1704,6 +1734,44 @@ Get list of valid SRCREV resource names
 **Returns**:
 
 - `list` - list of valid SRCREV resource names
+
+<a name="oelint_parser.helper_files.is_image"></a>
+#### is\_image
+
+```python
+is_image(stash, _file)
+```
+
+returns if the file is likely an image recipe or not
+
+**Arguments**:
+
+- `stash` _oelint_parser.cls_stash.Stash_ - current stash
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `bool` - True if _file is an image recipe
+
+<a name="oelint_parser.helper_files.is_packagegroup"></a>
+#### is\_packagegroup
+
+```python
+is_packagegroup(stash, _file)
+```
+
+returns if the file is likely a packagegroup recipe or not
+
+**Arguments**:
+
+- `stash` _oelint_parser.cls_stash.Stash_ - current stash
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `bool` - True if _file is a packagegroup recipe
 
 <a name="oelint_parser.const_func"></a>
 # oelint\_parser.const\_func
