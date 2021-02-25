@@ -3,6 +3,7 @@
 _rulefile = {}
 _constantfile = {}
 
+
 def set_constantfile(obj):
     """set constants
 
@@ -12,6 +13,7 @@ def set_constantfile(obj):
     global _constantfile
     _constantfile = obj
 
+
 def get_constantfile():
     """return currently set constants
 
@@ -19,6 +21,7 @@ def get_constantfile():
         dict: dictionary with constants
     """
     return _constantfile
+
 
 def set_rulefile(obj):
     """set rules
@@ -29,6 +32,7 @@ def set_rulefile(obj):
     global _rulefile
     _rulefile = obj
 
+
 def get_rulefile():
     """get current rules
 
@@ -36,7 +40,8 @@ def get_rulefile():
         dict: dictionary with rule definitions
     """
     return _rulefile
-    
+
+
 def __get_const_and_rulefile(l, key):
     res = l
     _rulefile = {**get_rulefile(), **get_constantfile()}
@@ -1339,6 +1344,7 @@ KNOWN_MACHINES = [
     "x86_64",
 ]
 
+
 def get_known_machines():
     """get known machines
 
@@ -1346,6 +1352,46 @@ def get_known_machines():
         list: list of known machine names
     """
     return __get_const_and_rulefile(KNOWN_MACHINES, "known_machines")
+
+
+IMAGES_CLASSES = [
+    "baremetal-image",
+    "core-image",
+    "image",
+    "image-container",
+    "image-live",
+    "kernel-fitimage",
+    "kernel-uimage",
+    "license_image",
+    "testimage"
+]
+
+
+def get_image_classes():
+    """get known classes used exclusively in an image
+
+    Returns:
+        list: list of known class names
+    """
+    return __get_const_and_rulefile(IMAGES_CLASSES, "image_classes")
+
+
+IMAGE_VARIABLES = [
+    "IMAGE_INSTALL",
+    "IMAGE_LINGUAS",
+    "IMAGE_ROOTFS_SIZE",
+    "IMAGE_ROOTFS_EXTRA_SPACE"
+]
+
+
+def get_image_variables():
+    """get known variables used exclusively in an image
+
+    Returns:
+        list: list of known variable names
+    """
+    return __get_const_and_rulefile(IMAGE_VARIABLES, "image_variables")
+
 
 def get_base_varset():
     """get variable baseset
@@ -1366,4 +1412,3 @@ def get_base_varset():
         "PACKAGES": "${PN}-src ${PN}-dbg ${PN}-staticdev ${PN}-dev ${PN}-doc ${PN}-locale ${PACKAGE_BEFORE_PN} ${PN}",
         "PACKAGE_BEFORE_PN": ""
     }
-    

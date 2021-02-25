@@ -4,6 +4,8 @@ import re
 from urllib.parse import urlparse
 
 from oelint_parser.cls_item import Variable
+from oelint_parser.const_vars import get_image_classes
+from oelint_parser.const_vars import get_image_variables
 from oelint_parser.const_vars import get_known_mirrors
 
 
@@ -239,3 +241,42 @@ def get_valid_named_resources(stash, _file):
             if "name" in _url["options"]:
                 res.add(_url["options"]["name"].replace("${PN}", _recipe_name))
     return res
+
+def is_image(stash, _file):
+    """returns if the file is likely an image recipe or not
+
+    Args:
+        stash {oelint_parser.cls_stash.Stash} -- current stash
+        _file {str} -- Full path to file
+
+    Returns:
+        bool -- True if _file is an image recipe
+    """
+    res = False
+
+    _inherits = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                              attribute=Variable.ATTR_VAR, attributeValue="inherit")
+    print(_inherits)
+    res |= any(x for x in _inherits if x.VarValueStripped in get_image_classes())
+
+    for _var in get_image_variables():
+        res |= any(stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                              attribute=Variable.ATTR_VAR, attributeValue=_var))
+
+    return res
+
+def is_packagegroup(stash, _file):
+    """returns if the file is likely a packagegroup recipe or not
+
+    Args:
+        stash {oelint_parser.cls_stash.Stash} -- current stash
+        _file {str} -- Full path to file
+
+    Returns:
+        bool -- True if _file is a packagegroup recipe
+    """
+    res = False
+
+    _inherits = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                              attribute=Variable.ATTR_VAR, attributeValue="inherit")
+    return any(x for x in _inherits if x.VarValueStripped in ["packagegroup"])
