@@ -256,7 +256,6 @@ def is_image(stash, _file):
 
     _inherits = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                               attribute=Variable.ATTR_VAR, attributeValue="inherit")
-    print(_inherits)
     res |= any(x for x in _inherits if x.VarValueStripped in get_image_classes())
 
     for _var in get_image_variables():
