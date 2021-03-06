@@ -258,5 +258,31 @@ class OelintParserTest(unittest.TestCase):
         except Exception as e:
             self.fail("Setting Line attribute shouldn't raise an exception")
 
+    def test_multiline_no_ml(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="UPSTREAM_CHECK_REGEX")
+        self.assertTrue(_stash, msg="Stash has no items")
+        self.assertFalse(_stash[0].IsMultiLine(), msg="UPSTREAM_CHECK_REGEX is no multiline")
+
+    def test_multiline_ml(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="SOMELIST")
+        self.assertTrue(_stash, msg="Stash has no items")
+        self.assertTrue(_stash[0].IsMultiLine(), msg="SOMELIST is a multiline")
+
 if __name__ == "__main__": 
     unittest.main()

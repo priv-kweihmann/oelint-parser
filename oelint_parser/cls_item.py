@@ -399,7 +399,7 @@ class Variable(Item):
         Returns:
             bool -- True if multiline
         """
-        return "\\" in self.Raw
+        return "\\x1b" in self.Raw or "\\\n" in self.Raw
 
     def GetMachineEntry(self):
         """Get machine specific entries in variable

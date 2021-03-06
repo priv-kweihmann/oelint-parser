@@ -8,6 +8,7 @@ SOMELIST += "a \
 PACKAGECONFIG[abc] = "foo,bar,baz"
 
 INLINECODEBLOCK = "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-systemctl-native', '', d)}"
+UPSTREAM_CHECK_REGEX = "(?P<pver>12\.\d+\.\d+)"
 
 # Just a comment
 # across multiple lines
