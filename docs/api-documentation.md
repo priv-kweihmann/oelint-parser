@@ -33,6 +33,7 @@
     * [get\_items](#oelint_parser.cls_item.Variable.get_items)
     * [IsMultiLine](#oelint_parser.cls_item.Variable.IsMultiLine)
     * [GetMachineEntry](#oelint_parser.cls_item.Variable.GetMachineEntry)
+    * [GetClassOverride](#oelint_parser.cls_item.Variable.GetClassOverride)
   * [Comment](#oelint_parser.cls_item.Comment)
     * [\_\_init\_\_](#oelint_parser.cls_item.Comment.__init__)
     * [get\_items](#oelint_parser.cls_item.Comment.get_items)
@@ -579,6 +580,19 @@ Get machine specific entries in variable
 **Returns**:
 
 - `str` - machine specific modifier of variable or ""
+
+<a name="oelint_parser.cls_item.Variable.GetClassOverride"></a>
+#### GetClassOverride
+
+```python
+ | GetClassOverride()
+```
+
+Get class specific entries in variable
+
+**Returns**:
+
+- `str` - class specific modifier of variable or ""
 
 <a name="oelint_parser.cls_item.Comment"></a>
 ## Comment Objects

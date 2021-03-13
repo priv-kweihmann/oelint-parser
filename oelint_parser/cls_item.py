@@ -44,7 +44,7 @@ class Item():
     @Line.setter
     def Line(self, value):
         self.__Line = value
-    
+
     @property
     def Raw(self):
         """Raw string (without inline code blocks)
@@ -261,7 +261,8 @@ class Variable(Item):
         """
         super().__init__(origin, line, infileline, rawtext, realraw)
         if "inherit" != name:
-            self.__VarName, self.__SubItem, self.__PkgSpec = self.extract_sub(name)
+            self.__VarName, self.__SubItem, self.__PkgSpec = self.extract_sub(
+                name)
             self.__SubItem += " ".join(self.PkgSpec)
         else:
             self.__VarName = name
@@ -272,7 +273,8 @@ class Variable(Item):
         self.__VarValue = value
         self.__VarOp = operator
         self.__Flag = flag or ""
-        self.__RawVarName = "{}[{}]".format(self.VarName, self.Flag) if self.Flag else self.VarName
+        self.__RawVarName = "{}[{}]".format(
+            self.VarName, self.Flag) if self.Flag else self.VarName
         self.__VarValueStripped = self.VarValue.strip().lstrip('"').rstrip('"')
 
     @property
@@ -412,6 +414,17 @@ class Variable(Item):
                 return x
         return ""
 
+    def GetClassOverride(self):
+        """Get class specific entries in variable
+
+        Returns:
+            str -- class specific modifier of variable or ""
+        """
+        for x in self.SubItems:
+            if x in ["class-native", "class-nativesdk", "class-cross", "class-target"]:
+                return x
+        return ""
+
 
 class Comment(Item):
     CLASSIFIER = "Comment"
@@ -483,6 +496,7 @@ class Include(Item):
             list -- include name, include statement
         """
         return [self.IncName, self.Statement]
+
 
 class Export(Item):
     CLASSIFIER = "Exclude"
@@ -786,7 +800,7 @@ class TaskAdd(Item):
         self.__FuncName = name
         self.__Before = [x for x in (before or "").split(" ") if x]
         self.__After = [x for x in (after or "").split(" ") if x]
-    
+
     @property
     def FuncName(self):
         """Function name
