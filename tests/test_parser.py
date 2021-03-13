@@ -39,6 +39,7 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.SubItems, [])
             self.assertEqual(x.VarOp, " = ")
             self.assertEqual(x.Flag, "")
+            self.assertEqual(x.GetClassOverride(), "")
 
     def test_include(self):
         from oelint_parser.cls_item import Include
@@ -283,6 +284,74 @@ class OelintParserTest(unittest.TestCase):
                                           attributeValue="SOMELIST")
         self.assertTrue(_stash, msg="Stash has no items")
         self.assertTrue(_stash[0].IsMultiLine(), msg="SOMELIST is a multiline")
+
+    def test_class_target(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="TARGETVAR")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarValueStripped, 'foo')
+            self.assertEqual(x.VarName, 'TARGETVAR')
+            self.assertEqual(x.GetClassOverride(), 'class-target')
+
+    def test_class_cross(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="CROSSVAR")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarValueStripped, 'foo')
+            self.assertEqual(x.VarName, 'CROSSVAR')
+            self.assertEqual(x.GetClassOverride(), 'class-cross')
+
+    def test_class_native(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="NATIVEVAR")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarValueStripped, 'foo')
+            self.assertEqual(x.VarName, 'NATIVEVAR')
+            self.assertEqual(x.GetClassOverride(), 'class-native')
+
+    def test_class_nativesdk(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="SDKVAR")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarValueStripped, 'foo')
+            self.assertEqual(x.VarName, 'SDKVAR')
+            self.assertEqual(x.GetClassOverride(), 'class-nativesdk')
 
 if __name__ == "__main__": 
     unittest.main()

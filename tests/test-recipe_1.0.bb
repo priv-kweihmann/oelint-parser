@@ -9,6 +9,10 @@ PACKAGECONFIG[abc] = "foo,bar,baz"
 
 INLINECODEBLOCK = "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-systemctl-native', '', d)}"
 UPSTREAM_CHECK_REGEX = "(?P<pver>12\.\d+\.\d+)"
+TARGETVAR_class-target = "foo"
+NATIVEVAR_class-native = "foo"
+CROSSVAR_class-cross = "foo"
+SDKVAR_class-nativesdk = "foo"
 
 # Just a comment
 # across multiple lines
