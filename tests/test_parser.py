@@ -175,6 +175,24 @@ class OelintParserTest(unittest.TestCase):
         self.assertEqual(x.FuncBodyStripped, 'bb.warn("This is another example warning")')
         self.assertEqual(x.GetMachineEntry(), "")
 
+    def test_anon_function(self):
+        from oelint_parser.cls_item import Function
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Function.CLASSIFIER)
+        self.assertTrue(_stash, msg="Stash has no items")
+
+        _filteredStash = [x for x in _stash if x.FuncName in ["", "anonymous"]]
+        self.assertEqual(len(_filteredStash), 3)
+
+        for item in _filteredStash:
+            self.assertEqual(item.IsPython, True)
+            self.assertIn(item.FuncName, ["", "anonymous"])
+
     def test_varflag(self):
         from oelint_parser.cls_item import Variable
         from oelint_parser.helper_files import expand_term

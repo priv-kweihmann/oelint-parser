@@ -25,6 +25,18 @@ fakeroot python do_something_append() {
     bb.warn("This is another example warning")
 }
 
+python() {
+    bb.info("Hi my name is function, and I have a problem...")
+}
+
+python () {
+    bb.info("Hi my name is function, and I have a problem...")
+}
+
+python __anonymous() {
+    bb.info("Hi my name is function, and I have a problem...")
+}
+
 def example_function():
     pass
 
