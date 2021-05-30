@@ -4,9 +4,7 @@ import re
 from urllib.parse import urlparse
 
 from oelint_parser.cls_item import Variable
-from oelint_parser.const_vars import get_image_classes
-from oelint_parser.const_vars import get_image_variables
-from oelint_parser.const_vars import get_known_mirrors
+from oelint_parser.constants import CONSTANTS
 
 
 def get_files(stash, _file, pattern):
@@ -80,7 +78,7 @@ def _replace_with_known_mirrors(_in):
     """
     Replace the known mirror configuration items
     """
-    for k, v in get_known_mirrors().items():
+    for k, v in CONSTANTS.MirrorsKnown.items():
         _in = _in.replace(k, v)
     return _in
 
@@ -256,9 +254,9 @@ def is_image(stash, _file):
 
     _inherits = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                               attribute=Variable.ATTR_VAR, attributeValue="inherit")
-    res |= any(x for x in _inherits if x.VarValueStripped in get_image_classes())
+    res |= any(x for x in _inherits if x.VarValueStripped in CONSTANTS.ImagesClasses)
 
-    for _var in get_image_variables():
+    for _var in CONSTANTS.ImagesVariables:
         res |= any(stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                               attribute=Variable.ATTR_VAR, attributeValue=_var))
 

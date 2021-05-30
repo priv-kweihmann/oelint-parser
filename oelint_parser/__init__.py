@@ -1,7 +1,6 @@
 __all__ = [
     "cls_item",
-    "const_func",
-    "const_vars",
+    "constants",
     "helper_files",
     "parser"
 ]

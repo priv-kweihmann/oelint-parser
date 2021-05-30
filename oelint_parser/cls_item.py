@@ -1,8 +1,7 @@
 import textwrap
 import re
 
-from oelint_parser.const_func import KNOWN_FUNCS
-from oelint_parser.const_vars import get_known_machines
+from oelint_parser.constants import CONSTANTS
 
 
 class Item():
@@ -185,7 +184,7 @@ class Item():
         _suffix = []
         _var = []
         for i in chunks:
-            if i in _marker or "_".join(_var) in KNOWN_FUNCS:
+            if i in _marker or "_".join(_var) in CONSTANTS.FunctionsKnown:
                 _suffix = chunks[chunks.index(i):]
                 break
             else:

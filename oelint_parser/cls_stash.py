@@ -4,7 +4,7 @@ import re
 from oelint_parser.parser import get_items
 from oelint_parser.cls_item import Variable, Item
 from oelint_parser.helper_files import expand_term, guess_recipe_name, guess_recipe_version, guess_base_recipe_name
-from oelint_parser.const_vars import get_base_varset
+from oelint_parser.constants import CONSTANTS
 
 
 class Stash():
@@ -176,7 +176,7 @@ class Stash():
             "PV": guess_recipe_version(filename),
             "BPN": guess_base_recipe_name(filename)
         }
-        _exp = {**_exp, **get_base_varset()}
+        _exp = {**_exp, **CONSTANTS.SetsBase}
         for item in sorted(_res, key=lambda x: x.Line):
             varop = item.VarOp
             name = item.VarName
