@@ -1,5 +1,33 @@
 # Table of Contents
 
+* [oelint\_parser.const\_vars](#oelint_parser.const_vars)
+  * [set\_constantfile](#oelint_parser.const_vars.set_constantfile)
+  * [set\_rulefile](#oelint_parser.const_vars.set_rulefile)
+  * [get\_mandatory\_vars](#oelint_parser.const_vars.get_mandatory_vars)
+  * [get\_suggested\_vars](#oelint_parser.const_vars.get_suggested_vars)
+  * [get\_known\_mirrors](#oelint_parser.const_vars.get_known_mirrors)
+  * [get\_protected\_vars](#oelint_parser.const_vars.get_protected_vars)
+  * [get\_protected\_append\_vars](#oelint_parser.const_vars.get_protected_append_vars)
+  * [get\_known\_vars](#oelint_parser.const_vars.get_known_vars)
+  * [get\_known\_machines](#oelint_parser.const_vars.get_known_machines)
+  * [get\_image\_classes](#oelint_parser.const_vars.get_image_classes)
+  * [get\_image\_variables](#oelint_parser.const_vars.get_image_variables)
+  * [get\_base\_varset](#oelint_parser.const_vars.get_base_varset)
+* [oelint\_parser.cls\_stash](#oelint_parser.cls_stash)
+  * [Stash](#oelint_parser.cls_stash.Stash)
+    * [\_\_init\_\_](#oelint_parser.cls_stash.Stash.__init__)
+    * [AddFile](#oelint_parser.cls_stash.Stash.AddFile)
+    * [GetRecipes](#oelint_parser.cls_stash.Stash.GetRecipes)
+    * [GetLoneAppends](#oelint_parser.cls_stash.Stash.GetLoneAppends)
+    * [GetLinksForFile](#oelint_parser.cls_stash.Stash.GetLinksForFile)
+    * [GetItemsFor](#oelint_parser.cls_stash.Stash.GetItemsFor)
+    * [ExpandVar](#oelint_parser.cls_stash.Stash.ExpandVar)
+* [oelint\_parser.const\_func](#oelint_parser.const_func)
+* [oelint\_parser.parser](#oelint_parser.parser)
+  * [get\_full\_scope](#oelint_parser.parser.get_full_scope)
+  * [prepare\_lines\_subparser](#oelint_parser.parser.prepare_lines_subparser)
+  * [prepare\_lines](#oelint_parser.parser.prepare_lines)
+  * [get\_items](#oelint_parser.parser.get_items)
 * [oelint\_parser.cls\_item](#oelint_parser.cls_item)
   * [Item](#oelint_parser.cls_item.Item)
     * [\_\_init\_\_](#oelint_parser.cls_item.Item.__init__)
@@ -80,31 +108,6 @@
     * [\_\_init\_\_](#oelint_parser.cls_item.MissingFile.__init__)
     * [Filename](#oelint_parser.cls_item.MissingFile.Filename)
     * [Statement](#oelint_parser.cls_item.MissingFile.Statement)
-* [oelint\_parser.const\_vars](#oelint_parser.const_vars)
-  * [set\_constantfile](#oelint_parser.const_vars.set_constantfile)
-  * [get\_constantfile](#oelint_parser.const_vars.get_constantfile)
-  * [set\_rulefile](#oelint_parser.const_vars.set_rulefile)
-  * [get\_rulefile](#oelint_parser.const_vars.get_rulefile)
-  * [get\_mandatory\_vars](#oelint_parser.const_vars.get_mandatory_vars)
-  * [get\_suggested\_vars](#oelint_parser.const_vars.get_suggested_vars)
-  * [get\_known\_mirrors](#oelint_parser.const_vars.get_known_mirrors)
-  * [get\_protected\_vars](#oelint_parser.const_vars.get_protected_vars)
-  * [get\_protected\_append\_vars](#oelint_parser.const_vars.get_protected_append_vars)
-  * [get\_known\_vars](#oelint_parser.const_vars.get_known_vars)
-  * [get\_known\_machines](#oelint_parser.const_vars.get_known_machines)
-  * [get\_image\_classes](#oelint_parser.const_vars.get_image_classes)
-  * [get\_image\_variables](#oelint_parser.const_vars.get_image_variables)
-  * [get\_base\_varset](#oelint_parser.const_vars.get_base_varset)
-* [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
-* [oelint\_parser.cls\_stash](#oelint_parser.cls_stash)
-  * [Stash](#oelint_parser.cls_stash.Stash)
-    * [\_\_init\_\_](#oelint_parser.cls_stash.Stash.__init__)
-    * [AddFile](#oelint_parser.cls_stash.Stash.AddFile)
-    * [GetRecipes](#oelint_parser.cls_stash.Stash.GetRecipes)
-    * [GetLoneAppends](#oelint_parser.cls_stash.Stash.GetLoneAppends)
-    * [GetLinksForFile](#oelint_parser.cls_stash.Stash.GetLinksForFile)
-    * [GetItemsFor](#oelint_parser.cls_stash.Stash.GetItemsFor)
-    * [ExpandVar](#oelint_parser.cls_stash.Stash.ExpandVar)
 * [oelint\_parser.helper\_files](#oelint_parser.helper_files)
   * [get\_files](#oelint_parser.helper_files.get_files)
   * [get\_layer\_root](#oelint_parser.helper_files.get_layer_root)
@@ -119,12 +122,406 @@
   * [get\_valid\_named\_resources](#oelint_parser.helper_files.get_valid_named_resources)
   * [is\_image](#oelint_parser.helper_files.is_image)
   * [is\_packagegroup](#oelint_parser.helper_files.is_packagegroup)
-* [oelint\_parser.const\_func](#oelint_parser.const_func)
-* [oelint\_parser.parser](#oelint_parser.parser)
-  * [get\_full\_scope](#oelint_parser.parser.get_full_scope)
-  * [prepare\_lines\_subparser](#oelint_parser.parser.prepare_lines_subparser)
-  * [prepare\_lines](#oelint_parser.parser.prepare_lines)
-  * [get\_items](#oelint_parser.parser.get_items)
+* [oelint\_parser.constants](#oelint_parser.constants)
+  * [Constants](#oelint_parser.constants.Constants)
+    * [AddConstants](#oelint_parser.constants.Constants.AddConstants)
+    * [RemoveConstants](#oelint_parser.constants.Constants.RemoveConstants)
+    * [OverrideConstants](#oelint_parser.constants.Constants.OverrideConstants)
+    * [AddFromRuleFile](#oelint_parser.constants.Constants.AddFromRuleFile)
+    * [AddFromConstantFile](#oelint_parser.constants.Constants.AddFromConstantFile)
+    * [FunctionsKnown](#oelint_parser.constants.Constants.FunctionsKnown)
+    * [FunctionsOrder](#oelint_parser.constants.Constants.FunctionsOrder)
+    * [VariablesMandatory](#oelint_parser.constants.Constants.VariablesMandatory)
+    * [VariablesSuggested](#oelint_parser.constants.Constants.VariablesSuggested)
+    * [MirrorsKnown](#oelint_parser.constants.Constants.MirrorsKnown)
+    * [VariablesProtected](#oelint_parser.constants.Constants.VariablesProtected)
+    * [VariablesProtectedAppend](#oelint_parser.constants.Constants.VariablesProtectedAppend)
+    * [VariablesOrder](#oelint_parser.constants.Constants.VariablesOrder)
+    * [VariablesKnown](#oelint_parser.constants.Constants.VariablesKnown)
+    * [MachinesKnown](#oelint_parser.constants.Constants.MachinesKnown)
+    * [MachinesKnown](#oelint_parser.constants.Constants.MachinesKnown)
+    * [ImagesClasses](#oelint_parser.constants.Constants.ImagesClasses)
+    * [ImagesVariables](#oelint_parser.constants.Constants.ImagesVariables)
+    * [SetsBase](#oelint_parser.constants.Constants.SetsBase)
+* [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
+
+<a name="oelint_parser.const_vars"></a>
+# oelint\_parser.const\_vars
+
+<a name="oelint_parser.const_vars.set_constantfile"></a>
+#### set\_constantfile
+
+```python
+set_constantfile(obj)
+```
+
+set constants
+
+**Arguments**:
+
+- `obj` _dict_ - dictionary with constants
+
+<a name="oelint_parser.const_vars.set_rulefile"></a>
+#### set\_rulefile
+
+```python
+set_rulefile(obj)
+```
+
+set rules
+
+**Arguments**:
+
+- `obj` _dict_ - dictionary with rule definitions
+
+<a name="oelint_parser.const_vars.get_mandatory_vars"></a>
+#### get\_mandatory\_vars
+
+```python
+get_mandatory_vars()
+```
+
+get mandatory variables
+
+**Returns**:
+
+- `list` - list of mandatory variable names
+
+<a name="oelint_parser.const_vars.get_suggested_vars"></a>
+#### get\_suggested\_vars
+
+```python
+get_suggested_vars()
+```
+
+get suggested variables
+
+**Returns**:
+
+- `list` - list of suggested variable names
+
+<a name="oelint_parser.const_vars.get_known_mirrors"></a>
+#### get\_known\_mirrors
+
+```python
+get_known_mirrors()
+```
+
+get known mirror replacements
+
+**Returns**:
+
+- `dict` - dictionary of known mirror replacements
+
+<a name="oelint_parser.const_vars.get_protected_vars"></a>
+#### get\_protected\_vars
+
+```python
+get_protected_vars()
+```
+
+get protected variables
+
+**Returns**:
+
+- `list` - list of protected variables
+
+<a name="oelint_parser.const_vars.get_protected_append_vars"></a>
+#### get\_protected\_append\_vars
+
+```python
+get_protected_append_vars()
+```
+
+get protected variables in bbappends
+
+**Returns**:
+
+- `list` - list of protected variables
+
+<a name="oelint_parser.const_vars.get_known_vars"></a>
+#### get\_known\_vars
+
+```python
+get_known_vars()
+```
+
+get list of known variables
+
+**Returns**:
+
+- `list` - list of known variable names
+
+<a name="oelint_parser.const_vars.get_known_machines"></a>
+#### get\_known\_machines
+
+```python
+get_known_machines()
+```
+
+get known machines
+
+**Returns**:
+
+- `list` - list of known machine names
+
+<a name="oelint_parser.const_vars.get_image_classes"></a>
+#### get\_image\_classes
+
+```python
+get_image_classes()
+```
+
+get known classes used exclusively in an image
+
+**Returns**:
+
+- `list` - list of known class names
+
+<a name="oelint_parser.const_vars.get_image_variables"></a>
+#### get\_image\_variables
+
+```python
+get_image_variables()
+```
+
+get known variables used exclusively in an image
+
+**Returns**:
+
+- `list` - list of known variable names
+
+<a name="oelint_parser.const_vars.get_base_varset"></a>
+#### get\_base\_varset
+
+```python
+get_base_varset()
+```
+
+get variable baseset
+Set includes basic package definitions
+
+**Returns**:
+
+- `dict` - base variable set
+
+<a name="oelint_parser.cls_stash"></a>
+# oelint\_parser.cls\_stash
+
+<a name="oelint_parser.cls_stash.Stash"></a>
+## Stash Objects
+
+```python
+class Stash()
+```
+
+<a name="oelint_parser.cls_stash.Stash.__init__"></a>
+#### \_\_init\_\_
+
+```python
+ | __init__(quiet=False)
+```
+
+constructor
+
+<a name="oelint_parser.cls_stash.Stash.AddFile"></a>
+#### AddFile
+
+```python
+ | AddFile(_file, lineOffset=0, forcedLink=None)
+```
+
+Adds a file to the stash
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+  
+
+**Arguments**:
+
+- `lineOffset` _int_ - Line offset from the file that include this file (default: {0})
+- `forcedLink` _type_ - Force link against a file (default: {None})
+  
+
+**Returns**:
+
+- `list` - List of {oelint_parser.cls_item.Item}
+
+<a name="oelint_parser.cls_stash.Stash.GetRecipes"></a>
+#### GetRecipes
+
+```python
+ | GetRecipes()
+```
+
+Get bb files in stash
+
+**Returns**:
+
+- `list` - List of bb files in stash
+
+<a name="oelint_parser.cls_stash.Stash.GetLoneAppends"></a>
+#### GetLoneAppends
+
+```python
+ | GetLoneAppends()
+```
+
+Get bbappend without a matching bb
+
+**Returns**:
+
+- `list` - list of bbappend without a matching bb
+
+<a name="oelint_parser.cls_stash.Stash.GetLinksForFile"></a>
+#### GetLinksForFile
+
+```python
+ | GetLinksForFile(filename)
+```
+
+Get file which this file is linked against
+
+**Arguments**:
+
+- `filename` _str_ - full path to file
+  
+
+**Returns**:
+
+- `list` - list of full paths the file is linked against
+
+<a name="oelint_parser.cls_stash.Stash.GetItemsFor"></a>
+#### GetItemsFor
+
+```python
+ | GetItemsFor(filename=None, classifier=None, attribute=None, attributeValue=None, nolink=False)
+```
+
+Get items for filename
+
+**Arguments**:
+
+- `filename` _str_ - Full path to file (default: {None})
+- `classifier` _str_ - class specifier (e.g. Variable) (default: {None})
+- `attribute` _str_ - class attribute name (default: {None})
+- `attributeValue` _str_ - value of the class attribute name (default: {None})
+- `nolink` _bool_ - Consider linked files (default: {False})
+  
+
+**Returns**:
+
+- `[type]` - [description]
+
+<a name="oelint_parser.cls_stash.Stash.ExpandVar"></a>
+#### ExpandVar
+
+```python
+ | ExpandVar(filename=None, attribute=None, attributeValue=None, nolink=False)
+```
+
+Expand variable to dictionary
+
+**Arguments**:
+
+- `filename` _str_ - Full path to file (default: {None})
+- `attribute` _str_ - class attribute name (default: {None})
+- `attributeValue` _str_ - value of the class attribute name (default: {None})
+- `nolink` _bool_ - Consider linked files (default: {False})
+  
+
+**Returns**:
+
+- `{dict}` - expanded variables from call + base set of variables
+
+<a name="oelint_parser.const_func"></a>
+# oelint\_parser.const\_func
+
+<a name="oelint_parser.parser"></a>
+# oelint\_parser.parser
+
+<a name="oelint_parser.parser.get_full_scope"></a>
+#### get\_full\_scope
+
+```python
+get_full_scope(_string, offset, _sstart, _send)
+```
+
+get full block of an inline statement
+
+**Arguments**:
+
+- `_string` _str_ - input string
+- `offset` _int_ - offset in string
+- `_sstart` _int_ - block start index
+- `_send` _int_ - block end index
+  
+
+**Returns**:
+
+- `str` - full block on inline statement
+
+<a name="oelint_parser.parser.prepare_lines_subparser"></a>
+#### prepare\_lines\_subparser
+
+```python
+prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None)
+```
+
+preprocess raw input
+
+**Arguments**:
+
+- `_iter` _interator_ - line interator object
+- `lineOffset` _int_ - current line index
+- `num` _int_ - internal line counter
+- `line` _int_ - input string
+- `raw_line` _string, optional_ - internal line representation. Defaults to None.
+  
+
+**Returns**:
+
+- `list` - list of preproccessed chunks
+
+<a name="oelint_parser.parser.prepare_lines"></a>
+#### prepare\_lines
+
+```python
+prepare_lines(_file, lineOffset=0)
+```
+
+break raw file input into preprocessed chunks
+
+**Arguments**:
+
+- `_file` _string_ - Full path to file
+- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
+  
+
+**Returns**:
+
+- `list` - preprocessed list of chunks
+
+<a name="oelint_parser.parser.get_items"></a>
+#### get\_items
+
+```python
+get_items(stash, _file, lineOffset=0)
+```
+
+parses file
+
+**Arguments**:
+
+- `stash` _oelint_parser.cls_stash.Stash_ - Stash object
+- `_file` _string_ - Full path to file
+- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
+  
+
+**Returns**:
+
+- `list` - List of oelint_parser.cls_item.* representations
 
 <a name="oelint_parser.cls_item"></a>
 # oelint\_parser.cls\_item
@@ -1220,327 +1617,6 @@ statement either include or require
 
 - `str` - include or require
 
-<a name="oelint_parser.const_vars"></a>
-# oelint\_parser.const\_vars
-
-variable constants
-
-<a name="oelint_parser.const_vars.set_constantfile"></a>
-#### set\_constantfile
-
-```python
-set_constantfile(obj)
-```
-
-set constants
-
-**Arguments**:
-
-- `obj` _dict_ - dictionary with constants
-
-<a name="oelint_parser.const_vars.get_constantfile"></a>
-#### get\_constantfile
-
-```python
-get_constantfile()
-```
-
-return currently set constants
-
-**Returns**:
-
-- `dict` - dictionary with constants
-
-<a name="oelint_parser.const_vars.set_rulefile"></a>
-#### set\_rulefile
-
-```python
-set_rulefile(obj)
-```
-
-set rules
-
-**Arguments**:
-
-- `obj` _dict_ - dictionary with rule definitions
-
-<a name="oelint_parser.const_vars.get_rulefile"></a>
-#### get\_rulefile
-
-```python
-get_rulefile()
-```
-
-get current rules
-
-**Returns**:
-
-- `dict` - dictionary with rule definitions
-
-<a name="oelint_parser.const_vars.get_mandatory_vars"></a>
-#### get\_mandatory\_vars
-
-```python
-get_mandatory_vars()
-```
-
-get mandatory variables
-
-**Returns**:
-
-- `list` - list of mandatory variable names
-
-<a name="oelint_parser.const_vars.get_suggested_vars"></a>
-#### get\_suggested\_vars
-
-```python
-get_suggested_vars()
-```
-
-get suggested variables
-
-**Returns**:
-
-- `list` - list of suggested variable names
-
-<a name="oelint_parser.const_vars.get_known_mirrors"></a>
-#### get\_known\_mirrors
-
-```python
-get_known_mirrors()
-```
-
-get known mirror replacements
-
-**Returns**:
-
-- `dict` - dictionary of known mirror replacements
-
-<a name="oelint_parser.const_vars.get_protected_vars"></a>
-#### get\_protected\_vars
-
-```python
-get_protected_vars()
-```
-
-get protected variables
-
-**Returns**:
-
-- `list` - list of protected variables
-
-<a name="oelint_parser.const_vars.get_protected_append_vars"></a>
-#### get\_protected\_append\_vars
-
-```python
-get_protected_append_vars()
-```
-
-get protected variables in bbappends
-
-**Returns**:
-
-- `list` - list of protected variables
-
-<a name="oelint_parser.const_vars.get_known_vars"></a>
-#### get\_known\_vars
-
-```python
-get_known_vars()
-```
-
-get list of known variables
-
-**Returns**:
-
-- `list` - list of known variable names
-
-<a name="oelint_parser.const_vars.get_known_machines"></a>
-#### get\_known\_machines
-
-```python
-get_known_machines()
-```
-
-get known machines
-
-**Returns**:
-
-- `list` - list of known machine names
-
-<a name="oelint_parser.const_vars.get_image_classes"></a>
-#### get\_image\_classes
-
-```python
-get_image_classes()
-```
-
-get known classes used exclusively in an image
-
-**Returns**:
-
-- `list` - list of known class names
-
-<a name="oelint_parser.const_vars.get_image_variables"></a>
-#### get\_image\_variables
-
-```python
-get_image_variables()
-```
-
-get known variables used exclusively in an image
-
-**Returns**:
-
-- `list` - list of known variable names
-
-<a name="oelint_parser.const_vars.get_base_varset"></a>
-#### get\_base\_varset
-
-```python
-get_base_varset()
-```
-
-get variable baseset
-Set includes basic package definitions
-
-**Returns**:
-
-- `dict` - base variable set
-
-<a name="oelint_parser.inlinerep"></a>
-# oelint\_parser.inlinerep
-
-<a name="oelint_parser.cls_stash"></a>
-# oelint\_parser.cls\_stash
-
-<a name="oelint_parser.cls_stash.Stash"></a>
-## Stash Objects
-
-```python
-class Stash()
-```
-
-<a name="oelint_parser.cls_stash.Stash.__init__"></a>
-#### \_\_init\_\_
-
-```python
- | __init__(quiet=False)
-```
-
-constructor
-
-<a name="oelint_parser.cls_stash.Stash.AddFile"></a>
-#### AddFile
-
-```python
- | AddFile(_file, lineOffset=0, forcedLink=None)
-```
-
-Adds a file to the stash
-
-**Arguments**:
-
-- `_file` _str_ - Full path to file
-  
-
-**Arguments**:
-
-- `lineOffset` _int_ - Line offset from the file that include this file (default: {0})
-- `forcedLink` _type_ - Force link against a file (default: {None})
-  
-
-**Returns**:
-
-- `list` - List of {oelint_parser.cls_item.Item}
-
-<a name="oelint_parser.cls_stash.Stash.GetRecipes"></a>
-#### GetRecipes
-
-```python
- | GetRecipes()
-```
-
-Get bb files in stash
-
-**Returns**:
-
-- `list` - List of bb files in stash
-
-<a name="oelint_parser.cls_stash.Stash.GetLoneAppends"></a>
-#### GetLoneAppends
-
-```python
- | GetLoneAppends()
-```
-
-Get bbappend without a matching bb
-
-**Returns**:
-
-- `list` - list of bbappend without a matching bb
-
-<a name="oelint_parser.cls_stash.Stash.GetLinksForFile"></a>
-#### GetLinksForFile
-
-```python
- | GetLinksForFile(filename)
-```
-
-Get file which this file is linked against
-
-**Arguments**:
-
-- `filename` _str_ - full path to file
-  
-
-**Returns**:
-
-- `list` - list of full paths the file is linked against
-
-<a name="oelint_parser.cls_stash.Stash.GetItemsFor"></a>
-#### GetItemsFor
-
-```python
- | GetItemsFor(filename=None, classifier=None, attribute=None, attributeValue=None, nolink=False)
-```
-
-Get items for filename
-
-**Arguments**:
-
-- `filename` _str_ - Full path to file (default: {None})
-- `classifier` _str_ - class specifier (e.g. Variable) (default: {None})
-- `attribute` _str_ - class attribute name (default: {None})
-- `attributeValue` _str_ - value of the class attribute name (default: {None})
-- `nolink` _bool_ - Consider linked files (default: {False})
-  
-
-**Returns**:
-
-- `[type]` - [description]
-
-<a name="oelint_parser.cls_stash.Stash.ExpandVar"></a>
-#### ExpandVar
-
-```python
- | ExpandVar(filename=None, attribute=None, attributeValue=None, nolink=False)
-```
-
-Expand variable to dictionary
-
-**Arguments**:
-
-- `filename` _str_ - Full path to file (default: {None})
-- `attribute` _str_ - class attribute name (default: {None})
-- `attributeValue` _str_ - value of the class attribute name (default: {None})
-- `nolink` _bool_ - Consider linked files (default: {False})
-  
-
-**Returns**:
-
-- `{dict}` - expanded variables from call + base set of variables
-
 <a name="oelint_parser.helper_files"></a>
 # oelint\_parser.helper\_files
 
@@ -1787,91 +1863,279 @@ returns if the file is likely a packagegroup recipe or not
 
 - `bool` - True if _file is a packagegroup recipe
 
-<a name="oelint_parser.const_func"></a>
-# oelint\_parser.const\_func
+<a name="oelint_parser.constants"></a>
+# oelint\_parser.constants
 
-<a name="oelint_parser.parser"></a>
-# oelint\_parser.parser
-
-<a name="oelint_parser.parser.get_full_scope"></a>
-#### get\_full\_scope
+<a name="oelint_parser.constants.Constants"></a>
+## Constants Objects
 
 ```python
-get_full_scope(_string, offset, _sstart, _send)
+class Constants()
 ```
 
-get full block of an inline statement
+Interface for constants
+
+<a name="oelint_parser.constants.Constants.AddConstants"></a>
+#### AddConstants
+
+```python
+ | AddConstants(_dict)
+```
+
+Add constants to the existing
 
 **Arguments**:
 
-- `_string` _str_ - input string
-- `offset` _int_ - offset in string
-- `_sstart` _int_ - block start index
-- `_send` _int_ - block end index
-  
+- `dict` _dict_ - constant dictionary to add
 
-**Returns**:
-
-- `str` - full block on inline statement
-
-<a name="oelint_parser.parser.prepare_lines_subparser"></a>
-#### prepare\_lines\_subparser
+<a name="oelint_parser.constants.Constants.RemoveConstants"></a>
+#### RemoveConstants
 
 ```python
-prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None)
+ | RemoveConstants(_dict)
 ```
 
-preprocess raw input
+Remove constants from the existing
 
 **Arguments**:
 
-- `_iter` _interator_ - line interator object
-- `lineOffset` _int_ - current line index
-- `num` _int_ - internal line counter
-- `line` _int_ - input string
-- `raw_line` _string, optional_ - internal line representation. Defaults to None.
-  
+- `dict` _dict_ - constant dictionary to remove
 
-**Returns**:
-
-- `list` - list of preproccessed chunks
-
-<a name="oelint_parser.parser.prepare_lines"></a>
-#### prepare\_lines
+<a name="oelint_parser.constants.Constants.OverrideConstants"></a>
+#### OverrideConstants
 
 ```python
-prepare_lines(_file, lineOffset=0)
+ | OverrideConstants(_dict)
 ```
 
-break raw file input into preprocessed chunks
+Override constants in the existing db
 
 **Arguments**:
 
-- `_file` _string_ - Full path to file
-- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
-  
+- `dict` _dict]_ - constant dictionary with override values
 
-**Returns**:
-
-- `list` - preprocessed list of chunks
-
-<a name="oelint_parser.parser.get_items"></a>
-#### get\_items
+<a name="oelint_parser.constants.Constants.AddFromRuleFile"></a>
+#### AddFromRuleFile
 
 ```python
-get_items(stash, _file, lineOffset=0)
+ | AddFromRuleFile(dict)
 ```
 
-parses file
+Legacy interface to support rule files
 
 **Arguments**:
 
-- `stash` _oelint_parser.cls_stash.Stash_ - Stash object
-- `_file` _string_ - Full path to file
-- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
-  
+- `dict` _dict_ - rule file dictionary
+
+<a name="oelint_parser.constants.Constants.AddFromConstantFile"></a>
+#### AddFromConstantFile
+
+```python
+ | AddFromConstantFile(dict)
+```
+
+Legacy interface to support constant files
+
+**Arguments**:
+
+- `dict` _dict_ - constant file dictionary
+
+<a name="oelint_parser.constants.Constants.FunctionsKnown"></a>
+#### FunctionsKnown
+
+```python
+ | @property
+ | FunctionsKnown()
+```
+
+Return known functions
 
 **Returns**:
 
-- `list` - List of oelint_parser.cls_item.* representations
+- `list` - list of known functions
+
+<a name="oelint_parser.constants.Constants.FunctionsOrder"></a>
+#### FunctionsOrder
+
+```python
+ | @property
+ | FunctionsOrder()
+```
+
+Return function order
+
+**Returns**:
+
+- `list` - List of functions to order in their designated order
+
+<a name="oelint_parser.constants.Constants.VariablesMandatory"></a>
+#### VariablesMandatory
+
+```python
+ | @property
+ | VariablesMandatory()
+```
+
+Return mandatory variables
+
+**Returns**:
+
+- `list` - List of mandatory variables
+
+<a name="oelint_parser.constants.Constants.VariablesSuggested"></a>
+#### VariablesSuggested
+
+```python
+ | @property
+ | VariablesSuggested()
+```
+
+Return suggested variables
+
+**Returns**:
+
+- `list` - List of suggested variables
+
+<a name="oelint_parser.constants.Constants.MirrorsKnown"></a>
+#### MirrorsKnown
+
+```python
+ | @property
+ | MirrorsKnown()
+```
+
+Return known mirrors and their replacements
+
+**Returns**:
+
+- `dict` - Dict of known mirrors and their replacements
+
+<a name="oelint_parser.constants.Constants.VariablesProtected"></a>
+#### VariablesProtected
+
+```python
+ | @property
+ | VariablesProtected()
+```
+
+Return protected variables
+
+**Returns**:
+
+- `list` - List of protected variables
+
+<a name="oelint_parser.constants.Constants.VariablesProtectedAppend"></a>
+#### VariablesProtectedAppend
+
+```python
+ | @property
+ | VariablesProtectedAppend()
+```
+
+Return protected variables in bbappend files
+
+**Returns**:
+
+- `list` - List of protected variables in bbappend files
+
+<a name="oelint_parser.constants.Constants.VariablesOrder"></a>
+#### VariablesOrder
+
+```python
+ | @property
+ | VariablesOrder()
+```
+
+Variable order
+
+**Returns**:
+
+- `list` - List of variables to order in their designated order
+
+<a name="oelint_parser.constants.Constants.VariablesKnown"></a>
+#### VariablesKnown
+
+```python
+ | @property
+ | VariablesKnown()
+```
+
+Known variables
+
+**Returns**:
+
+- `list` - List of known variables
+
+<a name="oelint_parser.constants.Constants.MachinesKnown"></a>
+#### MachinesKnown
+
+```python
+ | @property
+ | MachinesKnown()
+```
+
+Known machines
+
+**Returns**:
+
+- `list` - List of known machines
+
+<a name="oelint_parser.constants.Constants.MachinesKnown"></a>
+#### MachinesKnown
+
+```python
+ | @property
+ | MachinesKnown()
+```
+
+Known machines
+
+**Returns**:
+
+- `list` - List of known machines
+
+<a name="oelint_parser.constants.Constants.ImagesClasses"></a>
+#### ImagesClasses
+
+```python
+ | @property
+ | ImagesClasses()
+```
+
+Classes that are used in images
+
+**Returns**:
+
+- `list` - Classes that are used in images
+
+<a name="oelint_parser.constants.Constants.ImagesVariables"></a>
+#### ImagesVariables
+
+```python
+ | @property
+ | ImagesVariables()
+```
+
+Variables that are used in images
+
+**Returns**:
+
+- `list` - Variables that are used in images
+
+<a name="oelint_parser.constants.Constants.SetsBase"></a>
+#### SetsBase
+
+```python
+ | @property
+ | SetsBase()
+```
+
+Base variable set
+
+**Returns**:
+
+- `dict` - dictionary with base variable set
+
+<a name="oelint_parser.inlinerep"></a>
+# oelint\_parser.inlinerep
 

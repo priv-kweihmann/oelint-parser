@@ -31,6 +31,9 @@ setuptools.setup(
             'pytest'
         ]
     },
+    package_data = {
+        'oelint_parser': ['data/*'],
+    },
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

@@ -61,3 +61,37 @@ for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue="PV"):
     # expanded single items from a list
     print([expand_term(stash, "/some/file", y) for y in x.get_items()])
 ```
+
+## Working with constants
+
+For this library a few basic sets of constant information, such as basic package definitions, known machines and functions are
+needed.
+Those can be easily modified, in case you have additional information to add/remove/modify.
+
+The actual database is not accessible by the user, but a few methods in the `oelint_parse.constants.CONSTANT` class do exist.
+Each of the method accepts a dictionary with the same key mapping as listed below (multilevel paths are displayed a JSON pointer)
+
+| key                        | type | description                                           | getter for information                                     |
+| -------------------------- | ---- | ----------------------------------------------------- | ---------------------------------------------------------- |
+| functions/known            | list | known functions                                       | `oelint_parse.constants.CONSTANT.FunctionsKnown`           |
+| functions/order            | list | preferred order of core functions                     | `oelint_parse.constants.CONSTANT.FunctionsOrder`           |
+| images/known-classes       | list | bbclasses to be known to be used in images            | `oelint_parse.constants.CONSTANT.ImagesClasses`            |
+| images/known-variables     | list | variables known to be used in images                  | `oelint_parse.constants.CONSTANT.ImagesVariables`          |
+| replacements/machines      | list | known machine overrides                               | `oelint_parse.constants.CONSTANT.MachinesKnown`            |
+| replacements/mirrors       | dict | known mirrors                                         | `oelint_parse.constants.CONSTANT.MirrorsKnown`             |
+| variables/known            | list | known variables                                       | `oelint_parse.constants.CONSTANT.VariablesKnown`           |
+| variables/mandatory        | list | variables mandatory to a recipe                       | `oelint_parse.constants.CONSTANT.VariablesMandatory`       |
+| variables/order            | list | preferred order of variables                          | `oelint_parse.constants.CONSTANT.VariablesOrder`           |
+| variables/protected        | list | variables not to be used in recipes                   | `oelint_parse.constants.CONSTANT.VariablesProtected`       |
+| variables/protected-append | list | variables not to be used in bbappends                 | `oelint_parse.constants.CONSTANT.VariablesProtectedAppend` |
+| variables/suggested        | list | suggested variable in a recipe                        | `oelint_parse.constants.CONSTANT.VariablesSuggested`       |
+| sets/base                  | dict | base set of variables always used for value expansion | `oelint_parse.constants.CONSTANT.SetsBase`                 |
+
+### Backward compatibility with rule/constant file
+
+Originally offered support for **rule** or **constant** files is offered by the two new methods
+
+* `oelint_parse.constants.CONSTANT.AddFromRuleFile`
+* `oelint_parse.constants.CONSTANT.AddFromConstantFile`
+
+**NOTE** these interfaces are considered *legacy* interfaces and will be removed at some point in the future
