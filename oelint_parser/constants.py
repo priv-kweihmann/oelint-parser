@@ -91,10 +91,18 @@ class Constants():
         Args:
             dict (dict): rule file dictionary
         """
+        def dict_nested_set(d, path, value):
+            crumb = path[0]
+            if len(path) == 1:
+                d[crumb] = value
+            else:
+                if not crumb in d:
+                    d[crumb] = {}
+                dict_nested_set(d[crumb], path[1:], value)
         _translated = {}
         for n, r in Constants.LEGACY_MAPPING.items():
             if n in dict:
-                _translated[r] = dict[n]
+                dict_nested_set(_translated, r.split('/'), dict[n])
         self.AddConstants(_translated)
 
     def AddFromConstantFile(self, dict):

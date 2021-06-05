@@ -29,10 +29,75 @@ class OelintParserImageTest(unittest.TestCase):
         assert(isinstance(CONSTANTS, Constants))
 
     def test_rulefile(self):
-        pass
+        from oelint_parser.constants import Constants
+
+        _constants = {
+            "known_machines": [
+                "libcrypto"
+            ],
+            "known_vars": [
+                "EXTRA_DEPENDS",
+                "EXTRA_RDEPENDS",
+                "GEMPREFIX",
+                "GEM_BUILT_FILE",
+                "GEM_DIR",
+                "GEM_DISABLE_STRICT_VER",
+                "GEM_FILE",
+                "GEM_FILENAME",
+                "GEM_HOME",
+                "GEM_INSTALL_FLAGS",
+                "GEM_NAME",
+                "GEM_PATH",
+                "GEM_SPEC_CACHE",
+                "GEM_SPEC_FILE",
+                "GEM_SPEC_FILENAME",
+                "GEM_SRC",
+                "GEM_VERSION",
+                "RUBY_SITEDIR"
+            ],
+            "oelint.foo.bar": "info"
+        }
+
+        _const = Constants()
+        _const.AddFromRuleFile(_constants)
+
+        assert ("GEM_FILE" in _const.VariablesKnown)
+        assert ("libcrypto" in _const.MachinesKnown)
 
     def test_constantfile(self):
-        pass
+        from oelint_parser.constants import Constants
+
+        _constants = {
+            "known_machines": [
+                "libcrypto"
+            ],
+            "known_vars": [
+                "EXTRA_DEPENDS",
+                "EXTRA_RDEPENDS",
+                "GEMPREFIX",
+                "GEM_BUILT_FILE",
+                "GEM_DIR",
+                "GEM_DISABLE_STRICT_VER",
+                "GEM_FILE",
+                "GEM_FILENAME",
+                "GEM_HOME",
+                "GEM_INSTALL_FLAGS",
+                "GEM_NAME",
+                "GEM_PATH",
+                "GEM_SPEC_CACHE",
+                "GEM_SPEC_FILE",
+                "GEM_SPEC_FILENAME",
+                "GEM_SRC",
+                "GEM_VERSION",
+                "RUBY_SITEDIR"
+            ]
+        }
+
+        _const = Constants()
+        _const.AddFromConstantFile(_constants)
+
+        assert ("EXTRA_DEPENDS" in _const.VariablesKnown)
+        assert ("libcrypto" in _const.MachinesKnown)
 
     def test_remove(self):
         from oelint_parser.constants import Constants
