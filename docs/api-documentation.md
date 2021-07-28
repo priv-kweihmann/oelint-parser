@@ -943,10 +943,16 @@ Get variable modifiers
 #### get\_items
 
 ```python
- | get_items(override="")
+ | get_items(override="", versioned=False)
 ```
 
 Get items of variable value
+
+**Arguments**:
+
+- `override` _str_ - String to take instead of VarValue
+- `versioned` _bool_ - items can be versioned (versions will be stripped in this case)
+  
 
 **Returns**:
 

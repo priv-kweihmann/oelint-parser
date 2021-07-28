@@ -386,13 +386,20 @@ class Variable(Item):
             res.append("remove")
         return res
 
-    def get_items(self, override=""):
+    def get_items(self, override="", versioned=False):
         """Get items of variable value
+
+        Arguments:
+            override {str} -- String to take instead of VarValue
+            versioned {bool} -- items can be versioned (versions will be stripped in this case)
 
         Returns:
             list -- clean list of items in variable value
         """
-        return self._safe_linesplit(override.strip('"') or self.VarValue.strip('"'))
+        _x = override.strip('"') or self.VarValue.strip('"')
+        if versioned:
+            _x = re.sub(r"\s*\(.*?\)", "", _x)
+        return self._safe_linesplit(_x)
 
     def IsMultiLine(self):
         """Check if variable has a multiline assignment
