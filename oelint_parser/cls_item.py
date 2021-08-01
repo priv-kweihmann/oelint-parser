@@ -146,7 +146,7 @@ class Item():
         Returns:
             tuple -- clean variable name, modifiers, package specific modifiers
         """
-        chunks = name.split("_")
+        chunks = re.split(r"_|:", name)
         _suffix = []
         _var = []
         _pkgspec = []
@@ -178,7 +178,7 @@ class Item():
         Returns:
             tuple -- clean function name, modifiers
         """
-        chunks = name.split("_")
+        chunks = re.split(r"_|:", name)
         _marker = ["append", "prepend", "class-native",
                    "class-cross", "class-target", "remove"]
         _suffix = []
