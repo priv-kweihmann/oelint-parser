@@ -5,6 +5,7 @@ import re
 from oelint_parser.cls_item import Comment
 from oelint_parser.cls_item import Export
 from oelint_parser.cls_item import Function
+from oelint_parser.cls_item import FunctionExports
 from oelint_parser.cls_item import Include
 from oelint_parser.cls_item import Item
 from oelint_parser.cls_item import PythonBlock
@@ -157,6 +158,7 @@ def get_items(stash, _file, lineOffset=0):
     __regex_include = r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)"
     __regex_addtask = r"^(\s*|\t*)addtask\s+(?P<func>\w+)\s*((before\s*(?P<before>((.*(?=after))|(.*))))|(after\s*(?P<after>((.*(?=before))|(.*)))))*"
     __regex_taskass = r"^(\s*|\t*)(?P<func>[a-z0-9_-]+)\[(?P<ident>\w+)\](\s+|\t+)=(\s+|\t+)(?P<varval>.*)"
+    __regex_export_func = r"^EXPORT_FUNCTIONS\s+(?P<func>.*)"
 
     _order = collections.OrderedDict([
         ("comment", __regex_comments),
@@ -168,6 +170,7 @@ def get_items(stash, _file, lineOffset=0):
         ("include", __regex_include),
         ("addtask", __regex_addtask),
         ("taskassign", __regex_taskass),
+        ("exportfunc", __regex_export_func),
         ("vars", __regex_var)
     ])
 
@@ -181,6 +184,11 @@ def get_items(stash, _file, lineOffset=0):
                 if k == "python":
                     res.append(PythonBlock(
                         _file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group("funcname"), line["realraw"]))
+                    good = True
+                    break
+                elif k == "exportfunc":
+                    res.append(FunctionExports(
+                        _file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group("func"), line["realraw"]))
                     good = True
                     break
                 elif k == "vars":
@@ -205,6 +213,16 @@ def get_items(stash, _file, lineOffset=0):
                     good = True
                     break
                 elif k == "inherit":
+                    inhname = expand_term(stash, _file, m.group("inhname"))
+                    if not inhname.endswith(".bbclass"):
+                        inhname += ".bbclass"
+                    _path = find_local_or_in_layer(
+                        os.path.join("classes", inhname), 
+                        os.path.dirname(_file))
+                    if _path:
+                        tmp = stash.AddFile(_path, lineOffset=line["line"], forcedLink=_file)
+                        if any(tmp):
+                            includeOffset += max([x.InFileLine for x in tmp])
                     res.append(Variable(
                         _file, line["line"] + includeOffset, line["line"] -
                         lineOffset, line["raw"], "inherit", m.group("inhname"), line["realraw"],

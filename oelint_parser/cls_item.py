@@ -1,5 +1,6 @@
 import textwrap
 import re
+import os
 
 from oelint_parser.constants import CONSTANTS
 
@@ -113,6 +114,15 @@ class Item():
     @RealRaw.setter
     def RealRaw(self, value):
         self.__RealRaw = value
+
+    @property
+    def IsFromClass(self):
+        """Item comes from a bbclass
+
+        Returns:
+            bool: if item was set in a bbclass
+        """
+        return self.__Origin.endswith(".bbclass")
 
     @staticmethod
     def safe_linesplit(string):
@@ -780,6 +790,49 @@ class TaskAssignment(Item):
         """
         return [self.FuncName, self.VarName, self.VarValue]
 
+class FunctionExports(Item):
+    ATTR_FUNCNAME = "FuncName"
+    CLASSIFIER = "FunctionExports"
+
+    def __init__(self, origin, line, infileline, rawtext, name, realraw):
+        """constructor
+
+        Arguments:
+            origin {str} -- Full path to file of origin
+            line {int} -- Overall line counter
+            infileline {int} -- Line counter in the particular file
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
+            name {str} -- name of function to be exported
+        """
+        super().__init__(origin, line, infileline, rawtext, realraw)
+        self.__FuncNames = name
+
+    @property
+    def FuncNames(self):
+        """Function name
+
+        Returns:
+            str: names of exported functions
+        """
+        return self.__FuncNames
+
+    def get_items(self):
+        """Get items
+
+        Returns:
+            list -- function names
+        """
+        return [x for x in self.__FuncNames.split(" ") if x]
+
+    def get_items_unaliased(self):
+        """Get items with their bbclass scope names
+
+        Returns:
+            list -- function names in the scope of a bbclass (foo becomes classname-foo in this case)
+        """
+        _name, _ = os.path.splitext(os.path.basename(self.Origin))
+        return ["{}-{}".format(_name, x) for x in self.get_items()]
 
 class TaskAdd(Item):
     ATTR_FUNCNAME = "FuncName"
