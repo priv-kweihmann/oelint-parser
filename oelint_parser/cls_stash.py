@@ -13,6 +13,7 @@ class Stash():
         """constructor
         """
         self.__list = []
+        self.__seen_files = set()
         self.__map = {}
         self.__quiet = quiet
 
@@ -29,8 +30,11 @@ class Stash():
         Returns:
             list -- List of {oelint_parser.cls_item.Item}
         """
+        if _file in self.__seen_files:
+            return []
         if not self.__quiet:
             print("Parsing {}".format(_file))
+        self.__seen_files.add(_file)
         res = get_items(self, _file, lineOffset=lineOffset)
         if forcedLink:
             for r in res:
