@@ -183,7 +183,7 @@ class Stash():
         _exp = {**_exp, **CONSTANTS.SetsBase}
         for item in sorted(_res, key=lambda x: x.Line):
             varop = item.VarOp
-            name = item.VarName
+            name = item.VarNameComplete
             if item.Flag:
                 continue
             if name not in _exp.keys():
@@ -214,7 +214,7 @@ class Stash():
         # and now for a second run with special
         for item in sorted(_res, key=lambda x: x.Line):
             varop = item.VarOp
-            name = item.VarName
+            name = item.VarNameComplete
             if item.Flag:
                 continue
             if name not in _exp.keys():
@@ -233,7 +233,7 @@ class Stash():
         # and now for the run with remove
         for item in sorted(_res, key=lambda x: x.Line):
             varop = item.VarOp
-            name = item.VarName
+            name = item.VarNameComplete
             if item.Flag:
                 continue
             if name not in _exp.keys():
