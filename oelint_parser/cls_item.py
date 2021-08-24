@@ -31,6 +31,7 @@ class Item():
         self.__InFileLine = infileline
         self.__IncludedFrom = []
         self.__RealRaw = realraw or rawtext
+        self._override_delimiter = "_"
 
     @property
     def Line(self):
@@ -156,28 +157,27 @@ class Item():
         Returns:
             tuple -- clean variable name, modifiers, package specific modifiers
         """
-        chunks = re.split(r"_|:", name)
+        if ":" in name:
+            self._override_delimiter = ":"
+        chunks = name.split(self._override_delimiter)
         _suffix = []
-        _var = []
-        _pkgspec = []
-        for i in chunks:
+        _var = [chunks[0]]
+        for i in chunks[1:]:
             tmp = ""
             if "-" in i:
                 # just use the prefix in case a dash is found
                 # that addresses things like FILES_${PN}-dev
                 tmp = "-" + "-".join(i.split("-")[1:])
                 i = i.split("-")[0]
-            if re.match("^[a-z0-9{}$]+$", i):
+            if re.match("[a-z0-9{}$]+", i):
+                _suffix.append(i + tmp)
+            elif i in ["${PN}"]:
                 _suffix.append(i + tmp)
             else:
                 _var.append(i + tmp)
         _var = [x for x in _var if x]
         _suffix = [x for x in _suffix if x]
-        if not _var and _suffix:
-            # special case for pkg-functions
-            _var = _suffix
-            _suffix = []
-        return ("_".join(_var), "_".join(_suffix), _pkgspec)
+        return (self._override_delimiter.join(_var), self._override_delimiter.join(_suffix))
 
     def extract_sub_func(self, name):
         """Extract modifiers for functions
@@ -188,20 +188,22 @@ class Item():
         Returns:
             tuple -- clean function name, modifiers
         """
-        chunks = re.split(r"_|:", name)
+        if ":" in name:
+            self._override_delimiter = ":"
+        chunks = name.split(self._override_delimiter)
         _marker = ["append", "prepend", "class-native",
                    "class-cross", "class-target", "remove"]
         _suffix = []
-        _var = []
-        for i in chunks:
-            if i in _marker or "_".join(_var) in CONSTANTS.FunctionsKnown:
+        _var = [chunks[0]]
+        for i in chunks[1:]:
+            if i in _marker or self._override_delimiter.join(_var) in CONSTANTS.FunctionsKnown:
                 _suffix = chunks[chunks.index(i):]
                 break
             else:
                 _var.append(i)
         _var = [x for x in _var if x]
         _suffix = [x for x in _suffix if x]
-        return ("_".join(_var), "_".join(_suffix))
+        return (self._override_delimiter.join(_var), self._override_delimiter.join(_suffix))
 
     def IsFromAppend(self):
         """Item originates from a bbappend
@@ -269,16 +271,14 @@ class Variable(Item):
             flag {str} -- Optional variable flag
         """
         super().__init__(origin, line, infileline, rawtext, realraw)
-        if "inherit" != name:
-            self.__VarName, self.__SubItem, self.__PkgSpec = self.extract_sub(
+        if "inherit" != name and not flag:
+            self.__VarName, self.__SubItem = self.extract_sub(
                 name)
-            self.__SubItem += " ".join(self.PkgSpec)
         else:
             self.__VarName = name
             self.__SubItem = ""
-            self.__PkgSpec = []
         self.__SubItems = [x for x in self.SubItem.split(
-            "_") + self.PkgSpec if x]
+            self._override_delimiter) if x]
         self.__VarValue = value
         self.__VarOp = operator
         self.__Flag = flag or ""
@@ -314,15 +314,6 @@ class Variable(Item):
         return self.__SubItems
 
     @property
-    def PkgSpec(self):
-        """Variable modifiers
-
-        Returns:
-            str: variable modifiers like packages, machines, appends, prepends
-        """
-        return self.__PkgSpec
-
-    @property
     def VarValue(self):
         """variable value
 
@@ -352,6 +343,16 @@ class Variable(Item):
             str: variable sub flags
         """
         return self.__Flag
+
+    @property
+    def VarNameComplete(self):
+        """Complete variable name included overrides and flags
+
+        Returns:
+            str: complete variable name
+        """
+        _var = self._override_delimiter.join([self.VarName] + self.SubItems)
+        return "{}[{}]".format(_var, self.Flag) if self.Flag else _var
 
     @property
     def RawVarName(self):
@@ -426,7 +427,7 @@ class Variable(Item):
             str -- machine specific modifier of variable or ""
         """
         for x in self.SubItems:
-            if x not in ["append", "prepend", "class-native", "class-nativesdk", "class-cross", "class-target", "remove", "machine"] + self.PkgSpec:
+            if x not in ["append", "prepend", "class-native", "class-nativesdk", "class-cross", "class-target", "remove", "machine"]:
                 return x
         return ""
 
@@ -588,7 +589,7 @@ class Function(Item):
         self.__IsFakeroot = fakeroot is not None
         name = name or ""
         self.__FuncName, self.__SubItem = self.extract_sub_func(name.strip())
-        self.__SubItems = self.SubItem.split("_")
+        self.__SubItems = [x for x in self.SubItem.split(self._override_delimiter) if x]
         self.__FuncBody = body
         self.__FuncBodyStripped = body.replace(
             "{", "").replace("}", "").replace("\n", "").strip()
@@ -621,6 +622,15 @@ class Function(Item):
             str: name of function
         """
         return self.__FuncName
+
+    @property
+    def FuncNameComplete(self):
+        """Complete function name (including overrides)
+
+        Returns:
+            str: complete name of function
+        """
+        return self._override_delimiter.join([self.__FuncName] + self.__SubItems)
 
     @property
     def SubItem(self):
@@ -935,3 +945,4 @@ class MissingFile(Item):
 
     def get_items(self):
         return [self.Filename, self.Statement]
+

@@ -58,6 +58,28 @@ class OelintParserTestNew(unittest.TestCase):
             self.assertEqual(x.SubItems, ["remove", "qemuall"])
             self.assertEqual(x.VarOp, " = ")
 
+    def test_var_rdepends(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="RDEPENDS")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarValue, '"foo"')
+            self.assertEqual(x.VarValueStripped, 'foo')
+            self.assertEqual(x.VarName, 'RDEPENDS')
+            self.assertEqual(x.VarNameComplete, 'RDEPENDS:${PN}-test')
+            self.assertEqual(x.RawVarName, 'RDEPENDS')
+            self.assertEqual(x.get_items(), ["foo"])
+            self.assertEqual(x.SubItems, ["${PN}-test"])
+            self.assertEqual(x.VarOp, " += ")
+
     def test_function(self):
         from oelint_parser.cls_item import Function
         from oelint_parser.helper_files import expand_term
@@ -72,6 +94,7 @@ class OelintParserTestNew(unittest.TestCase):
         self.assertEqual(_stash[0].IsPython, False)
         self.assertEqual(_stash[0].IsFakeroot, False)
         self.assertEqual(_stash[0].FuncName, "do_example")
+        self.assertEqual(_stash[0].FuncNameComplete, "do_example:prepend:qemux86-64")
         self.assertIn('bbwarn "This is an example warning"', _stash[0].FuncBody)
         self.assertIn("prepend", _stash[0].SubItems)
         self.assertEqual(_stash[0].IsAppend(), True)

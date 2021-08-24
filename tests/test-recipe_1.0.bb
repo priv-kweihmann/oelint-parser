@@ -50,3 +50,5 @@ do_configure[noexec] = "1"
 
 export lib = "${bindir}/foo"
 export PYTHON_ABI
+
+RDEPENDS_${PN}-test += "foo"

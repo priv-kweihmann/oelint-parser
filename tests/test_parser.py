@@ -31,15 +31,37 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.VarValue, '"BSD-2-Clause"')
             self.assertEqual(x.VarValueStripped, 'BSD-2-Clause')
             self.assertEqual(x.VarName, 'LICENSE')
+            self.assertEqual(x.VarNameComplete, 'LICENSE')
             self.assertEqual(x.Raw, 'LICENSE = "BSD-2-Clause"\n')
             self.assertEqual(x.RawVarName, 'LICENSE')
             self.assertEqual(x.get_items(), ["BSD-2-Clause"])
-            self.assertEqual(x.PkgSpec, [])
             self.assertEqual(x.SubItem, "")
             self.assertEqual(x.SubItems, [])
             self.assertEqual(x.VarOp, " = ")
             self.assertEqual(x.Flag, "")
             self.assertEqual(x.GetClassOverride(), "")
+    
+    def test_var_rdepends(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="RDEPENDS")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarValue, '"foo"')
+            self.assertEqual(x.VarValueStripped, 'foo')
+            self.assertEqual(x.VarName, 'RDEPENDS')
+            self.assertEqual(x.VarNameComplete, 'RDEPENDS_${PN}-test')
+            self.assertEqual(x.RawVarName, 'RDEPENDS')
+            self.assertEqual(x.get_items(), ["foo"])
+            self.assertEqual(x.SubItems, ["${PN}-test"])
+            self.assertEqual(x.VarOp, " += ")
 
     def test_include(self):
         from oelint_parser.cls_item import Include
@@ -161,6 +183,7 @@ class OelintParserTest(unittest.TestCase):
         self.assertEqual(x.IsPython, False)
         self.assertEqual(x.IsFakeroot, False)
         self.assertEqual(x.FuncName, "do_example")
+        self.assertEqual(x.FuncNameComplete, "do_example")
         self.assertIn('bbwarn "This is an example warning"', x.FuncBody)
         self.assertEqual(x.IsAppend(), False)
         self.assertEqual(x.FuncBodyStripped, 'bbwarn "This is an example warning"')
