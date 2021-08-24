@@ -169,7 +169,7 @@ class Item():
                 # that addresses things like FILES_${PN}-dev
                 tmp = "-" + "-".join(i.split("-")[1:])
                 i = i.split("-")[0]
-            if re.match("[a-z0-9{}$]+", i):
+            if re.match("[a-z0-9{}$]+", i) and _var[0] != "pkg":
                 _suffix.append(i + tmp)
             elif i in ["${PN}"]:
                 _suffix.append(i + tmp)
