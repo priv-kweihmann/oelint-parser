@@ -51,7 +51,7 @@ class Stash():
             bn_this = os.path.basename(_file).replace(
                 ".bbappend", "").replace("%", ".*")
             for item in self.__list:
-                if re.match(bn_this, os.path.basename(item.Origin).replace(".bb", "")):
+                if re.match(bn_this, os.path.basename(item.Origin)):
                     if _file not in self.__map:
                         self.__map[_file] = []
                     self.__map[_file].append(item.Origin)
@@ -99,10 +99,11 @@ class Stash():
         __appends = []
         for x in self.__list:
             if x.Origin.endswith(".bbappend"):
-                __appends.append(x)
+                __appends.append(x.Origin)
             else:
                 __linked_appends += x.Links
-        return list(set([x.Origin for x in __appends if x not in __linked_appends]))
+        x = list(set([x.Origin for x in __appends if x not in __linked_appends]))
+        return x
 
     def __is_linked_to(self, item, filename, nolink=False):
         return (filename in item.Links and not nolink) or filename == item.Origin
