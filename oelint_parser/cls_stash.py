@@ -31,7 +31,7 @@ class Stash():
             list -- List of {oelint_parser.cls_item.Item}
         """
         _, _ext = os.path.splitext(_file)
-        if _file in self.__seen_files and _ext not in ["inc"]:
+        if _file in self.__seen_files and _ext not in [".inc"]:
             return []
         if not self.__quiet:
             print("Parsing {}".format(_file))
