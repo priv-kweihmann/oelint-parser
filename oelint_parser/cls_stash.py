@@ -102,7 +102,7 @@ class Stash():
                 __appends.append(x.Origin)
             else:
                 __linked_appends += x.Links
-        x = list(set([x.Origin for x in __appends if x not in __linked_appends]))
+        x = list(set([x for x in __appends if x not in __linked_appends]))
         return x
 
     def __is_linked_to(self, item, filename, nolink=False):
