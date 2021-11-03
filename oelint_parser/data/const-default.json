@@ -156,6 +156,7 @@
             "testimage"
         ],
         "known-variables": [
+            "IMAGE_FEATURES",
             "IMAGE_INSTALL",
             "IMAGE_LINGUAS",
             "IMAGE_ROOTFS_SIZE",
