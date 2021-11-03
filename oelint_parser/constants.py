@@ -10,6 +10,7 @@ class Constants():
 
     LEGACY_MAPPING = {
         'known_machines': 'replacements/machines',
+        'known_distros': 'replacements/distros',
         'known_mirrors': 'replacements/mirrors',
         'known_vars': 'variables/known',
         'mandatory_vars': 'variables/mandatory',
@@ -195,13 +196,13 @@ class Constants():
         return self.__get_from_path('variables/known')
 
     @property
-    def MachinesKnown(self):
-        """Known machines
+    def DistrosKnown(self):
+        """Known distros
 
         Returns:
-            list: List of known machines
+            list: List of known distros
         """
-        return self.__get_from_path('replacements/machines')
+        return self.__get_from_path('replacements/distros')
 
     @property
     def MachinesKnown(self):

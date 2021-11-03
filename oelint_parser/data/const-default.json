@@ -164,6 +164,9 @@
         ]
     },
     "replacements": {
+        "distros": [
+            "poky"
+        ],
         "machines": [
             "aarch64",
             "arc",

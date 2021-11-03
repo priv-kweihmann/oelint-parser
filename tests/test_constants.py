@@ -19,6 +19,7 @@ class OelintParserImageTest(unittest.TestCase):
         assert (any(_const.VariablesSuggested))
         assert (any(_const.FunctionsKnown))
         assert (any(_const.FunctionsOrder))
+        assert (any(_const.DistrosKnown))
         assert (any(_const.MachinesKnown))
         assert (any(_const.MirrorsKnown))
         assert (any(_const.SetsBase))
@@ -33,6 +34,9 @@ class OelintParserImageTest(unittest.TestCase):
 
         _constants = {
             "known_machines": [
+                "libcrypto"
+            ],
+            "known_distros": [
                 "libcrypto"
             ],
             "known_vars": [
@@ -62,6 +66,7 @@ class OelintParserImageTest(unittest.TestCase):
         _const.AddFromRuleFile(_constants)
 
         assert ("GEM_FILE" in _const.VariablesKnown)
+        assert ("libcrypto" in _const.DistrosKnown)
         assert ("libcrypto" in _const.MachinesKnown)
 
     def test_constantfile(self):
@@ -69,6 +74,9 @@ class OelintParserImageTest(unittest.TestCase):
 
         _constants = {
             "known_machines": [
+                "libcrypto"
+            ],
+            "known_distros": [
                 "libcrypto"
             ],
             "known_vars": [
@@ -97,6 +105,7 @@ class OelintParserImageTest(unittest.TestCase):
         _const.AddFromConstantFile(_constants)
 
         assert ("EXTRA_DEPENDS" in _const.VariablesKnown)
+        assert ("libcrypto" in _const.DistrosKnown)
         assert ("libcrypto" in _const.MachinesKnown)
 
     def test_remove(self):

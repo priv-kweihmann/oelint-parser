@@ -187,6 +187,7 @@ class OelintParserTest(unittest.TestCase):
         self.assertIn('bbwarn "This is an example warning"', x.FuncBody)
         self.assertEqual(x.IsAppend(), False)
         self.assertEqual(x.FuncBodyStripped, 'bbwarn "This is an example warning"')
+        self.assertEqual(x.GetDistroEntry(), "")
         self.assertEqual(x.GetMachineEntry(), "")
 
         x = [x for x in _stash if "append" in x.SubItems][0]
@@ -196,6 +197,7 @@ class OelintParserTest(unittest.TestCase):
         self.assertIn('bb.warn("This is another example warning")', x.FuncBody)
         self.assertEqual(x.IsAppend(), True)
         self.assertEqual(x.FuncBodyStripped, 'bb.warn("This is another example warning")')
+        self.assertEqual(x.GetDistroEntry(), "")
         self.assertEqual(x.GetMachineEntry(), "")
 
     def test_anon_function(self):

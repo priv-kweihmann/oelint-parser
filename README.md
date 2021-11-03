@@ -77,6 +77,7 @@ Each of the method accepts a dictionary with the same key mapping as listed belo
 | functions/order            | list | preferred order of core functions                     | `oelint_parse.constants.CONSTANT.FunctionsOrder`           |
 | images/known-classes       | list | bbclasses to be known to be used in images            | `oelint_parse.constants.CONSTANT.ImagesClasses`            |
 | images/known-variables     | list | variables known to be used in images                  | `oelint_parse.constants.CONSTANT.ImagesVariables`          |
+| replacements/distros       | list | known distro overrides                                | `oelint_parse.constants.CONSTANT.DistrosKnown`             |
 | replacements/machines      | list | known machine overrides                               | `oelint_parse.constants.CONSTANT.MachinesKnown`            |
 | replacements/mirrors       | dict | known mirrors                                         | `oelint_parse.constants.CONSTANT.MirrorsKnown`             |
 | variables/known            | list | known variables                                       | `oelint_parse.constants.CONSTANT.VariablesKnown`           |

@@ -82,6 +82,14 @@ def get_known_vars():
     """
     return CONSTANTS.VariablesKnown
 
+def get_known_distros():
+    """get known distros
+
+    Returns:
+        list: list of known distro names
+    """
+    return CONSTANTS.DistrosKnown
+
 def get_known_machines():
     """get known machines
 

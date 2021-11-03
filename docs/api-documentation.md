@@ -9,6 +9,7 @@
   * [get\_protected\_vars](#oelint_parser.const_vars.get_protected_vars)
   * [get\_protected\_append\_vars](#oelint_parser.const_vars.get_protected_append_vars)
   * [get\_known\_vars](#oelint_parser.const_vars.get_known_vars)
+  * [get\_known\_distros](#oelint_parser.const_vars.get_known_distros)
   * [get\_known\_machines](#oelint_parser.const_vars.get_known_machines)
   * [get\_image\_classes](#oelint_parser.const_vars.get_image_classes)
   * [get\_image\_variables](#oelint_parser.const_vars.get_image_variables)
@@ -61,6 +62,7 @@
     * [AppendOperation](#oelint_parser.cls_item.Variable.AppendOperation)
     * [get\_items](#oelint_parser.cls_item.Variable.get_items)
     * [IsMultiLine](#oelint_parser.cls_item.Variable.IsMultiLine)
+    * [GetDistroEntry](#oelint_parser.cls_item.Variable.GetDistroEntry)
     * [GetMachineEntry](#oelint_parser.cls_item.Variable.GetMachineEntry)
     * [GetClassOverride](#oelint_parser.cls_item.Variable.GetClassOverride)
   * [Comment](#oelint_parser.cls_item.Comment)
@@ -87,6 +89,7 @@
     * [FuncBody](#oelint_parser.cls_item.Function.FuncBody)
     * [FuncBodyStripped](#oelint_parser.cls_item.Function.FuncBodyStripped)
     * [FuncBodyRaw](#oelint_parser.cls_item.Function.FuncBodyRaw)
+    * [GetDistroEntry](#oelint_parser.cls_item.Function.GetDistroEntry)
     * [GetMachineEntry](#oelint_parser.cls_item.Function.GetMachineEntry)
     * [IsAppend](#oelint_parser.cls_item.Function.IsAppend)
     * [get\_items](#oelint_parser.cls_item.Function.get_items)
@@ -145,7 +148,7 @@
     * [VariablesProtectedAppend](#oelint_parser.constants.Constants.VariablesProtectedAppend)
     * [VariablesOrder](#oelint_parser.constants.Constants.VariablesOrder)
     * [VariablesKnown](#oelint_parser.constants.Constants.VariablesKnown)
-    * [MachinesKnown](#oelint_parser.constants.Constants.MachinesKnown)
+    * [DistrosKnown](#oelint_parser.constants.Constants.DistrosKnown)
     * [MachinesKnown](#oelint_parser.constants.Constants.MachinesKnown)
     * [ImagesClasses](#oelint_parser.constants.Constants.ImagesClasses)
     * [ImagesVariables](#oelint_parser.constants.Constants.ImagesVariables)
@@ -258,6 +261,19 @@ get list of known variables
 **Returns**:
 
 - `list` - list of known variable names
+
+<a name="oelint_parser.const_vars.get_known_distros"></a>
+#### get\_known\_distros
+
+```python
+get_known_distros()
+```
+
+get known distros
+
+**Returns**:
+
+- `list` - list of known distro names
 
 <a name="oelint_parser.const_vars.get_known_machines"></a>
 #### get\_known\_machines
@@ -992,6 +1008,19 @@ Check if variable has a multiline assignment
 
 - `bool` - True if multiline
 
+<a name="oelint_parser.cls_item.Variable.GetDistroEntry"></a>
+#### GetDistroEntry
+
+```python
+ | GetDistroEntry()
+```
+
+Get distro specific entries in variable
+
+**Returns**:
+
+- `str` - distro specific modifier of variable or ""
+
 <a name="oelint_parser.cls_item.Variable.GetMachineEntry"></a>
 #### GetMachineEntry
 
@@ -1346,6 +1375,19 @@ Raw function body (including brackets)
 **Returns**:
 
 - `str` - raw function body text
+
+<a name="oelint_parser.cls_item.Function.GetDistroEntry"></a>
+#### GetDistroEntry
+
+```python
+ | GetDistroEntry()
+```
+
+Get distro specific modifiers
+
+**Returns**:
+
+- `str` - distro specific modifier or ""
 
 <a name="oelint_parser.cls_item.Function.GetMachineEntry"></a>
 #### GetMachineEntry
@@ -2172,19 +2214,19 @@ Known variables
 
 - `list` - List of known variables
 
-<a name="oelint_parser.constants.Constants.MachinesKnown"></a>
-#### MachinesKnown
+<a name="oelint_parser.constants.Constants.DistrosKnown"></a>
+#### DistrosKnown
 
 ```python
  | @property
- | MachinesKnown()
+ | DistrosKnown()
 ```
 
-Known machines
+Known distros
 
 **Returns**:
 
-- `list` - List of known machines
+- `list` - List of known distros
 
 <a name="oelint_parser.constants.Constants.MachinesKnown"></a>
 #### MachinesKnown

@@ -94,11 +94,12 @@ class OelintParserTestNew(unittest.TestCase):
         self.assertEqual(_stash[0].IsPython, False)
         self.assertEqual(_stash[0].IsFakeroot, False)
         self.assertEqual(_stash[0].FuncName, "do_example")
-        self.assertEqual(_stash[0].FuncNameComplete, "do_example:prepend:qemux86-64")
+        self.assertEqual(_stash[0].FuncNameComplete, "do_example:prepend:qemux86-64:poky")
         self.assertIn('bbwarn "This is an example warning"', _stash[0].FuncBody)
         self.assertIn("prepend", _stash[0].SubItems)
         self.assertEqual(_stash[0].IsAppend(), True)
         self.assertEqual(_stash[0].FuncBodyStripped, 'bbwarn "This is an example warning"')
+        self.assertEqual(_stash[0].GetDistroEntry(), "poky")
         self.assertEqual(_stash[0].GetMachineEntry(), "qemux86-64")
 
 if __name__ == "__main__": 

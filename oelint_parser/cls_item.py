@@ -420,6 +420,15 @@ class Variable(Item):
         """
         return "\\x1b" in self.Raw or "\\\n" in self.Raw
 
+    def GetDistroEntry(self):
+        """Get distro specific entries in variable
+
+        Returns:
+            str -- distro specific modifier of variable or ""
+        """
+        _x = [x for x in self.SubItems if x in CONSTANTS.DistrosKnown]
+        return _x[0] if _x else ""
+
     def GetMachineEntry(self):
         """Get machine specific entries in variable
 
@@ -676,6 +685,15 @@ class Function(Item):
             str: raw function body text
         """
         return self.__FuncBodyRaw
+
+    def GetDistroEntry(self):
+        """Get distro specific modifiers
+
+        Returns:
+            str -- distro specific modifier or ""
+        """
+        _x = [x for x in self.SubItems if x in CONSTANTS.DistrosKnown]
+        return _x[0] if _x else ""
 
     def GetMachineEntry(self):
         """Get machine specific modifiers
