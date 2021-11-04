@@ -165,6 +165,10 @@
     },
     "replacements": {
         "distros": [
+            "nodistro",
+            "poky-altcfg",
+            "poky-bleeding",
+            "poky-tiny",
             "poky"
         ],
         "machines": [
