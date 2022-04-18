@@ -5,6 +5,7 @@ import sys
 class OelintParserTest(unittest.TestCase):
 
     RECIPE = os.path.join(os.path.dirname(__file__), "test-recipe_1.0.bb")
+    RECIPE_LAYER = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-foo_1.0.bb")
 
     def setUp(self):
         sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../"))
@@ -395,6 +396,26 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.VarValueStripped, 'foo')
             self.assertEqual(x.VarName, 'SDKVAR')
             self.assertEqual(x.GetClassOverride(), 'class-nativesdk')
+
+    def test_distro_from_layer(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.constants import CONSTANTS
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE_LAYER)
+
+        assert 'anotherdistro' in CONSTANTS.DistrosKnown
+        assert 'mydistro' in CONSTANTS.DistrosKnown
+
+    def test_machine_from_layer(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.constants import CONSTANTS
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE_LAYER)
+
+        assert 'another-machine' in CONSTANTS.MachinesKnown
+        assert 'abc' in CONSTANTS.MachinesKnown
 
 if __name__ == "__main__": 
     unittest.main()

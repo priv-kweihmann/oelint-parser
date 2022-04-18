@@ -2,7 +2,9 @@ import os
 import sys
 import json
 
-DEFAULT_DB = os.path.join(os.path.dirname(__file__), 'data', 'const-default.json')
+DEFAULT_DB = os.path.join(os.path.dirname(
+    __file__), 'data', 'const-default.json')
+
 
 class Constants():
     """Interface for constants
@@ -21,7 +23,7 @@ class Constants():
 
     def __init__(self):
         self.__db = self.__load_db(DEFAULT_DB)
-    
+
     def __load_db(self, path):
         try:
             with open(path) as _in:
@@ -30,13 +32,13 @@ class Constants():
             sys.stderr.write('Cannot load constant database\n')
             return {}
 
-    def __get_from_path(self, path):     
+    def __get_from_path(self, path):
         paths = path.rstrip('/').split('/')
         data = self.__db
-        for index, value in enumerate(paths):
+        for _, value in enumerate(paths):
             data = data.get(value, {})
         return data
-    
+
     def AddConstants(self, _dict):
         """Add constants to the existing
 
@@ -240,5 +242,5 @@ class Constants():
         """
         return self.__get_from_path('sets/base')
 
-CONSTANTS = getattr(sys.modules[__name__], 'CONSTANTS', Constants())
 
+CONSTANTS = getattr(sys.modules[__name__], 'CONSTANTS', Constants())

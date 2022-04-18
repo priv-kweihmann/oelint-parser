@@ -1,10 +1,16 @@
+import glob
 import os
 import re
 
-from oelint_parser.parser import get_items
-from oelint_parser.cls_item import Variable, Item
-from oelint_parser.helper_files import expand_term, guess_recipe_name, guess_recipe_version, guess_base_recipe_name
+from oelint_parser.cls_item import Item
+from oelint_parser.cls_item import Variable
 from oelint_parser.constants import CONSTANTS
+from oelint_parser.helper_files import expand_term
+from oelint_parser.helper_files import get_layer_root
+from oelint_parser.helper_files import guess_base_recipe_name
+from oelint_parser.helper_files import guess_recipe_name
+from oelint_parser.helper_files import guess_recipe_version
+from oelint_parser.parser import get_items
 
 
 class Stash():
@@ -59,16 +65,28 @@ class Stash():
                         self.__map[item.Origin] = []
                     self.__map[item.Origin].append(_file)
                     # find maximum line number of the origin
-                    _maxline = max(x.Line for x in self.__list if x.Origin == item.Origin)
+                    _maxline = max(
+                        x.Line for x in self.__list if x.Origin == item.Origin)
                     for r in res:
                         # pretend that we are adding the file to the end of the original
                         r.Line += _maxline
                     break
+        self.AddDistroMachineFromLayer(_file)
         self.__list += res
         return res
 
     def Remove(self, item):
         self.__list.remove(item)
+
+    def AddDistroMachineFromLayer(self, path):
+        _root = get_layer_root(path)
+        if _root:
+            for conf in glob.glob(os.path.join(_root, "conf", "distro", "*.conf")):
+                _fn, _ = os.path.splitext(os.path.basename(conf))
+                CONSTANTS.AddConstants({'replacements': {'distros': [_fn]}})
+            for conf in glob.glob(os.path.join(_root, "conf", "machine", "*.conf")):
+                _fn, _ = os.path.splitext(os.path.basename(conf))
+                CONSTANTS.AddConstants({'replacements': {'machines': [_fn]}})
 
     def Finalize(self):
         # cross link all the files
@@ -172,10 +190,10 @@ class Stash():
         Returns:
             {dict}: expanded variables from call + base set of variables
         """
-        _res = self.GetItemsFor(filename=filename, 
-                                classifier=Variable.CLASSIFIER, 
-                                attribute=attribute, 
-                                attributeValue=attributeValue, 
+        _res = self.GetItemsFor(filename=filename,
+                                classifier=Variable.CLASSIFIER,
+                                attribute=attribute,
+                                attributeValue=attributeValue,
                                 nolink=nolink)
         _exp = {
             "PN": guess_recipe_name(filename),
@@ -246,9 +264,10 @@ class Stash():
                 _exp[name] = _exp[name].replace(item.VarValueStripped, "")
         # final run and explode the settings
         _finalexp = {}
-        for k,v in _exp.items():
+        for k, v in _exp.items():
             _newkey = expand_term(self, filename, k)
             if _newkey not in _finalexp:
                 _finalexp[_newkey] = []
-            _finalexp[_newkey] += Item.safe_linesplit(expand_term(self, filename, v or ""))
+            _finalexp[_newkey] += Item.safe_linesplit(
+                expand_term(self, filename, v or ""))
         return _finalexp
