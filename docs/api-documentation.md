@@ -155,14 +155,16 @@
     * [SetsBase](#oelint_parser.constants.Constants.SetsBase)
 * [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
 
-<a name="oelint_parser.const_vars"></a>
+<a id="oelint_parser.const_vars"></a>
+
 # oelint\_parser.const\_vars
 
-<a name="oelint_parser.const_vars.set_constantfile"></a>
+<a id="oelint_parser.const_vars.set_constantfile"></a>
+
 #### set\_constantfile
 
 ```python
-set_constantfile(obj)
+def set_constantfile(obj)
 ```
 
 set constants
@@ -171,11 +173,12 @@ set constants
 
 - `obj` _dict_ - dictionary with constants
 
-<a name="oelint_parser.const_vars.set_rulefile"></a>
+<a id="oelint_parser.const_vars.set_rulefile"></a>
+
 #### set\_rulefile
 
 ```python
-set_rulefile(obj)
+def set_rulefile(obj)
 ```
 
 set rules
@@ -184,11 +187,12 @@ set rules
 
 - `obj` _dict_ - dictionary with rule definitions
 
-<a name="oelint_parser.const_vars.get_mandatory_vars"></a>
+<a id="oelint_parser.const_vars.get_mandatory_vars"></a>
+
 #### get\_mandatory\_vars
 
 ```python
-get_mandatory_vars()
+def get_mandatory_vars()
 ```
 
 get mandatory variables
@@ -197,11 +201,12 @@ get mandatory variables
 
 - `list` - list of mandatory variable names
 
-<a name="oelint_parser.const_vars.get_suggested_vars"></a>
+<a id="oelint_parser.const_vars.get_suggested_vars"></a>
+
 #### get\_suggested\_vars
 
 ```python
-get_suggested_vars()
+def get_suggested_vars()
 ```
 
 get suggested variables
@@ -210,11 +215,12 @@ get suggested variables
 
 - `list` - list of suggested variable names
 
-<a name="oelint_parser.const_vars.get_known_mirrors"></a>
+<a id="oelint_parser.const_vars.get_known_mirrors"></a>
+
 #### get\_known\_mirrors
 
 ```python
-get_known_mirrors()
+def get_known_mirrors()
 ```
 
 get known mirror replacements
@@ -223,11 +229,12 @@ get known mirror replacements
 
 - `dict` - dictionary of known mirror replacements
 
-<a name="oelint_parser.const_vars.get_protected_vars"></a>
+<a id="oelint_parser.const_vars.get_protected_vars"></a>
+
 #### get\_protected\_vars
 
 ```python
-get_protected_vars()
+def get_protected_vars()
 ```
 
 get protected variables
@@ -236,11 +243,12 @@ get protected variables
 
 - `list` - list of protected variables
 
-<a name="oelint_parser.const_vars.get_protected_append_vars"></a>
+<a id="oelint_parser.const_vars.get_protected_append_vars"></a>
+
 #### get\_protected\_append\_vars
 
 ```python
-get_protected_append_vars()
+def get_protected_append_vars()
 ```
 
 get protected variables in bbappends
@@ -249,11 +257,12 @@ get protected variables in bbappends
 
 - `list` - list of protected variables
 
-<a name="oelint_parser.const_vars.get_known_vars"></a>
+<a id="oelint_parser.const_vars.get_known_vars"></a>
+
 #### get\_known\_vars
 
 ```python
-get_known_vars()
+def get_known_vars()
 ```
 
 get list of known variables
@@ -262,11 +271,12 @@ get list of known variables
 
 - `list` - list of known variable names
 
-<a name="oelint_parser.const_vars.get_known_distros"></a>
+<a id="oelint_parser.const_vars.get_known_distros"></a>
+
 #### get\_known\_distros
 
 ```python
-get_known_distros()
+def get_known_distros()
 ```
 
 get known distros
@@ -275,11 +285,12 @@ get known distros
 
 - `list` - list of known distro names
 
-<a name="oelint_parser.const_vars.get_known_machines"></a>
+<a id="oelint_parser.const_vars.get_known_machines"></a>
+
 #### get\_known\_machines
 
 ```python
-get_known_machines()
+def get_known_machines()
 ```
 
 get known machines
@@ -288,11 +299,12 @@ get known machines
 
 - `list` - list of known machine names
 
-<a name="oelint_parser.const_vars.get_image_classes"></a>
+<a id="oelint_parser.const_vars.get_image_classes"></a>
+
 #### get\_image\_classes
 
 ```python
-get_image_classes()
+def get_image_classes()
 ```
 
 get known classes used exclusively in an image
@@ -301,11 +313,12 @@ get known classes used exclusively in an image
 
 - `list` - list of known class names
 
-<a name="oelint_parser.const_vars.get_image_variables"></a>
+<a id="oelint_parser.const_vars.get_image_variables"></a>
+
 #### get\_image\_variables
 
 ```python
-get_image_variables()
+def get_image_variables()
 ```
 
 get known variables used exclusively in an image
@@ -314,11 +327,12 @@ get known variables used exclusively in an image
 
 - `list` - list of known variable names
 
-<a name="oelint_parser.const_vars.get_base_varset"></a>
+<a id="oelint_parser.const_vars.get_base_varset"></a>
+
 #### get\_base\_varset
 
 ```python
-get_base_varset()
+def get_base_varset()
 ```
 
 get variable baseset
@@ -328,30 +342,34 @@ Set includes basic package definitions
 
 - `dict` - base variable set
 
-<a name="oelint_parser.cls_stash"></a>
+<a id="oelint_parser.cls_stash"></a>
+
 # oelint\_parser.cls\_stash
 
-<a name="oelint_parser.cls_stash.Stash"></a>
+<a id="oelint_parser.cls_stash.Stash"></a>
+
 ## Stash Objects
 
 ```python
 class Stash()
 ```
 
-<a name="oelint_parser.cls_stash.Stash.__init__"></a>
+<a id="oelint_parser.cls_stash.Stash.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(quiet=False)
+def __init__(quiet=False)
 ```
 
 constructor
 
-<a name="oelint_parser.cls_stash.Stash.AddFile"></a>
+<a id="oelint_parser.cls_stash.Stash.AddFile"></a>
+
 #### AddFile
 
 ```python
- | AddFile(_file, lineOffset=0, forcedLink=None)
+def AddFile(_file, lineOffset=0, forcedLink=None)
 ```
 
 Adds a file to the stash
@@ -371,11 +389,12 @@ Adds a file to the stash
 
 - `list` - List of {oelint_parser.cls_item.Item}
 
-<a name="oelint_parser.cls_stash.Stash.GetRecipes"></a>
+<a id="oelint_parser.cls_stash.Stash.GetRecipes"></a>
+
 #### GetRecipes
 
 ```python
- | GetRecipes()
+def GetRecipes()
 ```
 
 Get bb files in stash
@@ -384,11 +403,12 @@ Get bb files in stash
 
 - `list` - List of bb files in stash
 
-<a name="oelint_parser.cls_stash.Stash.GetLoneAppends"></a>
+<a id="oelint_parser.cls_stash.Stash.GetLoneAppends"></a>
+
 #### GetLoneAppends
 
 ```python
- | GetLoneAppends()
+def GetLoneAppends()
 ```
 
 Get bbappend without a matching bb
@@ -397,11 +417,12 @@ Get bbappend without a matching bb
 
 - `list` - list of bbappend without a matching bb
 
-<a name="oelint_parser.cls_stash.Stash.GetLinksForFile"></a>
+<a id="oelint_parser.cls_stash.Stash.GetLinksForFile"></a>
+
 #### GetLinksForFile
 
 ```python
- | GetLinksForFile(filename)
+def GetLinksForFile(filename)
 ```
 
 Get file which this file is linked against
@@ -415,11 +436,16 @@ Get file which this file is linked against
 
 - `list` - list of full paths the file is linked against
 
-<a name="oelint_parser.cls_stash.Stash.GetItemsFor"></a>
+<a id="oelint_parser.cls_stash.Stash.GetItemsFor"></a>
+
 #### GetItemsFor
 
 ```python
- | GetItemsFor(filename=None, classifier=None, attribute=None, attributeValue=None, nolink=False)
+def GetItemsFor(filename=None,
+                classifier=None,
+                attribute=None,
+                attributeValue=None,
+                nolink=False)
 ```
 
 Get items for filename
@@ -437,11 +463,15 @@ Get items for filename
 
 - `[type]` - [description]
 
-<a name="oelint_parser.cls_stash.Stash.ExpandVar"></a>
+<a id="oelint_parser.cls_stash.Stash.ExpandVar"></a>
+
 #### ExpandVar
 
 ```python
- | ExpandVar(filename=None, attribute=None, attributeValue=None, nolink=False)
+def ExpandVar(filename=None,
+              attribute=None,
+              attributeValue=None,
+              nolink=False)
 ```
 
 Expand variable to dictionary
@@ -458,17 +488,20 @@ Expand variable to dictionary
 
 - `{dict}` - expanded variables from call + base set of variables
 
-<a name="oelint_parser.const_func"></a>
+<a id="oelint_parser.const_func"></a>
+
 # oelint\_parser.const\_func
 
-<a name="oelint_parser.parser"></a>
+<a id="oelint_parser.parser"></a>
+
 # oelint\_parser.parser
 
-<a name="oelint_parser.parser.get_full_scope"></a>
+<a id="oelint_parser.parser.get_full_scope"></a>
+
 #### get\_full\_scope
 
 ```python
-get_full_scope(_string, offset, _sstart, _send)
+def get_full_scope(_string, offset, _sstart, _send)
 ```
 
 get full block of an inline statement
@@ -485,11 +518,12 @@ get full block of an inline statement
 
 - `str` - full block on inline statement
 
-<a name="oelint_parser.parser.prepare_lines_subparser"></a>
+<a id="oelint_parser.parser.prepare_lines_subparser"></a>
+
 #### prepare\_lines\_subparser
 
 ```python
-prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None)
+def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None)
 ```
 
 preprocess raw input
@@ -507,11 +541,12 @@ preprocess raw input
 
 - `list` - list of preproccessed chunks
 
-<a name="oelint_parser.parser.prepare_lines"></a>
+<a id="oelint_parser.parser.prepare_lines"></a>
+
 #### prepare\_lines
 
 ```python
-prepare_lines(_file, lineOffset=0)
+def prepare_lines(_file, lineOffset=0)
 ```
 
 break raw file input into preprocessed chunks
@@ -526,11 +561,12 @@ break raw file input into preprocessed chunks
 
 - `list` - preprocessed list of chunks
 
-<a name="oelint_parser.parser.get_items"></a>
+<a id="oelint_parser.parser.get_items"></a>
+
 #### get\_items
 
 ```python
-get_items(stash, _file, lineOffset=0)
+def get_items(stash, _file, lineOffset=0)
 ```
 
 parses file
@@ -546,10 +582,12 @@ parses file
 
 - `list` - List of oelint_parser.cls_item.* representations
 
-<a name="oelint_parser.cls_item"></a>
+<a id="oelint_parser.cls_item"></a>
+
 # oelint\_parser.cls\_item
 
-<a name="oelint_parser.cls_item.Item"></a>
+<a id="oelint_parser.cls_item.Item"></a>
+
 ## Item Objects
 
 ```python
@@ -558,11 +596,12 @@ class Item()
 
 Base class for all Stash items
 
-<a name="oelint_parser.cls_item.Item.__init__"></a>
+<a id="oelint_parser.cls_item.Item.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, realraw)
+def __init__(origin, line, infileline, rawtext, realraw)
 ```
 
 constructor
@@ -575,12 +614,13 @@ constructor
 - `rawtext` _str_ - Raw input string (except inline code blocks)
 - `realraw` _str_ - Unprocessed input
 
-<a name="oelint_parser.cls_item.Item.Line"></a>
+<a id="oelint_parser.cls_item.Item.Line"></a>
+
 #### Line
 
 ```python
- | @property
- | Line()
+@property
+def Line()
 ```
 
 Overall line count
@@ -589,12 +629,13 @@ Overall line count
 
 - `int` - overall line count of item
 
-<a name="oelint_parser.cls_item.Item.Raw"></a>
+<a id="oelint_parser.cls_item.Item.Raw"></a>
+
 #### Raw
 
 ```python
- | @property
- | Raw()
+@property
+def Raw()
 ```
 
 Raw string (without inline code blocks)
@@ -603,12 +644,13 @@ Raw string (without inline code blocks)
 
 - `str` - raw string of item
 
-<a name="oelint_parser.cls_item.Item.Links"></a>
+<a id="oelint_parser.cls_item.Item.Links"></a>
+
 #### Links
 
 ```python
- | @property
- | Links()
+@property
+def Links()
 ```
 
 Linked files
@@ -617,12 +659,13 @@ Linked files
 
 - `list` - list of full path of linked files
 
-<a name="oelint_parser.cls_item.Item.Origin"></a>
+<a id="oelint_parser.cls_item.Item.Origin"></a>
+
 #### Origin
 
 ```python
- | @property
- | Origin()
+@property
+def Origin()
 ```
 
 origin of item
@@ -631,12 +674,13 @@ origin of item
 
 - `str` - full path of origin file
 
-<a name="oelint_parser.cls_item.Item.InFileLine"></a>
+<a id="oelint_parser.cls_item.Item.InFileLine"></a>
+
 #### InFileLine
 
 ```python
- | @property
- | InFileLine()
+@property
+def InFileLine()
 ```
 
 Line count in file
@@ -645,12 +689,13 @@ Line count in file
 
 - `int` - [description]
 
-<a name="oelint_parser.cls_item.Item.IncludedFrom"></a>
+<a id="oelint_parser.cls_item.Item.IncludedFrom"></a>
+
 #### IncludedFrom
 
 ```python
- | @property
- | IncludedFrom()
+@property
+def IncludedFrom()
 ```
 
 Files include this item
@@ -659,12 +704,13 @@ Files include this item
 
 - `list` - list of files including this item
 
-<a name="oelint_parser.cls_item.Item.RealRaw"></a>
+<a id="oelint_parser.cls_item.Item.RealRaw"></a>
+
 #### RealRaw
 
 ```python
- | @property
- | RealRaw()
+@property
+def RealRaw()
 ```
 
 Completely unprocessed raw text
@@ -673,12 +719,13 @@ Completely unprocessed raw text
 
 - `str` - completely unprocessed raw text
 
-<a name="oelint_parser.cls_item.Item.IsFromClass"></a>
+<a id="oelint_parser.cls_item.Item.IsFromClass"></a>
+
 #### IsFromClass
 
 ```python
- | @property
- | IsFromClass()
+@property
+def IsFromClass()
 ```
 
 Item comes from a bbclass
@@ -687,12 +734,13 @@ Item comes from a bbclass
 
 - `bool` - if item was set in a bbclass
 
-<a name="oelint_parser.cls_item.Item.safe_linesplit"></a>
+<a id="oelint_parser.cls_item.Item.safe_linesplit"></a>
+
 #### safe\_linesplit
 
 ```python
- | @staticmethod
- | safe_linesplit(string)
+@staticmethod
+def safe_linesplit(string)
 ```
 
 Safely split an input line to chunks
@@ -706,11 +754,12 @@ Safely split an input line to chunks
 
 - `list` - list of chunks of original string
 
-<a name="oelint_parser.cls_item.Item.get_items"></a>
+<a id="oelint_parser.cls_item.Item.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items()
+def get_items()
 ```
 
 Return single items
@@ -719,11 +768,12 @@ Return single items
 
 - `list` - lines of raw input
 
-<a name="oelint_parser.cls_item.Item.extract_sub"></a>
+<a id="oelint_parser.cls_item.Item.extract_sub"></a>
+
 #### extract\_sub
 
 ```python
- | extract_sub(name)
+def extract_sub(name)
 ```
 
 Extract modifiers
@@ -737,11 +787,12 @@ Extract modifiers
 
 - `tuple` - clean variable name, modifiers, package specific modifiers
 
-<a name="oelint_parser.cls_item.Item.extract_sub_func"></a>
+<a id="oelint_parser.cls_item.Item.extract_sub_func"></a>
+
 #### extract\_sub\_func
 
 ```python
- | extract_sub_func(name)
+def extract_sub_func(name)
 ```
 
 Extract modifiers for functions
@@ -755,11 +806,12 @@ Extract modifiers for functions
 
 - `tuple` - clean function name, modifiers
 
-<a name="oelint_parser.cls_item.Item.IsFromAppend"></a>
+<a id="oelint_parser.cls_item.Item.IsFromAppend"></a>
+
 #### IsFromAppend
 
 ```python
- | IsFromAppend()
+def IsFromAppend()
 ```
 
 Item originates from a bbappend
@@ -768,11 +820,12 @@ Item originates from a bbappend
 
 - `bool` - True if coming from a bbappend
 
-<a name="oelint_parser.cls_item.Item.AddLink"></a>
+<a id="oelint_parser.cls_item.Item.AddLink"></a>
+
 #### AddLink
 
 ```python
- | AddLink(_file)
+def AddLink(_file)
 ```
 
 Links files to each other in stash
@@ -781,11 +834,12 @@ Links files to each other in stash
 
 - `_file` _str_ - Full path of file to link against
 
-<a name="oelint_parser.cls_item.Item.GetAttributes"></a>
+<a id="oelint_parser.cls_item.Item.GetAttributes"></a>
+
 #### GetAttributes
 
 ```python
- | GetAttributes()
+def GetAttributes()
 ```
 
 Get all public attributes of this class
@@ -794,7 +848,8 @@ Get all public attributes of this class
 
 - `dict` - all public attributes and their values
 
-<a name="oelint_parser.cls_item.Variable"></a>
+<a id="oelint_parser.cls_item.Variable"></a>
+
 ## Variable Objects
 
 ```python
@@ -803,11 +858,13 @@ class Variable(Item)
 
 Stash item for variables
 
-<a name="oelint_parser.cls_item.Variable.__init__"></a>
+<a id="oelint_parser.cls_item.Variable.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, value, operator, flag, realraw)
+def __init__(origin, line, infileline, rawtext, name, value, operator, flag,
+             realraw)
 ```
 
 constructor
@@ -824,12 +881,13 @@ constructor
 - `operator` _str_ - Operation performed to the variable
 - `flag` _str_ - Optional variable flag
 
-<a name="oelint_parser.cls_item.Variable.VarName"></a>
+<a id="oelint_parser.cls_item.Variable.VarName"></a>
+
 #### VarName
 
 ```python
- | @property
- | VarName()
+@property
+def VarName()
 ```
 
 Variable name
@@ -838,12 +896,13 @@ Variable name
 
 - `str` - name of variable
 
-<a name="oelint_parser.cls_item.Variable.SubItem"></a>
+<a id="oelint_parser.cls_item.Variable.SubItem"></a>
+
 #### SubItem
 
 ```python
- | @property
- | SubItem()
+@property
+def SubItem()
 ```
 
 Variable modifiers
@@ -852,12 +911,13 @@ Variable modifiers
 
 - `str` - variable modifiers like packages, machines, appends, prepends
 
-<a name="oelint_parser.cls_item.Variable.SubItems"></a>
+<a id="oelint_parser.cls_item.Variable.SubItems"></a>
+
 #### SubItems
 
 ```python
- | @property
- | SubItems()
+@property
+def SubItems()
 ```
 
 Variable modifiers list
@@ -866,12 +926,13 @@ Variable modifiers list
 
 - `list` - variable modifiers list like packages, machines, appends, prepends
 
-<a name="oelint_parser.cls_item.Variable.VarValue"></a>
+<a id="oelint_parser.cls_item.Variable.VarValue"></a>
+
 #### VarValue
 
 ```python
- | @property
- | VarValue()
+@property
+def VarValue()
 ```
 
 variable value
@@ -880,12 +941,13 @@ variable value
 
 - `str` - unstripped variable value
 
-<a name="oelint_parser.cls_item.Variable.VarOp"></a>
+<a id="oelint_parser.cls_item.Variable.VarOp"></a>
+
 #### VarOp
 
 ```python
- | @property
- | VarOp()
+@property
+def VarOp()
 ```
 
 Variable operation
@@ -894,12 +956,13 @@ Variable operation
 
 - `str` - operation did on the variable
 
-<a name="oelint_parser.cls_item.Variable.Flag"></a>
+<a id="oelint_parser.cls_item.Variable.Flag"></a>
+
 #### Flag
 
 ```python
- | @property
- | Flag()
+@property
+def Flag()
 ```
 
 Variable flag like PACKAGECONFIG[xyz]
@@ -908,12 +971,13 @@ Variable flag like PACKAGECONFIG[xyz]
 
 - `str` - variable sub flags
 
-<a name="oelint_parser.cls_item.Variable.VarNameComplete"></a>
+<a id="oelint_parser.cls_item.Variable.VarNameComplete"></a>
+
 #### VarNameComplete
 
 ```python
- | @property
- | VarNameComplete()
+@property
+def VarNameComplete()
 ```
 
 Complete variable name included overrides and flags
@@ -922,12 +986,13 @@ Complete variable name included overrides and flags
 
 - `str` - complete variable name
 
-<a name="oelint_parser.cls_item.Variable.RawVarName"></a>
+<a id="oelint_parser.cls_item.Variable.RawVarName"></a>
+
 #### RawVarName
 
 ```python
- | @property
- | RawVarName()
+@property
+def RawVarName()
 ```
 
 Variable name and flags combined
@@ -936,12 +1001,13 @@ Variable name and flags combined
 
 - `str` - raw representation of the variable name
 
-<a name="oelint_parser.cls_item.Variable.VarValueStripped"></a>
+<a id="oelint_parser.cls_item.Variable.VarValueStripped"></a>
+
 #### VarValueStripped
 
 ```python
- | @property
- | VarValueStripped()
+@property
+def VarValueStripped()
 ```
 
 Stripped variable value
@@ -950,11 +1016,12 @@ Stripped variable value
 
 - `str` - stripped version of variable value
 
-<a name="oelint_parser.cls_item.Variable.IsAppend"></a>
+<a id="oelint_parser.cls_item.Variable.IsAppend"></a>
+
 #### IsAppend
 
 ```python
- | IsAppend()
+def IsAppend()
 ```
 
 Check if operation is an append
@@ -963,11 +1030,12 @@ Check if operation is an append
 
 - `bool` - True is variable is appended
 
-<a name="oelint_parser.cls_item.Variable.AppendOperation"></a>
+<a id="oelint_parser.cls_item.Variable.AppendOperation"></a>
+
 #### AppendOperation
 
 ```python
- | AppendOperation()
+def AppendOperation()
 ```
 
 Get variable modifiers
@@ -976,11 +1044,12 @@ Get variable modifiers
 
 - `list` - list could contain any combination of 'append', ' += ', 'prepend' and 'remove'
 
-<a name="oelint_parser.cls_item.Variable.get_items"></a>
+<a id="oelint_parser.cls_item.Variable.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items(override="", versioned=False)
+def get_items(override="", versioned=False)
 ```
 
 Get items of variable value
@@ -995,11 +1064,12 @@ Get items of variable value
 
 - `list` - clean list of items in variable value
 
-<a name="oelint_parser.cls_item.Variable.IsMultiLine"></a>
+<a id="oelint_parser.cls_item.Variable.IsMultiLine"></a>
+
 #### IsMultiLine
 
 ```python
- | IsMultiLine()
+def IsMultiLine()
 ```
 
 Check if variable has a multiline assignment
@@ -1008,11 +1078,12 @@ Check if variable has a multiline assignment
 
 - `bool` - True if multiline
 
-<a name="oelint_parser.cls_item.Variable.GetDistroEntry"></a>
+<a id="oelint_parser.cls_item.Variable.GetDistroEntry"></a>
+
 #### GetDistroEntry
 
 ```python
- | GetDistroEntry()
+def GetDistroEntry()
 ```
 
 Get distro specific entries in variable
@@ -1021,11 +1092,12 @@ Get distro specific entries in variable
 
 - `str` - distro specific modifier of variable or ""
 
-<a name="oelint_parser.cls_item.Variable.GetMachineEntry"></a>
+<a id="oelint_parser.cls_item.Variable.GetMachineEntry"></a>
+
 #### GetMachineEntry
 
 ```python
- | GetMachineEntry()
+def GetMachineEntry()
 ```
 
 Get machine specific entries in variable
@@ -1034,11 +1106,12 @@ Get machine specific entries in variable
 
 - `str` - machine specific modifier of variable or ""
 
-<a name="oelint_parser.cls_item.Variable.GetClassOverride"></a>
+<a id="oelint_parser.cls_item.Variable.GetClassOverride"></a>
+
 #### GetClassOverride
 
 ```python
- | GetClassOverride()
+def GetClassOverride()
 ```
 
 Get class specific entries in variable
@@ -1047,18 +1120,20 @@ Get class specific entries in variable
 
 - `str` - class specific modifier of variable or ""
 
-<a name="oelint_parser.cls_item.Comment"></a>
+<a id="oelint_parser.cls_item.Comment"></a>
+
 ## Comment Objects
 
 ```python
 class Comment(Item)
 ```
 
-<a name="oelint_parser.cls_item.Comment.__init__"></a>
+<a id="oelint_parser.cls_item.Comment.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, realraw)
+def __init__(origin, line, infileline, rawtext, realraw)
 ```
 
 constructor
@@ -1071,11 +1146,12 @@ constructor
 - `rawtext` _str_ - Raw input string (except inline code blocks)
 - `realraw` _str_ - Unprocessed input
 
-<a name="oelint_parser.cls_item.Comment.get_items"></a>
+<a id="oelint_parser.cls_item.Comment.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items()
+def get_items()
 ```
 
 Get single lines of block
@@ -1084,18 +1160,20 @@ Get single lines of block
 
 - `list` - single lines of comment block
 
-<a name="oelint_parser.cls_item.Include"></a>
+<a id="oelint_parser.cls_item.Include"></a>
+
 ## Include Objects
 
 ```python
 class Include(Item)
 ```
 
-<a name="oelint_parser.cls_item.Include.__init__"></a>
+<a id="oelint_parser.cls_item.Include.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, incname, statement, realraw)
+def __init__(origin, line, infileline, rawtext, incname, statement, realraw)
 ```
 
 constructor
@@ -1110,12 +1188,13 @@ constructor
 - `incname` _str_ - raw name of the include file
 - `statement` _str_ - either include or require
 
-<a name="oelint_parser.cls_item.Include.IncName"></a>
+<a id="oelint_parser.cls_item.Include.IncName"></a>
+
 #### IncName
 
 ```python
- | @property
- | IncName()
+@property
+def IncName()
 ```
 
 Include name
@@ -1124,12 +1203,13 @@ Include name
 
 - `str` - name of the file to include/require
 
-<a name="oelint_parser.cls_item.Include.Statement"></a>
+<a id="oelint_parser.cls_item.Include.Statement"></a>
+
 #### Statement
 
 ```python
- | @property
- | Statement()
+@property
+def Statement()
 ```
 
 statement either include or require
@@ -1138,11 +1218,12 @@ statement either include or require
 
 - `str` - include or require
 
-<a name="oelint_parser.cls_item.Include.get_items"></a>
+<a id="oelint_parser.cls_item.Include.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items()
+def get_items()
 ```
 
 Get items
@@ -1151,18 +1232,20 @@ Get items
 
 - `list` - include name, include statement
 
-<a name="oelint_parser.cls_item.Export"></a>
+<a id="oelint_parser.cls_item.Export"></a>
+
 ## Export Objects
 
 ```python
 class Export(Item)
 ```
 
-<a name="oelint_parser.cls_item.Export.__init__"></a>
+<a id="oelint_parser.cls_item.Export.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, value, realraw)
+def __init__(origin, line, infileline, rawtext, name, value, realraw)
 ```
 
 constructor
@@ -1177,12 +1260,13 @@ constructor
 - `name` _str_ - variable name of the export
 - `value` _str_ - (optional) value of the export
 
-<a name="oelint_parser.cls_item.Export.Name"></a>
+<a id="oelint_parser.cls_item.Export.Name"></a>
+
 #### Name
 
 ```python
- | @property
- | Name()
+@property
+def Name()
 ```
 
 Name of the exported var
@@ -1191,12 +1275,13 @@ Name of the exported var
 
 - `str` - name of the exported var
 
-<a name="oelint_parser.cls_item.Export.Value"></a>
+<a id="oelint_parser.cls_item.Export.Value"></a>
+
 #### Value
 
 ```python
- | @property
- | Value()
+@property
+def Value()
 ```
 
 value of the export
@@ -1205,11 +1290,12 @@ value of the export
 
 - `str` - optional value of the export
 
-<a name="oelint_parser.cls_item.Export.get_items"></a>
+<a id="oelint_parser.cls_item.Export.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items()
+def get_items()
 ```
 
 Get items
@@ -1218,18 +1304,28 @@ Get items
 
 - `list` - include name, include statement
 
-<a name="oelint_parser.cls_item.Function"></a>
+<a id="oelint_parser.cls_item.Function"></a>
+
 ## Function Objects
 
 ```python
 class Function(Item)
 ```
 
-<a name="oelint_parser.cls_item.Function.__init__"></a>
+<a id="oelint_parser.cls_item.Function.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, body, realraw, python=False, fakeroot=False)
+def __init__(origin,
+             line,
+             infileline,
+             rawtext,
+             name,
+             body,
+             realraw,
+             python=False,
+             fakeroot=False)
 ```
 
 [summary]
@@ -1250,12 +1346,13 @@ class Function(Item)
 - `python` _bool_ - python function according to parser (default: {False})
 - `fakeroot` _bool_ - uses fakeroot (default: {False})
 
-<a name="oelint_parser.cls_item.Function.IsPython"></a>
+<a id="oelint_parser.cls_item.Function.IsPython"></a>
+
 #### IsPython
 
 ```python
- | @property
- | IsPython()
+@property
+def IsPython()
 ```
 
 Is python function
@@ -1264,12 +1361,13 @@ Is python function
 
 - `bool` - is a python function
 
-<a name="oelint_parser.cls_item.Function.IsFakeroot"></a>
+<a id="oelint_parser.cls_item.Function.IsFakeroot"></a>
+
 #### IsFakeroot
 
 ```python
- | @property
- | IsFakeroot()
+@property
+def IsFakeroot()
 ```
 
 Is fakeroot function
@@ -1278,12 +1376,13 @@ Is fakeroot function
 
 - `bool` - is a python function
 
-<a name="oelint_parser.cls_item.Function.FuncName"></a>
+<a id="oelint_parser.cls_item.Function.FuncName"></a>
+
 #### FuncName
 
 ```python
- | @property
- | FuncName()
+@property
+def FuncName()
 ```
 
 Function name
@@ -1292,12 +1391,13 @@ Function name
 
 - `str` - name of function
 
-<a name="oelint_parser.cls_item.Function.FuncNameComplete"></a>
+<a id="oelint_parser.cls_item.Function.FuncNameComplete"></a>
+
 #### FuncNameComplete
 
 ```python
- | @property
- | FuncNameComplete()
+@property
+def FuncNameComplete()
 ```
 
 Complete function name (including overrides)
@@ -1306,12 +1406,13 @@ Complete function name (including overrides)
 
 - `str` - complete name of function
 
-<a name="oelint_parser.cls_item.Function.SubItem"></a>
+<a id="oelint_parser.cls_item.Function.SubItem"></a>
+
 #### SubItem
 
 ```python
- | @property
- | SubItem()
+@property
+def SubItem()
 ```
 
 Function modifiers
@@ -1320,12 +1421,13 @@ Function modifiers
 
 - `str` - function modifiers like packages, machines, appends, prepends
 
-<a name="oelint_parser.cls_item.Function.SubItems"></a>
+<a id="oelint_parser.cls_item.Function.SubItems"></a>
+
 #### SubItems
 
 ```python
- | @property
- | SubItems()
+@property
+def SubItems()
 ```
 
 Function modifiers list
@@ -1334,12 +1436,13 @@ Function modifiers list
 
 - `list` - function modifiers list like packages, machines, appends, prepends
 
-<a name="oelint_parser.cls_item.Function.FuncBody"></a>
+<a id="oelint_parser.cls_item.Function.FuncBody"></a>
+
 #### FuncBody
 
 ```python
- | @property
- | FuncBody()
+@property
+def FuncBody()
 ```
 
 Function body
@@ -1348,12 +1451,13 @@ Function body
 
 - `str` - function body text
 
-<a name="oelint_parser.cls_item.Function.FuncBodyStripped"></a>
+<a id="oelint_parser.cls_item.Function.FuncBodyStripped"></a>
+
 #### FuncBodyStripped
 
 ```python
- | @property
- | FuncBodyStripped()
+@property
+def FuncBodyStripped()
 ```
 
 Stripped function body
@@ -1362,12 +1466,13 @@ Stripped function body
 
 - `str` - stripped function body text
 
-<a name="oelint_parser.cls_item.Function.FuncBodyRaw"></a>
+<a id="oelint_parser.cls_item.Function.FuncBodyRaw"></a>
+
 #### FuncBodyRaw
 
 ```python
- | @property
- | FuncBodyRaw()
+@property
+def FuncBodyRaw()
 ```
 
 Raw function body (including brackets)
@@ -1376,11 +1481,12 @@ Raw function body (including brackets)
 
 - `str` - raw function body text
 
-<a name="oelint_parser.cls_item.Function.GetDistroEntry"></a>
+<a id="oelint_parser.cls_item.Function.GetDistroEntry"></a>
+
 #### GetDistroEntry
 
 ```python
- | GetDistroEntry()
+def GetDistroEntry()
 ```
 
 Get distro specific modifiers
@@ -1389,11 +1495,12 @@ Get distro specific modifiers
 
 - `str` - distro specific modifier or ""
 
-<a name="oelint_parser.cls_item.Function.GetMachineEntry"></a>
+<a id="oelint_parser.cls_item.Function.GetMachineEntry"></a>
+
 #### GetMachineEntry
 
 ```python
- | GetMachineEntry()
+def GetMachineEntry()
 ```
 
 Get machine specific modifiers
@@ -1402,11 +1509,12 @@ Get machine specific modifiers
 
 - `str` - machine specific modifier or ""
 
-<a name="oelint_parser.cls_item.Function.IsAppend"></a>
+<a id="oelint_parser.cls_item.Function.IsAppend"></a>
+
 #### IsAppend
 
 ```python
- | IsAppend()
+def IsAppend()
 ```
 
 Return if function appends another function
@@ -1415,11 +1523,12 @@ Return if function appends another function
 
 - `bool` - True is append or prepend operation
 
-<a name="oelint_parser.cls_item.Function.get_items"></a>
+<a id="oelint_parser.cls_item.Function.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items()
+def get_items()
 ```
 
 Get items of function body
@@ -1428,18 +1537,20 @@ Get items of function body
 
 - `list` - single lines of function body
 
-<a name="oelint_parser.cls_item.PythonBlock"></a>
+<a id="oelint_parser.cls_item.PythonBlock"></a>
+
 ## PythonBlock Objects
 
 ```python
 class PythonBlock(Item)
 ```
 
-<a name="oelint_parser.cls_item.PythonBlock.__init__"></a>
+<a id="oelint_parser.cls_item.PythonBlock.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, realraw)
+def __init__(origin, line, infileline, rawtext, name, realraw)
 ```
 
 constructor
@@ -1453,12 +1564,13 @@ constructor
 - `realraw` _str_ - Unprocessed input
 - `name` _str_ - Function name
 
-<a name="oelint_parser.cls_item.PythonBlock.FuncName"></a>
+<a id="oelint_parser.cls_item.PythonBlock.FuncName"></a>
+
 #### FuncName
 
 ```python
- | @property
- | FuncName()
+@property
+def FuncName()
 ```
 
 Function name
@@ -1467,11 +1579,12 @@ Function name
 
 - `str` - name of function
 
-<a name="oelint_parser.cls_item.PythonBlock.get_items"></a>
+<a id="oelint_parser.cls_item.PythonBlock.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items()
+def get_items()
 ```
 
 Get lines of function body
@@ -1480,18 +1593,20 @@ Get lines of function body
 
 - `list` - lines of function body
 
-<a name="oelint_parser.cls_item.TaskAssignment"></a>
+<a id="oelint_parser.cls_item.TaskAssignment"></a>
+
 ## TaskAssignment Objects
 
 ```python
 class TaskAssignment(Item)
 ```
 
-<a name="oelint_parser.cls_item.TaskAssignment.__init__"></a>
+<a id="oelint_parser.cls_item.TaskAssignment.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, ident, value, realraw)
+def __init__(origin, line, infileline, rawtext, name, ident, value, realraw)
 ```
 
 constructor
@@ -1507,12 +1622,13 @@ constructor
 - `ident` _str_ - task flag
 - `value` _str_ - value of modification
 
-<a name="oelint_parser.cls_item.TaskAssignment.FuncName"></a>
+<a id="oelint_parser.cls_item.TaskAssignment.FuncName"></a>
+
 #### FuncName
 
 ```python
- | @property
- | FuncName()
+@property
+def FuncName()
 ```
 
 Function name
@@ -1521,12 +1637,13 @@ Function name
 
 - `str` - name of function
 
-<a name="oelint_parser.cls_item.TaskAssignment.VarValue"></a>
+<a id="oelint_parser.cls_item.TaskAssignment.VarValue"></a>
+
 #### VarValue
 
 ```python
- | @property
- | VarValue()
+@property
+def VarValue()
 ```
 
 Task flag value
@@ -1535,12 +1652,13 @@ Task flag value
 
 - `str` - Task flag value
 
-<a name="oelint_parser.cls_item.TaskAssignment.VarName"></a>
+<a id="oelint_parser.cls_item.TaskAssignment.VarName"></a>
+
 #### VarName
 
 ```python
- | @property
- | VarName()
+@property
+def VarName()
 ```
 
 Task flag name
@@ -1549,11 +1667,12 @@ Task flag name
 
 - `str` - name of task flag
 
-<a name="oelint_parser.cls_item.TaskAssignment.get_items"></a>
+<a id="oelint_parser.cls_item.TaskAssignment.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items()
+def get_items()
 ```
 
 Get items
@@ -1562,18 +1681,20 @@ Get items
 
 - `list` - function name, flag, modification value
 
-<a name="oelint_parser.cls_item.FunctionExports"></a>
+<a id="oelint_parser.cls_item.FunctionExports"></a>
+
 ## FunctionExports Objects
 
 ```python
 class FunctionExports(Item)
 ```
 
-<a name="oelint_parser.cls_item.FunctionExports.__init__"></a>
+<a id="oelint_parser.cls_item.FunctionExports.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, realraw)
+def __init__(origin, line, infileline, rawtext, name, realraw)
 ```
 
 constructor
@@ -1587,12 +1708,13 @@ constructor
 - `realraw` _str_ - Unprocessed input
 - `name` _str_ - name of function to be exported
 
-<a name="oelint_parser.cls_item.FunctionExports.FuncNames"></a>
+<a id="oelint_parser.cls_item.FunctionExports.FuncNames"></a>
+
 #### FuncNames
 
 ```python
- | @property
- | FuncNames()
+@property
+def FuncNames()
 ```
 
 Function name
@@ -1601,11 +1723,12 @@ Function name
 
 - `str` - names of exported functions
 
-<a name="oelint_parser.cls_item.FunctionExports.get_items"></a>
+<a id="oelint_parser.cls_item.FunctionExports.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items()
+def get_items()
 ```
 
 Get items
@@ -1614,11 +1737,12 @@ Get items
 
 - `list` - function names
 
-<a name="oelint_parser.cls_item.FunctionExports.get_items_unaliased"></a>
+<a id="oelint_parser.cls_item.FunctionExports.get_items_unaliased"></a>
+
 #### get\_items\_unaliased
 
 ```python
- | get_items_unaliased()
+def get_items_unaliased()
 ```
 
 Get items with their bbclass scope names
@@ -1627,18 +1751,27 @@ Get items with their bbclass scope names
 
 - `list` - function names in the scope of a bbclass (foo becomes classname-foo in this case)
 
-<a name="oelint_parser.cls_item.TaskAdd"></a>
+<a id="oelint_parser.cls_item.TaskAdd"></a>
+
 ## TaskAdd Objects
 
 ```python
 class TaskAdd(Item)
 ```
 
-<a name="oelint_parser.cls_item.TaskAdd.__init__"></a>
+<a id="oelint_parser.cls_item.TaskAdd.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, rawtext, name, realraw, before="", after="")
+def __init__(origin,
+             line,
+             infileline,
+             rawtext,
+             name,
+             realraw,
+             before="",
+             after="")
 ```
 
 constructor
@@ -1658,12 +1791,13 @@ constructor
 - `before` _str_ - before statement (default: {""})
 - `after` _str_ - after statement (default: {""})
 
-<a name="oelint_parser.cls_item.TaskAdd.FuncName"></a>
+<a id="oelint_parser.cls_item.TaskAdd.FuncName"></a>
+
 #### FuncName
 
 ```python
- | @property
- | FuncName()
+@property
+def FuncName()
 ```
 
 Function name
@@ -1672,12 +1806,13 @@ Function name
 
 - `str` - name of function
 
-<a name="oelint_parser.cls_item.TaskAdd.Before"></a>
+<a id="oelint_parser.cls_item.TaskAdd.Before"></a>
+
 #### Before
 
 ```python
- | @property
- | Before()
+@property
+def Before()
 ```
 
 Tasks executed before
@@ -1686,12 +1821,13 @@ Tasks executed before
 
 - `list` - tasks to be executed before
 
-<a name="oelint_parser.cls_item.TaskAdd.After"></a>
+<a id="oelint_parser.cls_item.TaskAdd.After"></a>
+
 #### After
 
 ```python
- | @property
- | After()
+@property
+def After()
 ```
 
 Tasks executed after
@@ -1700,11 +1836,12 @@ Tasks executed after
 
 - `list` - tasks to be executed after
 
-<a name="oelint_parser.cls_item.TaskAdd.get_items"></a>
+<a id="oelint_parser.cls_item.TaskAdd.get_items"></a>
+
 #### get\_items
 
 ```python
- | get_items()
+def get_items()
 ```
 
 get items
@@ -1713,18 +1850,20 @@ get items
 
 - `list` - function name, all before statements, all after statements
 
-<a name="oelint_parser.cls_item.MissingFile"></a>
+<a id="oelint_parser.cls_item.MissingFile"></a>
+
 ## MissingFile Objects
 
 ```python
 class MissingFile(Item)
 ```
 
-<a name="oelint_parser.cls_item.MissingFile.__init__"></a>
+<a id="oelint_parser.cls_item.MissingFile.__init__"></a>
+
 #### \_\_init\_\_
 
 ```python
- | __init__(origin, line, infileline, filename, statement)
+def __init__(origin, line, infileline, filename, statement)
 ```
 
 constructor
@@ -1737,12 +1876,13 @@ constructor
 - `filename` _str_ - filename of the file that can't be found
 - `statement` _str_ - either include or require
 
-<a name="oelint_parser.cls_item.MissingFile.Filename"></a>
+<a id="oelint_parser.cls_item.MissingFile.Filename"></a>
+
 #### Filename
 
 ```python
- | @property
- | Filename()
+@property
+def Filename()
 ```
 
 Filename of the file missing
@@ -1751,12 +1891,13 @@ Filename of the file missing
 
 - `str` - filename that can't be resolved
 
-<a name="oelint_parser.cls_item.MissingFile.Statement"></a>
+<a id="oelint_parser.cls_item.MissingFile.Statement"></a>
+
 #### Statement
 
 ```python
- | @property
- | Statement()
+@property
+def Statement()
 ```
 
 statement either include or require
@@ -1765,14 +1906,16 @@ statement either include or require
 
 - `str` - include or require
 
-<a name="oelint_parser.helper_files"></a>
+<a id="oelint_parser.helper_files"></a>
+
 # oelint\_parser.helper\_files
 
-<a name="oelint_parser.helper_files.get_files"></a>
+<a id="oelint_parser.helper_files.get_files"></a>
+
 #### get\_files
 
 ```python
-get_files(stash, _file, pattern)
+def get_files(stash, _file, pattern)
 ```
 
 Get files matching SRC_URI entries
@@ -1788,11 +1931,12 @@ Get files matching SRC_URI entries
 
 - `list` - list of files matching pattern
 
-<a name="oelint_parser.helper_files.get_layer_root"></a>
+<a id="oelint_parser.helper_files.get_layer_root"></a>
+
 #### get\_layer\_root
 
 ```python
-get_layer_root(name)
+def get_layer_root(name)
 ```
 
 Find the path to the layer root of a file
@@ -1806,11 +1950,12 @@ Find the path to the layer root of a file
 
 - `str` - path to layer root or empty string
 
-<a name="oelint_parser.helper_files.find_local_or_in_layer"></a>
+<a id="oelint_parser.helper_files.find_local_or_in_layer"></a>
+
 #### find\_local\_or\_in\_layer
 
 ```python
-find_local_or_in_layer(name, localdir)
+def find_local_or_in_layer(name, localdir)
 ```
 
 Find file in local dir or in layer
@@ -1825,11 +1970,12 @@ Find file in local dir or in layer
 
 - `str` - path to found file or None
 
-<a name="oelint_parser.helper_files.get_scr_components"></a>
+<a id="oelint_parser.helper_files.get_scr_components"></a>
+
 #### get\_scr\_components
 
 ```python
-get_scr_components(string)
+def get_scr_components(string)
 ```
 
 Return SRC_URI components
@@ -1843,11 +1989,12 @@ Return SRC_URI components
 
 - `dict` - scheme: protocol used, src: source URI, options: parsed options
 
-<a name="oelint_parser.helper_files.safe_linesplit"></a>
+<a id="oelint_parser.helper_files.safe_linesplit"></a>
+
 #### safe\_linesplit
 
 ```python
-safe_linesplit(string)
+def safe_linesplit(string)
 ```
 
 Split line in a safe manner
@@ -1861,11 +2008,12 @@ Split line in a safe manner
 
 - `list` - safely split input
 
-<a name="oelint_parser.helper_files.guess_recipe_name"></a>
+<a id="oelint_parser.helper_files.guess_recipe_name"></a>
+
 #### guess\_recipe\_name
 
 ```python
-guess_recipe_name(_file)
+def guess_recipe_name(_file)
 ```
 
 Get the recipe name from filename
@@ -1879,11 +2027,12 @@ Get the recipe name from filename
 
 - `str` - recipe name
 
-<a name="oelint_parser.helper_files.guess_base_recipe_name"></a>
+<a id="oelint_parser.helper_files.guess_base_recipe_name"></a>
+
 #### guess\_base\_recipe\_name
 
 ```python
-guess_base_recipe_name(_file)
+def guess_base_recipe_name(_file)
 ```
 
 Get the base recipe name from filename
@@ -1897,11 +2046,12 @@ Get the base recipe name from filename
 
 - `str` - recipe name
 
-<a name="oelint_parser.helper_files.guess_recipe_version"></a>
+<a id="oelint_parser.helper_files.guess_recipe_version"></a>
+
 #### guess\_recipe\_version
 
 ```python
-guess_recipe_version(_file)
+def guess_recipe_version(_file)
 ```
 
 Get recipe version from filename
@@ -1915,11 +2065,12 @@ Get recipe version from filename
 
 - `str` - recipe version
 
-<a name="oelint_parser.helper_files.expand_term"></a>
+<a id="oelint_parser.helper_files.expand_term"></a>
+
 #### expand\_term
 
 ```python
-expand_term(stash, _file, value, spare=[], seen={})
+def expand_term(stash, _file, value, spare=[], seen={})
 ```
 
 Expand a variable (replacing all variables by known content)
@@ -1935,11 +2086,12 @@ Expand a variable (replacing all variables by known content)
 
 - `str` - expanded value
 
-<a name="oelint_parser.helper_files.get_valid_package_names"></a>
+<a id="oelint_parser.helper_files.get_valid_package_names"></a>
+
 #### get\_valid\_package\_names
 
 ```python
-get_valid_package_names(stash, _file, strippn=False)
+def get_valid_package_names(stash, _file, strippn=False)
 ```
 
 Get known valid names for packages
@@ -1954,11 +2106,12 @@ Get known valid names for packages
 
 - `list` - list of valid package names
 
-<a name="oelint_parser.helper_files.get_valid_named_resources"></a>
+<a id="oelint_parser.helper_files.get_valid_named_resources"></a>
+
 #### get\_valid\_named\_resources
 
 ```python
-get_valid_named_resources(stash, _file)
+def get_valid_named_resources(stash, _file)
 ```
 
 Get list of valid SRCREV resource names
@@ -1973,11 +2126,12 @@ Get list of valid SRCREV resource names
 
 - `list` - list of valid SRCREV resource names
 
-<a name="oelint_parser.helper_files.is_image"></a>
+<a id="oelint_parser.helper_files.is_image"></a>
+
 #### is\_image
 
 ```python
-is_image(stash, _file)
+def is_image(stash, _file)
 ```
 
 returns if the file is likely an image recipe or not
@@ -1992,11 +2146,12 @@ returns if the file is likely an image recipe or not
 
 - `bool` - True if _file is an image recipe
 
-<a name="oelint_parser.helper_files.is_packagegroup"></a>
+<a id="oelint_parser.helper_files.is_packagegroup"></a>
+
 #### is\_packagegroup
 
 ```python
-is_packagegroup(stash, _file)
+def is_packagegroup(stash, _file)
 ```
 
 returns if the file is likely a packagegroup recipe or not
@@ -2011,10 +2166,12 @@ returns if the file is likely a packagegroup recipe or not
 
 - `bool` - True if _file is a packagegroup recipe
 
-<a name="oelint_parser.constants"></a>
+<a id="oelint_parser.constants"></a>
+
 # oelint\_parser.constants
 
-<a name="oelint_parser.constants.Constants"></a>
+<a id="oelint_parser.constants.Constants"></a>
+
 ## Constants Objects
 
 ```python
@@ -2023,11 +2180,12 @@ class Constants()
 
 Interface for constants
 
-<a name="oelint_parser.constants.Constants.AddConstants"></a>
+<a id="oelint_parser.constants.Constants.AddConstants"></a>
+
 #### AddConstants
 
 ```python
- | AddConstants(_dict)
+def AddConstants(_dict)
 ```
 
 Add constants to the existing
@@ -2036,11 +2194,12 @@ Add constants to the existing
 
 - `dict` _dict_ - constant dictionary to add
 
-<a name="oelint_parser.constants.Constants.RemoveConstants"></a>
+<a id="oelint_parser.constants.Constants.RemoveConstants"></a>
+
 #### RemoveConstants
 
 ```python
- | RemoveConstants(_dict)
+def RemoveConstants(_dict)
 ```
 
 Remove constants from the existing
@@ -2049,11 +2208,12 @@ Remove constants from the existing
 
 - `dict` _dict_ - constant dictionary to remove
 
-<a name="oelint_parser.constants.Constants.OverrideConstants"></a>
+<a id="oelint_parser.constants.Constants.OverrideConstants"></a>
+
 #### OverrideConstants
 
 ```python
- | OverrideConstants(_dict)
+def OverrideConstants(_dict)
 ```
 
 Override constants in the existing db
@@ -2062,11 +2222,12 @@ Override constants in the existing db
 
 - `dict` _dict]_ - constant dictionary with override values
 
-<a name="oelint_parser.constants.Constants.AddFromRuleFile"></a>
+<a id="oelint_parser.constants.Constants.AddFromRuleFile"></a>
+
 #### AddFromRuleFile
 
 ```python
- | AddFromRuleFile(dict)
+def AddFromRuleFile(dict)
 ```
 
 Legacy interface to support rule files
@@ -2075,11 +2236,12 @@ Legacy interface to support rule files
 
 - `dict` _dict_ - rule file dictionary
 
-<a name="oelint_parser.constants.Constants.AddFromConstantFile"></a>
+<a id="oelint_parser.constants.Constants.AddFromConstantFile"></a>
+
 #### AddFromConstantFile
 
 ```python
- | AddFromConstantFile(dict)
+def AddFromConstantFile(dict)
 ```
 
 Legacy interface to support constant files
@@ -2088,12 +2250,13 @@ Legacy interface to support constant files
 
 - `dict` _dict_ - constant file dictionary
 
-<a name="oelint_parser.constants.Constants.FunctionsKnown"></a>
+<a id="oelint_parser.constants.Constants.FunctionsKnown"></a>
+
 #### FunctionsKnown
 
 ```python
- | @property
- | FunctionsKnown()
+@property
+def FunctionsKnown()
 ```
 
 Return known functions
@@ -2102,12 +2265,13 @@ Return known functions
 
 - `list` - list of known functions
 
-<a name="oelint_parser.constants.Constants.FunctionsOrder"></a>
+<a id="oelint_parser.constants.Constants.FunctionsOrder"></a>
+
 #### FunctionsOrder
 
 ```python
- | @property
- | FunctionsOrder()
+@property
+def FunctionsOrder()
 ```
 
 Return function order
@@ -2116,12 +2280,13 @@ Return function order
 
 - `list` - List of functions to order in their designated order
 
-<a name="oelint_parser.constants.Constants.VariablesMandatory"></a>
+<a id="oelint_parser.constants.Constants.VariablesMandatory"></a>
+
 #### VariablesMandatory
 
 ```python
- | @property
- | VariablesMandatory()
+@property
+def VariablesMandatory()
 ```
 
 Return mandatory variables
@@ -2130,12 +2295,13 @@ Return mandatory variables
 
 - `list` - List of mandatory variables
 
-<a name="oelint_parser.constants.Constants.VariablesSuggested"></a>
+<a id="oelint_parser.constants.Constants.VariablesSuggested"></a>
+
 #### VariablesSuggested
 
 ```python
- | @property
- | VariablesSuggested()
+@property
+def VariablesSuggested()
 ```
 
 Return suggested variables
@@ -2144,12 +2310,13 @@ Return suggested variables
 
 - `list` - List of suggested variables
 
-<a name="oelint_parser.constants.Constants.MirrorsKnown"></a>
+<a id="oelint_parser.constants.Constants.MirrorsKnown"></a>
+
 #### MirrorsKnown
 
 ```python
- | @property
- | MirrorsKnown()
+@property
+def MirrorsKnown()
 ```
 
 Return known mirrors and their replacements
@@ -2158,12 +2325,13 @@ Return known mirrors and their replacements
 
 - `dict` - Dict of known mirrors and their replacements
 
-<a name="oelint_parser.constants.Constants.VariablesProtected"></a>
+<a id="oelint_parser.constants.Constants.VariablesProtected"></a>
+
 #### VariablesProtected
 
 ```python
- | @property
- | VariablesProtected()
+@property
+def VariablesProtected()
 ```
 
 Return protected variables
@@ -2172,12 +2340,13 @@ Return protected variables
 
 - `list` - List of protected variables
 
-<a name="oelint_parser.constants.Constants.VariablesProtectedAppend"></a>
+<a id="oelint_parser.constants.Constants.VariablesProtectedAppend"></a>
+
 #### VariablesProtectedAppend
 
 ```python
- | @property
- | VariablesProtectedAppend()
+@property
+def VariablesProtectedAppend()
 ```
 
 Return protected variables in bbappend files
@@ -2186,12 +2355,13 @@ Return protected variables in bbappend files
 
 - `list` - List of protected variables in bbappend files
 
-<a name="oelint_parser.constants.Constants.VariablesOrder"></a>
+<a id="oelint_parser.constants.Constants.VariablesOrder"></a>
+
 #### VariablesOrder
 
 ```python
- | @property
- | VariablesOrder()
+@property
+def VariablesOrder()
 ```
 
 Variable order
@@ -2200,12 +2370,13 @@ Variable order
 
 - `list` - List of variables to order in their designated order
 
-<a name="oelint_parser.constants.Constants.VariablesKnown"></a>
+<a id="oelint_parser.constants.Constants.VariablesKnown"></a>
+
 #### VariablesKnown
 
 ```python
- | @property
- | VariablesKnown()
+@property
+def VariablesKnown()
 ```
 
 Known variables
@@ -2214,12 +2385,13 @@ Known variables
 
 - `list` - List of known variables
 
-<a name="oelint_parser.constants.Constants.DistrosKnown"></a>
+<a id="oelint_parser.constants.Constants.DistrosKnown"></a>
+
 #### DistrosKnown
 
 ```python
- | @property
- | DistrosKnown()
+@property
+def DistrosKnown()
 ```
 
 Known distros
@@ -2228,12 +2400,13 @@ Known distros
 
 - `list` - List of known distros
 
-<a name="oelint_parser.constants.Constants.MachinesKnown"></a>
+<a id="oelint_parser.constants.Constants.MachinesKnown"></a>
+
 #### MachinesKnown
 
 ```python
- | @property
- | MachinesKnown()
+@property
+def MachinesKnown()
 ```
 
 Known machines
@@ -2242,12 +2415,13 @@ Known machines
 
 - `list` - List of known machines
 
-<a name="oelint_parser.constants.Constants.ImagesClasses"></a>
+<a id="oelint_parser.constants.Constants.ImagesClasses"></a>
+
 #### ImagesClasses
 
 ```python
- | @property
- | ImagesClasses()
+@property
+def ImagesClasses()
 ```
 
 Classes that are used in images
@@ -2256,12 +2430,13 @@ Classes that are used in images
 
 - `list` - Classes that are used in images
 
-<a name="oelint_parser.constants.Constants.ImagesVariables"></a>
+<a id="oelint_parser.constants.Constants.ImagesVariables"></a>
+
 #### ImagesVariables
 
 ```python
- | @property
- | ImagesVariables()
+@property
+def ImagesVariables()
 ```
 
 Variables that are used in images
@@ -2270,12 +2445,13 @@ Variables that are used in images
 
 - `list` - Variables that are used in images
 
-<a name="oelint_parser.constants.Constants.SetsBase"></a>
+<a id="oelint_parser.constants.Constants.SetsBase"></a>
+
 #### SetsBase
 
 ```python
- | @property
- | SetsBase()
+@property
+def SetsBase()
 ```
 
 Base variable set
@@ -2284,6 +2460,7 @@ Base variable set
 
 - `dict` - dictionary with base variable set
 
-<a name="oelint_parser.inlinerep"></a>
+<a id="oelint_parser.inlinerep"></a>
+
 # oelint\_parser.inlinerep
 
