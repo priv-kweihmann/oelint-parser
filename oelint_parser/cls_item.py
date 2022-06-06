@@ -1,8 +1,8 @@
-import textwrap
-import re
 import os
+import textwrap
 
 from oelint_parser.constants import CONSTANTS
+from oelint_parser.rpl_regex import RegexRpl
 
 
 class Item():
@@ -138,7 +138,7 @@ class Item():
         return Item(None, None, None, None, None)._safe_linesplit(string)
 
     def _safe_linesplit(self, string):
-        return [x for x in re.split(r"\s|\t|\x1b", string) if x]
+        return [x for x in RegexRpl.split(r"\s|\t|\x1b", string) if x]
 
     def get_items(self):
         """Return single items
@@ -169,7 +169,7 @@ class Item():
                 # that addresses things like FILES_${PN}-dev
                 tmp = "-" + "-".join(i.split("-")[1:])
                 i = i.split("-")[0]
-            if re.match("[a-z0-9{}$]+", i) and _var[0] != "pkg":
+            if RegexRpl.match("[a-z0-9{}$]+", i) and _var[0] != "pkg":
                 _suffix.append(i + tmp)
             elif i in ["${PN}"]:
                 _suffix.append(i + tmp)
@@ -409,7 +409,7 @@ class Variable(Item):
         """
         _x = override.strip('"') or self.VarValue.strip('"')
         if versioned:
-            _x = re.sub(r"\s*\(.*?\)", "", _x)
+            _x = RegexRpl.sub(r"\s*\(.*?\)", "", _x)
         return self._safe_linesplit(_x)
 
     def IsMultiLine(self):

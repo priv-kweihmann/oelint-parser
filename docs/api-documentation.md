@@ -132,6 +132,13 @@
   * [get\_valid\_named\_resources](#oelint_parser.helper_files.get_valid_named_resources)
   * [is\_image](#oelint_parser.helper_files.is_image)
   * [is\_packagegroup](#oelint_parser.helper_files.is_packagegroup)
+* [oelint\_parser.rpl\_regex](#oelint_parser.rpl_regex)
+  * [RegexRpl](#oelint_parser.rpl_regex.RegexRpl)
+    * [search](#oelint_parser.rpl_regex.RegexRpl.search)
+    * [split](#oelint_parser.rpl_regex.RegexRpl.split)
+    * [match](#oelint_parser.rpl_regex.RegexRpl.match)
+    * [sub](#oelint_parser.rpl_regex.RegexRpl.sub)
+    * [finditer](#oelint_parser.rpl_regex.RegexRpl.finditer)
 * [oelint\_parser.constants](#oelint_parser.constants)
   * [Constants](#oelint_parser.constants.Constants)
     * [AddConstants](#oelint_parser.constants.Constants.AddConstants)
@@ -2165,6 +2172,136 @@ returns if the file is likely a packagegroup recipe or not
 **Returns**:
 
 - `bool` - True if _file is a packagegroup recipe
+
+<a id="oelint_parser.rpl_regex"></a>
+
+# oelint\_parser.rpl\_regex
+
+<a id="oelint_parser.rpl_regex.RegexRpl"></a>
+
+## RegexRpl Objects
+
+```python
+class RegexRpl()
+```
+
+Safe regex replacements
+
+<a id="oelint_parser.rpl_regex.RegexRpl.search"></a>
+
+#### search
+
+```python
+@staticmethod
+def search(pattern, string, timeout=5, default=None, *args, **kwargs)
+```
+
+replacement for re.search
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
+  
+
+**Returns**:
+
+- `Match` - Match object or None
+
+<a id="oelint_parser.rpl_regex.RegexRpl.split"></a>
+
+#### split
+
+```python
+@staticmethod
+def split(pattern, string, timeout=5, default=None, *args, **kwargs)
+```
+
+replacement for re.split
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
+  
+
+**Returns**:
+
+- `list` - list object or None
+
+<a id="oelint_parser.rpl_regex.RegexRpl.match"></a>
+
+#### match
+
+```python
+@staticmethod
+def match(pattern, string, timeout=5, default=None, *args, **kwargs)
+```
+
+replacement for re.match
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
+  
+
+**Returns**:
+
+- `Match` - Match object or None
+
+<a id="oelint_parser.rpl_regex.RegexRpl.sub"></a>
+
+#### sub
+
+```python
+@staticmethod
+def sub(pattern, repl, string, timeout=5, default='', *args, **kwargs)
+```
+
+replacement for re.sub
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `repl` _str_ - replacement string
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to ''.
+  
+
+**Returns**:
+
+- `str` - string
+
+<a id="oelint_parser.rpl_regex.RegexRpl.finditer"></a>
+
+#### finditer
+
+```python
+@staticmethod
+def finditer(pattern, string, timeout=5, default=None, *args, **kwargs)
+```
+
+replacement for re.finditer
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
+  
+
+**Returns**:
+
+- `Scanner` - Scanner object or None
 
 <a id="oelint_parser.constants"></a>
 

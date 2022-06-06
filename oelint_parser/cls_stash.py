@@ -11,6 +11,7 @@ from oelint_parser.helper_files import guess_base_recipe_name
 from oelint_parser.helper_files import guess_recipe_name
 from oelint_parser.helper_files import guess_recipe_version
 from oelint_parser.parser import get_items
+from oelint_parser.rpl_regex import RegexRpl
 
 
 class Stash():
@@ -57,7 +58,7 @@ class Stash():
             bn_this = os.path.basename(_file).replace(
                 ".bbappend", "").replace("%", ".*")
             for item in self.__list:
-                if re.match(bn_this, os.path.basename(item.Origin)):
+                if RegexRpl.match(bn_this, os.path.basename(item.Origin)):
                     if _file not in self.__map:
                         self.__map[_file] = []
                     self.__map[_file].append(item.Origin)

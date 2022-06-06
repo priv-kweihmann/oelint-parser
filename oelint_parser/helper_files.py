@@ -1,10 +1,10 @@
 import glob
 import os
-import re
 from urllib.parse import urlparse
 
 from oelint_parser.cls_item import Variable
 from oelint_parser.constants import CONSTANTS
+from oelint_parser.rpl_regex import RegexRpl
 
 
 def get_files(stash, _file, pattern):
@@ -113,7 +113,7 @@ def safe_linesplit(string):
     Returns:
         list -- safely split input
     """
-    return re.split(r"\s|\t|\x1b", string)
+    return RegexRpl.split(r"\s|\t|\x1b", string)
 
 def guess_recipe_name(_file):
     """Get the recipe name from filename
@@ -166,7 +166,7 @@ def expand_term(stash, _file, value, spare=[], seen={}):
     """
     pattern = r"\$\{(.+?)\}"
     res = str(value)
-    for m in re.finditer(pattern, value):
+    for m in RegexRpl.finditer(pattern, value):
         if m.group(1) in spare:
             continue
         _comp = [x for x in stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,

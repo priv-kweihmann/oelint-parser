@@ -1,7 +1,7 @@
 import collections
 import os
-import re
 
+import regex
 from oelint_parser.cls_item import Comment
 from oelint_parser.cls_item import Export
 from oelint_parser.cls_item import Function
@@ -15,6 +15,7 @@ from oelint_parser.cls_item import Variable
 from oelint_parser.helper_files import expand_term
 from oelint_parser.helper_files import find_local_or_in_layer
 from oelint_parser.inlinerep import inlinerep
+from oelint_parser.rpl_regex import RegexRpl
 
 INLINE_BLOCK = "!!!inlineblock!!!"
 
@@ -59,13 +60,13 @@ def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None):
     __func_start_regexp__ = r".*(((?P<py>python)|(?P<fr>fakeroot))\s*)*(?P<func>[\w\.\-\+\{\}\$]+)?\s*\(\s*\)\s*\{"
     res = []
     raw_line = raw_line or line
-    if re.search(r"\\\s*\n", raw_line):
+    if RegexRpl.search(r"\\\s*\n", raw_line):
         _, line = _iter.__next__()
-        while re.search(r"\\\s*\n", line):
+        while RegexRpl.search(r"\\\s*\n", line):
             raw_line += line
             _, line = _iter.__next__()
         raw_line += line
-    elif re.match(__func_start_regexp__, raw_line):
+    elif RegexRpl.match(__func_start_regexp__, raw_line):
         _, line = _iter.__next__()
         stopiter = False
         scope_level = 0
@@ -90,7 +91,7 @@ def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None):
                 _, line = _iter.__next__()
             except StopIteration:
                 stopiter = True
-            if re.match("^[A-Za-z0-9#]+", line) or stopiter:
+            if RegexRpl.match("^[A-Za-z0-9#]+", line) or stopiter:
                 if not stopiter:
                     res += prepare_lines_subparser(_iter,
                                                 lineOffset, num, line)
@@ -179,7 +180,7 @@ def get_items(stash, _file, lineOffset=0):
     for line in prepare_lines(_file, lineOffset):
         good = False
         for k, v in _order.items():
-            m = re.match(v, line["cnt"], re.MULTILINE)
+            m = RegexRpl.match(v, line["cnt"], regex.regex.MULTILINE)
             if m:
                 if k == "python":
                     res.append(PythonBlock(
