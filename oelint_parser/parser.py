@@ -217,9 +217,13 @@ def get_items(stash, _file, lineOffset=0):
                     inhname = expand_term(stash, _file, m.group("inhname"))
                     if not inhname.endswith(".bbclass"):
                         inhname += ".bbclass"
-                    _path = find_local_or_in_layer(
-                        os.path.join("classes", inhname), 
-                        os.path.dirname(_file))
+                    _path = None
+                    for location in ["classes", "classes-recipe", "classes-global"]:
+                        _path = find_local_or_in_layer(
+                            os.path.join(location, inhname), 
+                            os.path.dirname(_file))
+                        if _path:
+                            break
                     if _path:
                         tmp = stash.AddFile(_path, lineOffset=line["line"], forcedLink=_file)
                         if any(tmp):
