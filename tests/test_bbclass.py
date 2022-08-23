@@ -6,6 +6,8 @@ import sys
 class OelintBBClassTest(unittest.TestCase):
 
     RECIPE = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-foo_1.0.bb")
+    RECIPE_GLOBAL = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-bar_1.0.bb")
+    RECIPE_RECIPE = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-baz_1.0.bb")
 
     def setUp(self):
         sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../"))
@@ -31,6 +33,46 @@ class OelintBBClassTest(unittest.TestCase):
         _found = False
         for item in _stash:
             if item.Origin.endswith("foo.bbclass"):
+                _found = True
+                break
+
+        self.assertTrue(_found, msg="No element of a layer bbclass was added")
+
+    def test_var_a_global(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintBBClassTest.RECIPE_GLOBAL)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="FOO_A")
+        self.assertTrue(_stash, msg="Stash has no items")
+
+        _found = False
+        for item in _stash:
+            if item.Origin.endswith("global-foo.bbclass"):
+                _found = True
+                break
+
+        self.assertTrue(_found, msg="No element of a layer bbclass was added")
+
+    def test_var_a_recipe(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintBBClassTest.RECIPE_RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue="FOO_A")
+        self.assertTrue(_stash, msg="Stash has no items")
+
+        _found = False
+        for item in _stash:
+            if item.Origin.endswith("recipe-foo.bbclass"):
                 _found = True
                 break
 
