@@ -23,12 +23,50 @@
     * [GetLinksForFile](#oelint_parser.cls_stash.Stash.GetLinksForFile)
     * [GetItemsFor](#oelint_parser.cls_stash.Stash.GetItemsFor)
     * [ExpandVar](#oelint_parser.cls_stash.Stash.ExpandVar)
+* [oelint\_parser.rpl\_regex](#oelint_parser.rpl_regex)
+  * [RegexRpl](#oelint_parser.rpl_regex.RegexRpl)
+    * [search](#oelint_parser.rpl_regex.RegexRpl.search)
+    * [split](#oelint_parser.rpl_regex.RegexRpl.split)
+    * [match](#oelint_parser.rpl_regex.RegexRpl.match)
+    * [sub](#oelint_parser.rpl_regex.RegexRpl.sub)
+    * [finditer](#oelint_parser.rpl_regex.RegexRpl.finditer)
 * [oelint\_parser.const\_func](#oelint_parser.const_func)
-* [oelint\_parser.parser](#oelint_parser.parser)
-  * [get\_full\_scope](#oelint_parser.parser.get_full_scope)
-  * [prepare\_lines\_subparser](#oelint_parser.parser.prepare_lines_subparser)
-  * [prepare\_lines](#oelint_parser.parser.prepare_lines)
-  * [get\_items](#oelint_parser.parser.get_items)
+* [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
+* [oelint\_parser.helper\_files](#oelint_parser.helper_files)
+  * [get\_files](#oelint_parser.helper_files.get_files)
+  * [get\_layer\_root](#oelint_parser.helper_files.get_layer_root)
+  * [find\_local\_or\_in\_layer](#oelint_parser.helper_files.find_local_or_in_layer)
+  * [get\_scr\_components](#oelint_parser.helper_files.get_scr_components)
+  * [safe\_linesplit](#oelint_parser.helper_files.safe_linesplit)
+  * [guess\_recipe\_name](#oelint_parser.helper_files.guess_recipe_name)
+  * [guess\_base\_recipe\_name](#oelint_parser.helper_files.guess_base_recipe_name)
+  * [guess\_recipe\_version](#oelint_parser.helper_files.guess_recipe_version)
+  * [expand\_term](#oelint_parser.helper_files.expand_term)
+  * [get\_valid\_package\_names](#oelint_parser.helper_files.get_valid_package_names)
+  * [get\_valid\_named\_resources](#oelint_parser.helper_files.get_valid_named_resources)
+  * [is\_image](#oelint_parser.helper_files.is_image)
+  * [is\_packagegroup](#oelint_parser.helper_files.is_packagegroup)
+* [oelint\_parser.constants](#oelint_parser.constants)
+  * [Constants](#oelint_parser.constants.Constants)
+    * [AddConstants](#oelint_parser.constants.Constants.AddConstants)
+    * [RemoveConstants](#oelint_parser.constants.Constants.RemoveConstants)
+    * [OverrideConstants](#oelint_parser.constants.Constants.OverrideConstants)
+    * [AddFromRuleFile](#oelint_parser.constants.Constants.AddFromRuleFile)
+    * [AddFromConstantFile](#oelint_parser.constants.Constants.AddFromConstantFile)
+    * [FunctionsKnown](#oelint_parser.constants.Constants.FunctionsKnown)
+    * [FunctionsOrder](#oelint_parser.constants.Constants.FunctionsOrder)
+    * [VariablesMandatory](#oelint_parser.constants.Constants.VariablesMandatory)
+    * [VariablesSuggested](#oelint_parser.constants.Constants.VariablesSuggested)
+    * [MirrorsKnown](#oelint_parser.constants.Constants.MirrorsKnown)
+    * [VariablesProtected](#oelint_parser.constants.Constants.VariablesProtected)
+    * [VariablesProtectedAppend](#oelint_parser.constants.Constants.VariablesProtectedAppend)
+    * [VariablesOrder](#oelint_parser.constants.Constants.VariablesOrder)
+    * [VariablesKnown](#oelint_parser.constants.Constants.VariablesKnown)
+    * [DistrosKnown](#oelint_parser.constants.Constants.DistrosKnown)
+    * [MachinesKnown](#oelint_parser.constants.Constants.MachinesKnown)
+    * [ImagesClasses](#oelint_parser.constants.Constants.ImagesClasses)
+    * [ImagesVariables](#oelint_parser.constants.Constants.ImagesVariables)
+    * [SetsBase](#oelint_parser.constants.Constants.SetsBase)
 * [oelint\_parser.cls\_item](#oelint_parser.cls_item)
   * [Item](#oelint_parser.cls_item.Item)
     * [\_\_init\_\_](#oelint_parser.cls_item.Item.__init__)
@@ -118,49 +156,11 @@
     * [\_\_init\_\_](#oelint_parser.cls_item.MissingFile.__init__)
     * [Filename](#oelint_parser.cls_item.MissingFile.Filename)
     * [Statement](#oelint_parser.cls_item.MissingFile.Statement)
-* [oelint\_parser.helper\_files](#oelint_parser.helper_files)
-  * [get\_files](#oelint_parser.helper_files.get_files)
-  * [get\_layer\_root](#oelint_parser.helper_files.get_layer_root)
-  * [find\_local\_or\_in\_layer](#oelint_parser.helper_files.find_local_or_in_layer)
-  * [get\_scr\_components](#oelint_parser.helper_files.get_scr_components)
-  * [safe\_linesplit](#oelint_parser.helper_files.safe_linesplit)
-  * [guess\_recipe\_name](#oelint_parser.helper_files.guess_recipe_name)
-  * [guess\_base\_recipe\_name](#oelint_parser.helper_files.guess_base_recipe_name)
-  * [guess\_recipe\_version](#oelint_parser.helper_files.guess_recipe_version)
-  * [expand\_term](#oelint_parser.helper_files.expand_term)
-  * [get\_valid\_package\_names](#oelint_parser.helper_files.get_valid_package_names)
-  * [get\_valid\_named\_resources](#oelint_parser.helper_files.get_valid_named_resources)
-  * [is\_image](#oelint_parser.helper_files.is_image)
-  * [is\_packagegroup](#oelint_parser.helper_files.is_packagegroup)
-* [oelint\_parser.rpl\_regex](#oelint_parser.rpl_regex)
-  * [RegexRpl](#oelint_parser.rpl_regex.RegexRpl)
-    * [search](#oelint_parser.rpl_regex.RegexRpl.search)
-    * [split](#oelint_parser.rpl_regex.RegexRpl.split)
-    * [match](#oelint_parser.rpl_regex.RegexRpl.match)
-    * [sub](#oelint_parser.rpl_regex.RegexRpl.sub)
-    * [finditer](#oelint_parser.rpl_regex.RegexRpl.finditer)
-* [oelint\_parser.constants](#oelint_parser.constants)
-  * [Constants](#oelint_parser.constants.Constants)
-    * [AddConstants](#oelint_parser.constants.Constants.AddConstants)
-    * [RemoveConstants](#oelint_parser.constants.Constants.RemoveConstants)
-    * [OverrideConstants](#oelint_parser.constants.Constants.OverrideConstants)
-    * [AddFromRuleFile](#oelint_parser.constants.Constants.AddFromRuleFile)
-    * [AddFromConstantFile](#oelint_parser.constants.Constants.AddFromConstantFile)
-    * [FunctionsKnown](#oelint_parser.constants.Constants.FunctionsKnown)
-    * [FunctionsOrder](#oelint_parser.constants.Constants.FunctionsOrder)
-    * [VariablesMandatory](#oelint_parser.constants.Constants.VariablesMandatory)
-    * [VariablesSuggested](#oelint_parser.constants.Constants.VariablesSuggested)
-    * [MirrorsKnown](#oelint_parser.constants.Constants.MirrorsKnown)
-    * [VariablesProtected](#oelint_parser.constants.Constants.VariablesProtected)
-    * [VariablesProtectedAppend](#oelint_parser.constants.Constants.VariablesProtectedAppend)
-    * [VariablesOrder](#oelint_parser.constants.Constants.VariablesOrder)
-    * [VariablesKnown](#oelint_parser.constants.Constants.VariablesKnown)
-    * [DistrosKnown](#oelint_parser.constants.Constants.DistrosKnown)
-    * [MachinesKnown](#oelint_parser.constants.Constants.MachinesKnown)
-    * [ImagesClasses](#oelint_parser.constants.Constants.ImagesClasses)
-    * [ImagesVariables](#oelint_parser.constants.Constants.ImagesVariables)
-    * [SetsBase](#oelint_parser.constants.Constants.SetsBase)
-* [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
+* [oelint\_parser.parser](#oelint_parser.parser)
+  * [get\_full\_scope](#oelint_parser.parser.get_full_scope)
+  * [prepare\_lines\_subparser](#oelint_parser.parser.prepare_lines_subparser)
+  * [prepare\_lines](#oelint_parser.parser.prepare_lines)
+  * [get\_items](#oelint_parser.parser.get_items)
 
 <a id="oelint_parser.const_vars"></a>
 
@@ -495,99 +495,697 @@ Expand variable to dictionary
 
 - `{dict}` - expanded variables from call + base set of variables
 
+<a id="oelint_parser.rpl_regex"></a>
+
+# oelint\_parser.rpl\_regex
+
+<a id="oelint_parser.rpl_regex.RegexRpl"></a>
+
+## RegexRpl Objects
+
+```python
+class RegexRpl()
+```
+
+Safe regex replacements
+
+<a id="oelint_parser.rpl_regex.RegexRpl.search"></a>
+
+#### search
+
+```python
+@staticmethod
+def search(pattern, string, timeout=5, default=None, *args, **kwargs)
+```
+
+replacement for re.search
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
+  
+
+**Returns**:
+
+- `Match` - Match object or None
+
+<a id="oelint_parser.rpl_regex.RegexRpl.split"></a>
+
+#### split
+
+```python
+@staticmethod
+def split(pattern, string, timeout=5, default=None, *args, **kwargs)
+```
+
+replacement for re.split
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
+  
+
+**Returns**:
+
+- `list` - list object or None
+
+<a id="oelint_parser.rpl_regex.RegexRpl.match"></a>
+
+#### match
+
+```python
+@staticmethod
+def match(pattern, string, timeout=5, default=None, *args, **kwargs)
+```
+
+replacement for re.match
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
+  
+
+**Returns**:
+
+- `Match` - Match object or None
+
+<a id="oelint_parser.rpl_regex.RegexRpl.sub"></a>
+
+#### sub
+
+```python
+@staticmethod
+def sub(pattern, repl, string, timeout=5, default='', *args, **kwargs)
+```
+
+replacement for re.sub
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `repl` _str_ - replacement string
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to ''.
+  
+
+**Returns**:
+
+- `str` - string
+
+<a id="oelint_parser.rpl_regex.RegexRpl.finditer"></a>
+
+#### finditer
+
+```python
+@staticmethod
+def finditer(pattern, string, timeout=5, default=None, *args, **kwargs)
+```
+
+replacement for re.finditer
+
+**Arguments**:
+
+- `pattern` _str_ - regex pattern
+- `string` _str_ - input string
+- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
+- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
+  
+
+**Returns**:
+
+- `Scanner` - Scanner object or None
+
 <a id="oelint_parser.const_func"></a>
 
 # oelint\_parser.const\_func
 
-<a id="oelint_parser.parser"></a>
+<a id="oelint_parser.inlinerep"></a>
 
-# oelint\_parser.parser
+# oelint\_parser.inlinerep
 
-<a id="oelint_parser.parser.get_full_scope"></a>
+<a id="oelint_parser.helper_files"></a>
 
-#### get\_full\_scope
+# oelint\_parser.helper\_files
+
+<a id="oelint_parser.helper_files.get_files"></a>
+
+#### get\_files
 
 ```python
-def get_full_scope(_string, offset, _sstart, _send)
+def get_files(stash, _file, pattern)
 ```
 
-get full block of an inline statement
+Get files matching SRC_URI entries
 
 **Arguments**:
 
-- `_string` _str_ - input string
-- `offset` _int_ - offset in string
-- `_sstart` _int_ - block start index
-- `_send` _int_ - block end index
+- `stash` _oelint_parser.cls_stash.Stash_ - current stash
+- `_file` _str_ - Full path to filename
+- `pattern` _str_ - glob pattern to apply
   
 
 **Returns**:
 
-- `str` - full block on inline statement
+- `list` - list of files matching pattern
 
-<a id="oelint_parser.parser.prepare_lines_subparser"></a>
+<a id="oelint_parser.helper_files.get_layer_root"></a>
 
-#### prepare\_lines\_subparser
+#### get\_layer\_root
 
 ```python
-def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None)
+def get_layer_root(name)
 ```
 
-preprocess raw input
+Find the path to the layer root of a file
 
 **Arguments**:
 
-- `_iter` _interator_ - line interator object
-- `lineOffset` _int_ - current line index
-- `num` _int_ - internal line counter
-- `line` _int_ - input string
-- `raw_line` _string, optional_ - internal line representation. Defaults to None.
+- `name` _str_ - filename
   
 
 **Returns**:
 
-- `list` - list of preproccessed chunks
+- `str` - path to layer root or empty string
 
-<a id="oelint_parser.parser.prepare_lines"></a>
+<a id="oelint_parser.helper_files.find_local_or_in_layer"></a>
 
-#### prepare\_lines
+#### find\_local\_or\_in\_layer
 
 ```python
-def prepare_lines(_file, lineOffset=0)
+def find_local_or_in_layer(name, localdir)
 ```
 
-break raw file input into preprocessed chunks
+Find file in local dir or in layer
 
 **Arguments**:
 
-- `_file` _string_ - Full path to file
-- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
+- `name` _str_ - filename
+- `localdir` _str_ - path to local dir
   
 
 **Returns**:
 
-- `list` - preprocessed list of chunks
+- `str` - path to found file or None
 
-<a id="oelint_parser.parser.get_items"></a>
+<a id="oelint_parser.helper_files.get_scr_components"></a>
 
-#### get\_items
+#### get\_scr\_components
 
 ```python
-def get_items(stash, _file, lineOffset=0)
+def get_scr_components(string)
 ```
 
-parses file
+Return SRC_URI components
 
 **Arguments**:
 
-- `stash` _oelint_parser.cls_stash.Stash_ - Stash object
-- `_file` _string_ - Full path to file
-- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
+- `string` _str_ - raw string
   
 
 **Returns**:
 
-- `list` - List of oelint_parser.cls_item.* representations
+- `dict` - scheme: protocol used, src: source URI, options: parsed options
+
+<a id="oelint_parser.helper_files.safe_linesplit"></a>
+
+#### safe\_linesplit
+
+```python
+def safe_linesplit(string)
+```
+
+Split line in a safe manner
+
+**Arguments**:
+
+- `string` _str_ - raw input
+  
+
+**Returns**:
+
+- `list` - safely split input
+
+<a id="oelint_parser.helper_files.guess_recipe_name"></a>
+
+#### guess\_recipe\_name
+
+```python
+def guess_recipe_name(_file)
+```
+
+Get the recipe name from filename
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe name
+
+<a id="oelint_parser.helper_files.guess_base_recipe_name"></a>
+
+#### guess\_base\_recipe\_name
+
+```python
+def guess_base_recipe_name(_file)
+```
+
+Get the base recipe name from filename
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe name
+
+<a id="oelint_parser.helper_files.guess_recipe_version"></a>
+
+#### guess\_recipe\_version
+
+```python
+def guess_recipe_version(_file)
+```
+
+Get recipe version from filename
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe version
+
+<a id="oelint_parser.helper_files.expand_term"></a>
+
+#### expand\_term
+
+```python
+def expand_term(stash, _file, value, spare=[], seen={})
+```
+
+Expand a variable (replacing all variables by known content)
+
+**Arguments**:
+
+- `stash` _oelint_parser.cls_stash.Stash_ - current stash
+- `_file` _str_ - Full path to file
+- `value` _str_ - Variable value to expand
+  
+
+**Returns**:
+
+- `str` - expanded value
+
+<a id="oelint_parser.helper_files.get_valid_package_names"></a>
+
+#### get\_valid\_package\_names
+
+```python
+def get_valid_package_names(stash, _file, strippn=False)
+```
+
+Get known valid names for packages
+
+**Arguments**:
+
+- `stash` _oelint_parser.cls_stash.Stash_ - current stash
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `list` - list of valid package names
+
+<a id="oelint_parser.helper_files.get_valid_named_resources"></a>
+
+#### get\_valid\_named\_resources
+
+```python
+def get_valid_named_resources(stash, _file)
+```
+
+Get list of valid SRCREV resource names
+
+**Arguments**:
+
+- `stash` _oelint_parser.cls_stash.Stash_ - current stash
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `list` - list of valid SRCREV resource names
+
+<a id="oelint_parser.helper_files.is_image"></a>
+
+#### is\_image
+
+```python
+def is_image(stash, _file)
+```
+
+returns if the file is likely an image recipe or not
+
+**Arguments**:
+
+- `stash` _oelint_parser.cls_stash.Stash_ - current stash
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `bool` - True if _file is an image recipe
+
+<a id="oelint_parser.helper_files.is_packagegroup"></a>
+
+#### is\_packagegroup
+
+```python
+def is_packagegroup(stash, _file)
+```
+
+returns if the file is likely a packagegroup recipe or not
+
+**Arguments**:
+
+- `stash` _oelint_parser.cls_stash.Stash_ - current stash
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `bool` - True if _file is a packagegroup recipe
+
+<a id="oelint_parser.constants"></a>
+
+# oelint\_parser.constants
+
+<a id="oelint_parser.constants.Constants"></a>
+
+## Constants Objects
+
+```python
+class Constants()
+```
+
+Interface for constants
+
+<a id="oelint_parser.constants.Constants.AddConstants"></a>
+
+#### AddConstants
+
+```python
+def AddConstants(_dict)
+```
+
+Add constants to the existing
+
+**Arguments**:
+
+- `dict` _dict_ - constant dictionary to add
+
+<a id="oelint_parser.constants.Constants.RemoveConstants"></a>
+
+#### RemoveConstants
+
+```python
+def RemoveConstants(_dict)
+```
+
+Remove constants from the existing
+
+**Arguments**:
+
+- `dict` _dict_ - constant dictionary to remove
+
+<a id="oelint_parser.constants.Constants.OverrideConstants"></a>
+
+#### OverrideConstants
+
+```python
+def OverrideConstants(_dict)
+```
+
+Override constants in the existing db
+
+**Arguments**:
+
+- `dict` _dict]_ - constant dictionary with override values
+
+<a id="oelint_parser.constants.Constants.AddFromRuleFile"></a>
+
+#### AddFromRuleFile
+
+```python
+def AddFromRuleFile(dict)
+```
+
+Legacy interface to support rule files
+
+**Arguments**:
+
+- `dict` _dict_ - rule file dictionary
+
+<a id="oelint_parser.constants.Constants.AddFromConstantFile"></a>
+
+#### AddFromConstantFile
+
+```python
+def AddFromConstantFile(dict)
+```
+
+Legacy interface to support constant files
+
+**Arguments**:
+
+- `dict` _dict_ - constant file dictionary
+
+<a id="oelint_parser.constants.Constants.FunctionsKnown"></a>
+
+#### FunctionsKnown
+
+```python
+@property
+def FunctionsKnown()
+```
+
+Return known functions
+
+**Returns**:
+
+- `list` - list of known functions
+
+<a id="oelint_parser.constants.Constants.FunctionsOrder"></a>
+
+#### FunctionsOrder
+
+```python
+@property
+def FunctionsOrder()
+```
+
+Return function order
+
+**Returns**:
+
+- `list` - List of functions to order in their designated order
+
+<a id="oelint_parser.constants.Constants.VariablesMandatory"></a>
+
+#### VariablesMandatory
+
+```python
+@property
+def VariablesMandatory()
+```
+
+Return mandatory variables
+
+**Returns**:
+
+- `list` - List of mandatory variables
+
+<a id="oelint_parser.constants.Constants.VariablesSuggested"></a>
+
+#### VariablesSuggested
+
+```python
+@property
+def VariablesSuggested()
+```
+
+Return suggested variables
+
+**Returns**:
+
+- `list` - List of suggested variables
+
+<a id="oelint_parser.constants.Constants.MirrorsKnown"></a>
+
+#### MirrorsKnown
+
+```python
+@property
+def MirrorsKnown()
+```
+
+Return known mirrors and their replacements
+
+**Returns**:
+
+- `dict` - Dict of known mirrors and their replacements
+
+<a id="oelint_parser.constants.Constants.VariablesProtected"></a>
+
+#### VariablesProtected
+
+```python
+@property
+def VariablesProtected()
+```
+
+Return protected variables
+
+**Returns**:
+
+- `list` - List of protected variables
+
+<a id="oelint_parser.constants.Constants.VariablesProtectedAppend"></a>
+
+#### VariablesProtectedAppend
+
+```python
+@property
+def VariablesProtectedAppend()
+```
+
+Return protected variables in bbappend files
+
+**Returns**:
+
+- `list` - List of protected variables in bbappend files
+
+<a id="oelint_parser.constants.Constants.VariablesOrder"></a>
+
+#### VariablesOrder
+
+```python
+@property
+def VariablesOrder()
+```
+
+Variable order
+
+**Returns**:
+
+- `list` - List of variables to order in their designated order
+
+<a id="oelint_parser.constants.Constants.VariablesKnown"></a>
+
+#### VariablesKnown
+
+```python
+@property
+def VariablesKnown()
+```
+
+Known variables
+
+**Returns**:
+
+- `list` - List of known variables
+
+<a id="oelint_parser.constants.Constants.DistrosKnown"></a>
+
+#### DistrosKnown
+
+```python
+@property
+def DistrosKnown()
+```
+
+Known distros
+
+**Returns**:
+
+- `list` - List of known distros
+
+<a id="oelint_parser.constants.Constants.MachinesKnown"></a>
+
+#### MachinesKnown
+
+```python
+@property
+def MachinesKnown()
+```
+
+Known machines
+
+**Returns**:
+
+- `list` - List of known machines
+
+<a id="oelint_parser.constants.Constants.ImagesClasses"></a>
+
+#### ImagesClasses
+
+```python
+@property
+def ImagesClasses()
+```
+
+Classes that are used in images
+
+**Returns**:
+
+- `list` - Classes that are used in images
+
+<a id="oelint_parser.constants.Constants.ImagesVariables"></a>
+
+#### ImagesVariables
+
+```python
+@property
+def ImagesVariables()
+```
+
+Variables that are used in images
+
+**Returns**:
+
+- `list` - Variables that are used in images
+
+<a id="oelint_parser.constants.Constants.SetsBase"></a>
+
+#### SetsBase
+
+```python
+@property
+def SetsBase()
+```
+
+Base variable set
+
+**Returns**:
+
+- `dict` - dictionary with base variable set
 
 <a id="oelint_parser.cls_item"></a>
 
@@ -1913,691 +2511,93 @@ statement either include or require
 
 - `str` - include or require
 
-<a id="oelint_parser.helper_files"></a>
+<a id="oelint_parser.parser"></a>
 
-# oelint\_parser.helper\_files
+# oelint\_parser.parser
 
-<a id="oelint_parser.helper_files.get_files"></a>
+<a id="oelint_parser.parser.get_full_scope"></a>
 
-#### get\_files
+#### get\_full\_scope
 
 ```python
-def get_files(stash, _file, pattern)
+def get_full_scope(_string, offset, _sstart, _send)
 ```
 
-Get files matching SRC_URI entries
+get full block of an inline statement
 
 **Arguments**:
 
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to filename
-- `pattern` _str_ - glob pattern to apply
+- `_string` _str_ - input string
+- `offset` _int_ - offset in string
+- `_sstart` _int_ - block start index
+- `_send` _int_ - block end index
   
 
 **Returns**:
 
-- `list` - list of files matching pattern
+- `str` - full block on inline statement
 
-<a id="oelint_parser.helper_files.get_layer_root"></a>
+<a id="oelint_parser.parser.prepare_lines_subparser"></a>
 
-#### get\_layer\_root
+#### prepare\_lines\_subparser
 
 ```python
-def get_layer_root(name)
+def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None)
 ```
 
-Find the path to the layer root of a file
+preprocess raw input
 
 **Arguments**:
 
-- `name` _str_ - filename
+- `_iter` _interator_ - line interator object
+- `lineOffset` _int_ - current line index
+- `num` _int_ - internal line counter
+- `line` _int_ - input string
+- `raw_line` _string, optional_ - internal line representation. Defaults to None.
   
 
 **Returns**:
 
-- `str` - path to layer root or empty string
+- `list` - list of preproccessed chunks
 
-<a id="oelint_parser.helper_files.find_local_or_in_layer"></a>
+<a id="oelint_parser.parser.prepare_lines"></a>
 
-#### find\_local\_or\_in\_layer
+#### prepare\_lines
 
 ```python
-def find_local_or_in_layer(name, localdir)
+def prepare_lines(_file, lineOffset=0)
 ```
 
-Find file in local dir or in layer
+break raw file input into preprocessed chunks
 
 **Arguments**:
 
-- `name` _str_ - filename
-- `localdir` _str_ - path to local dir
+- `_file` _string_ - Full path to file
+- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
   
 
 **Returns**:
 
-- `str` - path to found file or None
+- `list` - preprocessed list of chunks
 
-<a id="oelint_parser.helper_files.get_scr_components"></a>
+<a id="oelint_parser.parser.get_items"></a>
 
-#### get\_scr\_components
+#### get\_items
 
 ```python
-def get_scr_components(string)
+def get_items(stash, _file, lineOffset=0)
 ```
 
-Return SRC_URI components
+parses file
 
 **Arguments**:
 
-- `string` _str_ - raw string
+- `stash` _oelint_parser.cls_stash.Stash_ - Stash object
+- `_file` _string_ - Full path to file
+- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
   
 
 **Returns**:
 
-- `dict` - scheme: protocol used, src: source URI, options: parsed options
-
-<a id="oelint_parser.helper_files.safe_linesplit"></a>
-
-#### safe\_linesplit
-
-```python
-def safe_linesplit(string)
-```
-
-Split line in a safe manner
-
-**Arguments**:
-
-- `string` _str_ - raw input
-  
-
-**Returns**:
-
-- `list` - safely split input
-
-<a id="oelint_parser.helper_files.guess_recipe_name"></a>
-
-#### guess\_recipe\_name
-
-```python
-def guess_recipe_name(_file)
-```
-
-Get the recipe name from filename
-
-**Arguments**:
-
-- `_file` _str_ - filename
-  
-
-**Returns**:
-
-- `str` - recipe name
-
-<a id="oelint_parser.helper_files.guess_base_recipe_name"></a>
-
-#### guess\_base\_recipe\_name
-
-```python
-def guess_base_recipe_name(_file)
-```
-
-Get the base recipe name from filename
-
-**Arguments**:
-
-- `_file` _str_ - filename
-  
-
-**Returns**:
-
-- `str` - recipe name
-
-<a id="oelint_parser.helper_files.guess_recipe_version"></a>
-
-#### guess\_recipe\_version
-
-```python
-def guess_recipe_version(_file)
-```
-
-Get recipe version from filename
-
-**Arguments**:
-
-- `_file` _str_ - filename
-  
-
-**Returns**:
-
-- `str` - recipe version
-
-<a id="oelint_parser.helper_files.expand_term"></a>
-
-#### expand\_term
-
-```python
-def expand_term(stash, _file, value, spare=[], seen={})
-```
-
-Expand a variable (replacing all variables by known content)
-
-**Arguments**:
-
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
-- `value` _str_ - Variable value to expand
-  
-
-**Returns**:
-
-- `str` - expanded value
-
-<a id="oelint_parser.helper_files.get_valid_package_names"></a>
-
-#### get\_valid\_package\_names
-
-```python
-def get_valid_package_names(stash, _file, strippn=False)
-```
-
-Get known valid names for packages
-
-**Arguments**:
-
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
-  
-
-**Returns**:
-
-- `list` - list of valid package names
-
-<a id="oelint_parser.helper_files.get_valid_named_resources"></a>
-
-#### get\_valid\_named\_resources
-
-```python
-def get_valid_named_resources(stash, _file)
-```
-
-Get list of valid SRCREV resource names
-
-**Arguments**:
-
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
-  
-
-**Returns**:
-
-- `list` - list of valid SRCREV resource names
-
-<a id="oelint_parser.helper_files.is_image"></a>
-
-#### is\_image
-
-```python
-def is_image(stash, _file)
-```
-
-returns if the file is likely an image recipe or not
-
-**Arguments**:
-
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
-  
-
-**Returns**:
-
-- `bool` - True if _file is an image recipe
-
-<a id="oelint_parser.helper_files.is_packagegroup"></a>
-
-#### is\_packagegroup
-
-```python
-def is_packagegroup(stash, _file)
-```
-
-returns if the file is likely a packagegroup recipe or not
-
-**Arguments**:
-
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
-  
-
-**Returns**:
-
-- `bool` - True if _file is a packagegroup recipe
-
-<a id="oelint_parser.rpl_regex"></a>
-
-# oelint\_parser.rpl\_regex
-
-<a id="oelint_parser.rpl_regex.RegexRpl"></a>
-
-## RegexRpl Objects
-
-```python
-class RegexRpl()
-```
-
-Safe regex replacements
-
-<a id="oelint_parser.rpl_regex.RegexRpl.search"></a>
-
-#### search
-
-```python
-@staticmethod
-def search(pattern, string, timeout=5, default=None, *args, **kwargs)
-```
-
-replacement for re.search
-
-**Arguments**:
-
-- `pattern` _str_ - regex pattern
-- `string` _str_ - input string
-- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
-- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
-  
-
-**Returns**:
-
-- `Match` - Match object or None
-
-<a id="oelint_parser.rpl_regex.RegexRpl.split"></a>
-
-#### split
-
-```python
-@staticmethod
-def split(pattern, string, timeout=5, default=None, *args, **kwargs)
-```
-
-replacement for re.split
-
-**Arguments**:
-
-- `pattern` _str_ - regex pattern
-- `string` _str_ - input string
-- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
-- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
-  
-
-**Returns**:
-
-- `list` - list object or None
-
-<a id="oelint_parser.rpl_regex.RegexRpl.match"></a>
-
-#### match
-
-```python
-@staticmethod
-def match(pattern, string, timeout=5, default=None, *args, **kwargs)
-```
-
-replacement for re.match
-
-**Arguments**:
-
-- `pattern` _str_ - regex pattern
-- `string` _str_ - input string
-- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
-- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
-  
-
-**Returns**:
-
-- `Match` - Match object or None
-
-<a id="oelint_parser.rpl_regex.RegexRpl.sub"></a>
-
-#### sub
-
-```python
-@staticmethod
-def sub(pattern, repl, string, timeout=5, default='', *args, **kwargs)
-```
-
-replacement for re.sub
-
-**Arguments**:
-
-- `pattern` _str_ - regex pattern
-- `repl` _str_ - replacement string
-- `string` _str_ - input string
-- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
-- `default` __type_, optional_ - Default to return on timeout. Defaults to ''.
-  
-
-**Returns**:
-
-- `str` - string
-
-<a id="oelint_parser.rpl_regex.RegexRpl.finditer"></a>
-
-#### finditer
-
-```python
-@staticmethod
-def finditer(pattern, string, timeout=5, default=None, *args, **kwargs)
-```
-
-replacement for re.finditer
-
-**Arguments**:
-
-- `pattern` _str_ - regex pattern
-- `string` _str_ - input string
-- `timeout` _int, optional_ - Timeout for operation. On timeout `default` will be returned. Defaults to 5.
-- `default` __type_, optional_ - Default to return on timeout. Defaults to None.
-  
-
-**Returns**:
-
-- `Scanner` - Scanner object or None
-
-<a id="oelint_parser.constants"></a>
-
-# oelint\_parser.constants
-
-<a id="oelint_parser.constants.Constants"></a>
-
-## Constants Objects
-
-```python
-class Constants()
-```
-
-Interface for constants
-
-<a id="oelint_parser.constants.Constants.AddConstants"></a>
-
-#### AddConstants
-
-```python
-def AddConstants(_dict)
-```
-
-Add constants to the existing
-
-**Arguments**:
-
-- `dict` _dict_ - constant dictionary to add
-
-<a id="oelint_parser.constants.Constants.RemoveConstants"></a>
-
-#### RemoveConstants
-
-```python
-def RemoveConstants(_dict)
-```
-
-Remove constants from the existing
-
-**Arguments**:
-
-- `dict` _dict_ - constant dictionary to remove
-
-<a id="oelint_parser.constants.Constants.OverrideConstants"></a>
-
-#### OverrideConstants
-
-```python
-def OverrideConstants(_dict)
-```
-
-Override constants in the existing db
-
-**Arguments**:
-
-- `dict` _dict]_ - constant dictionary with override values
-
-<a id="oelint_parser.constants.Constants.AddFromRuleFile"></a>
-
-#### AddFromRuleFile
-
-```python
-def AddFromRuleFile(dict)
-```
-
-Legacy interface to support rule files
-
-**Arguments**:
-
-- `dict` _dict_ - rule file dictionary
-
-<a id="oelint_parser.constants.Constants.AddFromConstantFile"></a>
-
-#### AddFromConstantFile
-
-```python
-def AddFromConstantFile(dict)
-```
-
-Legacy interface to support constant files
-
-**Arguments**:
-
-- `dict` _dict_ - constant file dictionary
-
-<a id="oelint_parser.constants.Constants.FunctionsKnown"></a>
-
-#### FunctionsKnown
-
-```python
-@property
-def FunctionsKnown()
-```
-
-Return known functions
-
-**Returns**:
-
-- `list` - list of known functions
-
-<a id="oelint_parser.constants.Constants.FunctionsOrder"></a>
-
-#### FunctionsOrder
-
-```python
-@property
-def FunctionsOrder()
-```
-
-Return function order
-
-**Returns**:
-
-- `list` - List of functions to order in their designated order
-
-<a id="oelint_parser.constants.Constants.VariablesMandatory"></a>
-
-#### VariablesMandatory
-
-```python
-@property
-def VariablesMandatory()
-```
-
-Return mandatory variables
-
-**Returns**:
-
-- `list` - List of mandatory variables
-
-<a id="oelint_parser.constants.Constants.VariablesSuggested"></a>
-
-#### VariablesSuggested
-
-```python
-@property
-def VariablesSuggested()
-```
-
-Return suggested variables
-
-**Returns**:
-
-- `list` - List of suggested variables
-
-<a id="oelint_parser.constants.Constants.MirrorsKnown"></a>
-
-#### MirrorsKnown
-
-```python
-@property
-def MirrorsKnown()
-```
-
-Return known mirrors and their replacements
-
-**Returns**:
-
-- `dict` - Dict of known mirrors and their replacements
-
-<a id="oelint_parser.constants.Constants.VariablesProtected"></a>
-
-#### VariablesProtected
-
-```python
-@property
-def VariablesProtected()
-```
-
-Return protected variables
-
-**Returns**:
-
-- `list` - List of protected variables
-
-<a id="oelint_parser.constants.Constants.VariablesProtectedAppend"></a>
-
-#### VariablesProtectedAppend
-
-```python
-@property
-def VariablesProtectedAppend()
-```
-
-Return protected variables in bbappend files
-
-**Returns**:
-
-- `list` - List of protected variables in bbappend files
-
-<a id="oelint_parser.constants.Constants.VariablesOrder"></a>
-
-#### VariablesOrder
-
-```python
-@property
-def VariablesOrder()
-```
-
-Variable order
-
-**Returns**:
-
-- `list` - List of variables to order in their designated order
-
-<a id="oelint_parser.constants.Constants.VariablesKnown"></a>
-
-#### VariablesKnown
-
-```python
-@property
-def VariablesKnown()
-```
-
-Known variables
-
-**Returns**:
-
-- `list` - List of known variables
-
-<a id="oelint_parser.constants.Constants.DistrosKnown"></a>
-
-#### DistrosKnown
-
-```python
-@property
-def DistrosKnown()
-```
-
-Known distros
-
-**Returns**:
-
-- `list` - List of known distros
-
-<a id="oelint_parser.constants.Constants.MachinesKnown"></a>
-
-#### MachinesKnown
-
-```python
-@property
-def MachinesKnown()
-```
-
-Known machines
-
-**Returns**:
-
-- `list` - List of known machines
-
-<a id="oelint_parser.constants.Constants.ImagesClasses"></a>
-
-#### ImagesClasses
-
-```python
-@property
-def ImagesClasses()
-```
-
-Classes that are used in images
-
-**Returns**:
-
-- `list` - Classes that are used in images
-
-<a id="oelint_parser.constants.Constants.ImagesVariables"></a>
-
-#### ImagesVariables
-
-```python
-@property
-def ImagesVariables()
-```
-
-Variables that are used in images
-
-**Returns**:
-
-- `list` - Variables that are used in images
-
-<a id="oelint_parser.constants.Constants.SetsBase"></a>
-
-#### SetsBase
-
-```python
-@property
-def SetsBase()
-```
-
-Base variable set
-
-**Returns**:
-
-- `dict` - dictionary with base variable set
-
-<a id="oelint_parser.inlinerep"></a>
-
-# oelint\_parser.inlinerep
+- `list` - List of oelint_parser.cls_item.* representations
 
