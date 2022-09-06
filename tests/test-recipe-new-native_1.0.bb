@@ -8,4 +8,5 @@ do_example:prepend:qemux86-64:poky() {
 
 RDEPENDS:${PN}-test += "foo"
 
+X = "${BP}"
 Y = "${P}"

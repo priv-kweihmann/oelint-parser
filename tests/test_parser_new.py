@@ -1,11 +1,14 @@
 from logging import log
+import logging
 import unittest
 import os
 import sys
 
+
 class OelintParserTestNew(unittest.TestCase):
 
     RECIPE = os.path.join(os.path.dirname(__file__), "test-recipe-new_1.0.bb")
+    RECIPE_NATIVE = os.path.join(os.path.dirname(__file__), "test-recipe-new-native_1.0.bb")
 
     def setUp(self):
         sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../"))
@@ -24,8 +27,8 @@ class OelintParserTestNew(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserTestNew.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
-                                          attribute=Variable.ATTR_VAR, 
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
                                           attributeValue="A")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
@@ -45,8 +48,8 @@ class OelintParserTestNew(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserTestNew.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
-                                          attribute=Variable.ATTR_VAR, 
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
                                           attributeValue="B")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
@@ -66,8 +69,8 @@ class OelintParserTestNew(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserTestNew.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
-                                          attribute=Variable.ATTR_VAR, 
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
                                           attributeValue="RDEPENDS")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
@@ -94,13 +97,59 @@ class OelintParserTestNew(unittest.TestCase):
         self.assertEqual(_stash[0].IsPython, False)
         self.assertEqual(_stash[0].IsFakeroot, False)
         self.assertEqual(_stash[0].FuncName, "do_example")
-        self.assertEqual(_stash[0].FuncNameComplete, "do_example:prepend:qemux86-64:poky")
-        self.assertIn('bbwarn "This is an example warning"', _stash[0].FuncBody)
+        self.assertEqual(_stash[0].FuncNameComplete,
+                         "do_example:prepend:qemux86-64:poky")
+        self.assertIn('bbwarn "This is an example warning"',
+                      _stash[0].FuncBody)
         self.assertIn("prepend", _stash[0].SubItems)
         self.assertEqual(_stash[0].IsAppend(), True)
-        self.assertEqual(_stash[0].FuncBodyStripped, 'bbwarn "This is an example warning"')
+        self.assertEqual(_stash[0].FuncBodyStripped,
+                         'bbwarn "This is an example warning"')
         self.assertEqual(_stash[0].GetDistroEntry(), "poky")
         self.assertEqual(_stash[0].GetMachineEntry(), "qemux86-64")
 
-if __name__ == "__main__": 
+    def test_var_bp(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE_NATIVE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
+                                          attributeValue="X")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            logging.warning(x.VarValueStripped)
+            value = expand_term(self.__stash, OelintParserTestNew.RECIPE, x.VarValueStripped)
+            self.assertEqual(value, "test-recipe-new-1.0")
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
+                                          attributeValue="Y")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            logging.warning(x.VarValueStripped)
+            value = expand_term(self.__stash, OelintParserTestNew.RECIPE, x.VarValueStripped)
+            self.assertEqual(value, "test-recipe-new-1.0")
+
+    def test_var_p(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
+                                          attributeValue="Y")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            value = expand_term(self.__stash, OelintParserTestNew.RECIPE, x.VarValueStripped)
+            self.assertEqual(value, "test-recipe-new-1.0")
+
+
+if __name__ == "__main__":
     unittest.main()

@@ -40,6 +40,7 @@
   * [safe\_linesplit](#oelint_parser.helper_files.safe_linesplit)
   * [guess\_recipe\_name](#oelint_parser.helper_files.guess_recipe_name)
   * [guess\_base\_recipe\_name](#oelint_parser.helper_files.guess_base_recipe_name)
+  * [guess\_base\_recipe\_name](#oelint_parser.helper_files.guess_base_recipe_name)
   * [guess\_recipe\_version](#oelint_parser.helper_files.guess_recipe_version)
   * [expand\_term](#oelint_parser.helper_files.expand_term)
   * [get\_valid\_package\_names](#oelint_parser.helper_files.get_valid_package_names)
@@ -744,6 +745,25 @@ def guess_recipe_name(_file)
 ```
 
 Get the recipe name from filename
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe name
+
+<a id="oelint_parser.helper_files.guess_base_recipe_name"></a>
+
+#### guess\_base\_recipe\_name
+
+```python
+def guess_base_recipe_name(_file)
+```
+
+Get the base recipe name from filename (aka BPN)
 
 **Arguments**:
 

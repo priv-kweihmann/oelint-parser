@@ -1,5 +1,6 @@
 import glob
 import os
+import re
 from urllib.parse import urlparse
 
 from oelint_parser.cls_item import Variable
@@ -29,6 +30,7 @@ def get_files(stash, _file, pattern):
     for item in files_paths:
         res += glob.glob(item)
     return list(set(res))
+
 
 def get_layer_root(name):
     """Find the path to the layer root of a file
@@ -100,7 +102,8 @@ def get_scr_components(string):
         _tmp += "/" + _url.path.lstrip("/")
     _path = _tmp.split(";")[0]
     _options = _raw.split(";")[1:] if ";" in _raw else []
-    _parsed_opt = {x.split("=")[0]: x.split("=")[1] for x in _options if "=" in x}
+    _parsed_opt = {x.split("=")[0]: x.split("=")[1]
+                   for x in _options if "=" in x}
     return {"scheme": _scheme, "src": _path, "options": _parsed_opt}
 
 
@@ -115,6 +118,7 @@ def safe_linesplit(string):
     """
     return RegexRpl.split(r"\s|\t|\x1b", string)
 
+
 def guess_recipe_name(_file):
     """Get the recipe name from filename
 
@@ -126,6 +130,19 @@ def guess_recipe_name(_file):
     """
     _name, _ = os.path.splitext(os.path.basename(_file))
     return _name.split("_")[0]
+
+
+def guess_base_recipe_name(_file):
+    """Get the base recipe name from filename (aka BPN)
+
+    Arguments:
+        _file {str} -- filename
+
+    Returns:
+        str -- recipe name
+    """
+    return re.sub(r"(nativesdk-)*(.*)(-native)*", "\2", guess_recipe_name(_file)),
+
 
 def guess_base_recipe_name(_file):
     """Get the base recipe name from filename
@@ -141,6 +158,7 @@ def guess_base_recipe_name(_file):
         _name = ''.join(_name.rsplit(x, 1))
     return _name
 
+
 def guess_recipe_version(_file):
     """Get recipe version from filename
 
@@ -153,6 +171,7 @@ def guess_recipe_version(_file):
     _name, _ = os.path.splitext(os.path.basename(_file))
     return _name.split("_")[-1]
 
+
 def expand_term(stash, _file, value, spare=[], seen={}):
     """Expand a variable (replacing all variables by known content)
 
@@ -164,31 +183,45 @@ def expand_term(stash, _file, value, spare=[], seen={}):
     Returns:
         str -- expanded value
     """
+    baseset = CONSTANTS.SetsBase
     pattern = r"\$\{(.+?)\}"
     res = str(value)
     for m in RegexRpl.finditer(pattern, value):
         if m.group(1) in spare:
             continue
         _comp = [x for x in stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
-                        attribute=Variable.ATTR_VAR, attributeValue=m.group(1)) if not x.AppendOperation()]
+                                              attribute=Variable.ATTR_VAR, attributeValue=m.group(1)) if not x.AppendOperation()]
 
         if any(_comp):
             if m.group(1) in seen.keys():
                 _rpl = seen[m.group(1)]
             else:
                 seen[m.group(1)] = ""
-                _rpl = expand_term(stash, _file, _comp[0].VarValueStripped, seen=seen)
+                _rpl = expand_term(
+                    stash, _file, _comp[0].VarValueStripped, seen=seen)
                 seen[m.group(1)] = _rpl
+            res = res.replace(m.group(0), _rpl)
+        elif m.group(1) in baseset:
+            if m.group(1) in seen.keys():
+                _rpl = seen[m.group(1)]
+            elif m.group(1) in baseset:
+                seen[m.group(1)] = ""
+                _rpl = expand_term(
+                    stash, _file, baseset[m.group(1)], seen=seen)
+                seen[m.group(1)] = _rpl
+            else:
+                _rpl = m.group(1)
             res = res.replace(m.group(0), _rpl)
         elif m.group(1) in ["PN"]:
             res = res.replace(m.group(0), guess_recipe_name(_file))
         elif m.group(1) in ["BPN"]:
-            res = res.replace(m.group(0), ''.join(guess_recipe_name(_file).rsplit('-native', 1)))
+            res = res.replace(m.group(0), guess_base_recipe_name(_file))
         elif m.group(1) in ["PV"]:
             res = res.replace(m.group(0), guess_recipe_version(_file))
         elif not any(_comp):
             continue
     return res
+
 
 def get_valid_package_names(stash, _file, strippn=False):
     """Get known valid names for packages
@@ -204,11 +237,12 @@ def get_valid_package_names(stash, _file, strippn=False):
     _comp = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                               attribute=Variable.ATTR_VAR, attributeValue="PACKAGES")
     _comp += stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
-                              attribute=Variable.ATTR_VAR, attributeValue="PACKAGE_BEFORE_PN")
+                               attribute=Variable.ATTR_VAR, attributeValue="PACKAGE_BEFORE_PN")
     _recipe_name = guess_recipe_name(_file)
     res.add(_recipe_name)
     res.add("{}-ptest".format(_recipe_name))
-    res.update(["{}-{}".format(_recipe_name, x) for x in ["src", "dbg", "staticdev", "dev", "doc", "locale"]])
+    res.update(["{}-{}".format(_recipe_name, x)
+               for x in ["src", "dbg", "staticdev", "dev", "doc", "locale"]])
     for item in _comp:
         for pkg in [x for x in safe_linesplit(expand_term(stash, _file, item.VarValueStripped, spare=["PN"])) if x]:
             if not strippn:
@@ -217,6 +251,7 @@ def get_valid_package_names(stash, _file, strippn=False):
                 _pkg = pkg.replace("${PN}", "")
             res.add(_pkg)
     return res
+
 
 def get_valid_named_resources(stash, _file):
     """Get list of valid SRCREV resource names
@@ -240,6 +275,7 @@ def get_valid_named_resources(stash, _file):
                 res.add(_url["options"]["name"].replace("${PN}", _recipe_name))
     return res
 
+
 def is_image(stash, _file):
     """returns if the file is likely an image recipe or not
 
@@ -253,14 +289,16 @@ def is_image(stash, _file):
     res = False
 
     _inherits = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
-                              attribute=Variable.ATTR_VAR, attributeValue="inherit")
-    res |= any(x for x in _inherits if x.VarValueStripped in CONSTANTS.ImagesClasses)
+                                  attribute=Variable.ATTR_VAR, attributeValue="inherit")
+    res |= any(
+        x for x in _inherits if x.VarValueStripped in CONSTANTS.ImagesClasses)
 
     for _var in CONSTANTS.ImagesVariables:
         res |= any(stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
-                              attribute=Variable.ATTR_VAR, attributeValue=_var))
+                                     attribute=Variable.ATTR_VAR, attributeValue=_var))
 
     return res
+
 
 def is_packagegroup(stash, _file):
     """returns if the file is likely a packagegroup recipe or not
@@ -275,5 +313,5 @@ def is_packagegroup(stash, _file):
     res = False
 
     _inherits = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
-                              attribute=Variable.ATTR_VAR, attributeValue="inherit")
+                                  attribute=Variable.ATTR_VAR, attributeValue="inherit")
     return any(x for x in _inherits if x.VarValueStripped in ["packagegroup"])
