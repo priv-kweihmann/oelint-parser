@@ -1,14 +1,8 @@
 import setuptools
+from pathlib import Path
 
-import subprocess
-_long_description = "See https://github.com/priv-kweihmann/oelint-parser for documentation"
-_long_description_content_type = "text/plain"
-try:
-    _long_description = subprocess.check_output(
-        ["pandoc", "--from", "markdown", "--to", "markdown", "README.md"]).decode("utf-8")
-    _long_description_content_type = "text/markdown"
-except (subprocess.CalledProcessError, FileNotFoundError):
-    pass
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 requirements = []
 with open('requirements.txt') as f:
@@ -20,8 +14,8 @@ setuptools.setup(
     author="Konrad Weihmann",
     author_email="kweihmann@outlook.com",
     description="Alternative parser for bitbake recipes",
-    long_description=_long_description,
-    long_description_content_type=_long_description_content_type,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url="https://github.com/priv-kweihmann/oelint-parser",
     packages=setuptools.find_packages(),
     install_requires=requirements,
@@ -31,7 +25,7 @@ setuptools.setup(
             'pytest'
         ]
     },
-    package_data = {
+    package_data={
         'oelint_parser': ['data/*'],
     },
     classifiers=[
