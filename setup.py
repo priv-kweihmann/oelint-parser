@@ -8,6 +8,10 @@ requirements = []
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
+requirements_dev = []
+with open('requirements-dev.txt') as f:
+    requirements_dev = f.read().splitlines()
+
 setuptools.setup(
     name="oelint_parser",
     version="2.7.0",
@@ -20,10 +24,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=requirements,
     extras_require={
-        'dev': [
-            'pydoc-markdown',
-            'pytest'
-        ]
+        'dev': requirements_dev,
     },
     package_data={
         'oelint_parser': ['data/*'],
@@ -41,4 +42,5 @@ setuptools.setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3",
     ],
+    python_requires='>=3.7',
 )
