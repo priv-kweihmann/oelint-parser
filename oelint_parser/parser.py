@@ -2,6 +2,7 @@ import collections
 import os
 
 import regex
+
 from oelint_parser.cls_item import Comment
 from oelint_parser.cls_item import Export
 from oelint_parser.cls_item import Function
@@ -18,6 +19,7 @@ from oelint_parser.inlinerep import inlinerep
 from oelint_parser.rpl_regex import RegexRpl
 
 INLINE_BLOCK = "!!!inlineblock!!!"
+
 
 def get_full_scope(_string, offset, _sstart, _send):
     """get full block of an inline statement
@@ -41,7 +43,7 @@ def get_full_scope(_string, offset, _sstart, _send):
         pos += 1
         if scopelevel < 0:
             break
-    return _string[:pos+offset]
+    return _string[:pos + offset]
 
 
 def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None):
@@ -94,7 +96,7 @@ def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None):
             if RegexRpl.match("^[A-Za-z0-9#]+", line) or stopiter:
                 if not stopiter:
                     res += prepare_lines_subparser(_iter,
-                                                lineOffset, num, line)
+                                                   lineOffset, num, line)
                 break
             if line.startswith("def "):
                 raw_line = line
@@ -116,7 +118,7 @@ def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None):
 
 
 def prepare_lines(_file, lineOffset=0):
-    """break raw file input into preprocessed chunks 
+    """break raw file input into preprocessed chunks
 
     Args:
         _file (string): Full path to file
@@ -172,7 +174,7 @@ def get_items(stash, _file, lineOffset=0):
         ("addtask", __regex_addtask),
         ("taskassign", __regex_taskass),
         ("exportfunc", __regex_export_func),
-        ("vars", __regex_var)
+        ("vars", __regex_var),
     ])
 
     includeOffset = 0
@@ -220,24 +222,26 @@ def get_items(stash, _file, lineOffset=0):
                     _path = None
                     for location in ["classes", "classes-recipe", "classes-global"]:
                         _path = find_local_or_in_layer(
-                            os.path.join(location, inhname), 
+                            os.path.join(location, inhname),
                             os.path.dirname(_file))
                         if _path:
                             break
                     if _path:
-                        tmp = stash.AddFile(_path, lineOffset=line["line"], forcedLink=_file)
+                        tmp = stash.AddFile(
+                            _path, lineOffset=line["line"], forcedLink=_file)
                         if any(tmp):
                             includeOffset += max([x.InFileLine for x in tmp])
                     res.append(Variable(
                         _file, line["line"] + includeOffset, line["line"] -
-                        lineOffset, line["raw"], "inherit", m.group("inhname"), line["realraw"],
+                        lineOffset, line["raw"], "inherit", m.group(
+                            "inhname"), line["realraw"],
                         "", ""))
                     good = True
                     break
                 elif k == "export":
                     res.append(Export(
                         _file, line["line"] + includeOffset, line["line"] -
-                        lineOffset, line["raw"], m.group("name").strip() , m.group("value"), line["realraw"]))
+                        lineOffset, line["raw"], m.group("name").strip(), m.group("value"), line["realraw"]))
                     good = True
                     break
                 elif k == "export_noval":

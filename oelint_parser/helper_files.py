@@ -19,17 +19,17 @@ def get_files(stash, _file, pattern):
     Returns:
         list -- list of files matching pattern
     """
-    res = []
+    res = set()
     src_uris = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                                  attribute=Variable.ATTR_VAR, attributeValue="SRC_URI")
-    files_paths = list(
-        set(["{}/*/{}".format(os.path.dirname(x.Origin), pattern) for x in src_uris]))
+    files_paths = {
+        "{dir}/*/{pattern}".format(dir=os.path.dirname(x.Origin), pattern=pattern) for x in src_uris}
     for item in src_uris:
-        files_paths += list(set(["{}/*/{}".format(os.path.dirname(x.Origin), pattern)
-                                 for x in stash.GetItemsFor(filename=item.Origin)]))
+        files_paths.update({"{dir}/*/{pattern}".format(dir=os.path.dirname(x.Origin), pattern=pattern)
+                           for x in stash.GetItemsFor(filename=item.Origin)})
     for item in files_paths:
-        res += glob.glob(item)
-    return list(set(res))
+        res.update(glob.glob(item))
+    return sorted(res)
 
 
 def get_layer_root(name):
@@ -108,7 +108,7 @@ def get_scr_components(string):
 
 
 def safe_linesplit(string):
-    """Split line in a safe manner 
+    """Split line in a safe manner
 
     Arguments:
         string {str} -- raw input
@@ -141,22 +141,10 @@ def guess_base_recipe_name(_file):
     Returns:
         str -- recipe name
     """
-    return re.sub(r"(nativesdk-)*(.*)(-native)*", "\2", guess_recipe_name(_file)),
-
-
-def guess_base_recipe_name(_file):
-    """Get the base recipe name from filename
-
-    Arguments:
-        _file {str} -- filename
-
-    Returns:
-        str -- recipe name
-    """
-    _name = guess_recipe_name(_file)
-    for x in ["-native", "-nativesdk", "-cross"]:
-        _name = ''.join(_name.rsplit(x, 1))
-    return _name
+    tmp_ = re.sub(r"^(nativesdk-)*(.+)(-native)*(-cross)*", r"\2", guess_recipe_name(_file))
+    tmp_ = re.sub(r"^(.+)(-native)$", r"\1", tmp_)
+    tmp_ = re.sub(r"^(.+)(-cross)$", r"\1", tmp_)
+    return tmp_
 
 
 def guess_recipe_version(_file):
@@ -172,7 +160,7 @@ def guess_recipe_version(_file):
     return _name.split("_")[-1]
 
 
-def expand_term(stash, _file, value, spare=[], seen={}):
+def expand_term(stash, _file, value, spare=None, seen=None):
     """Expand a variable (replacing all variables by known content)
 
     Arguments:
@@ -185,6 +173,8 @@ def expand_term(stash, _file, value, spare=[], seen={}):
     """
     baseset = CONSTANTS.SetsBase
     pattern = r"\$\{(.+?)\}"
+    seen = seen or {}
+    spare = spare or []
     res = str(value)
     for m in RegexRpl.finditer(pattern, value):
         if m.group(1) in spare:
@@ -240,8 +230,8 @@ def get_valid_package_names(stash, _file, strippn=False):
                                attribute=Variable.ATTR_VAR, attributeValue="PACKAGE_BEFORE_PN")
     _recipe_name = guess_recipe_name(_file)
     res.add(_recipe_name)
-    res.add("{}-ptest".format(_recipe_name))
-    res.update(["{}-{}".format(_recipe_name, x)
+    res.add("{recipe}-ptest".format(recipe=_recipe_name))
+    res.update(["{recipe}-{pkg}".format(recipe=_recipe_name, pkg=x)
                for x in ["src", "dbg", "staticdev", "dev", "doc", "locale"]])
     for item in _comp:
         for pkg in [x for x in safe_linesplit(expand_term(stash, _file, item.VarValueStripped, spare=["PN"])) if x]:
@@ -310,8 +300,6 @@ def is_packagegroup(stash, _file):
     Returns:
         bool -- True if _file is a packagegroup recipe
     """
-    res = False
-
     _inherits = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                                   attribute=Variable.ATTR_VAR, attributeValue="inherit")
     return any(x for x in _inherits if x.VarValueStripped in ["packagegroup"])

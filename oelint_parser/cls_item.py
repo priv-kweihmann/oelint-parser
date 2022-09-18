@@ -169,7 +169,7 @@ class Item():
                 # that addresses things like FILES_${PN}-dev
                 tmp = "-" + "-".join(i.split("-")[1:])
                 i = i.split("-")[0]
-            if RegexRpl.match("[a-z0-9{}$]+", i) and _var[0] != "pkg":
+            if RegexRpl.match("[a-z0-9{}$]+", i) and _var[0] != "pkg":  # noqa: P103
                 _suffix.append(i + tmp)
             elif i in ["${PN}"]:
                 _suffix.append(i + tmp)
@@ -242,7 +242,7 @@ class Item():
         return res
 
     def __repr__(self):
-        return "{} -- {}\n".format(self.__class__.__name__, self.GetAttributes())
+        return "{name} -- {attr}\n".format(name=self.__class__.__name__, attr=self.GetAttributes())
 
 
 class Variable(Item):
@@ -282,8 +282,8 @@ class Variable(Item):
         self.__VarValue = value
         self.__VarOp = operator
         self.__Flag = flag or ""
-        self.__RawVarName = "{}[{}]".format(
-            self.VarName, self.Flag) if self.Flag else self.VarName
+        self.__RawVarName = "{name}[{flag}]".format(
+            name=self.VarName, flag=self.Flag) if self.Flag else self.VarName
         self.__VarValueStripped = self.VarValue.strip().lstrip('"').rstrip('"')
 
     @property
@@ -352,7 +352,7 @@ class Variable(Item):
             str: complete variable name
         """
         _var = self._override_delimiter.join([self.VarName] + self.SubItems)
-        return "{}[{}]".format(_var, self.Flag) if self.Flag else _var
+        return "{name}[{flag}]".format(name=_var, flag=self.Flag) if self.Flag else _var
 
     @property
     def RawVarName(self):
@@ -598,7 +598,8 @@ class Function(Item):
         self.__IsFakeroot = fakeroot is not None
         name = name or ""
         self.__FuncName, self.__SubItem = self.extract_sub_func(name.strip())
-        self.__SubItems = [x for x in self.SubItem.split(self._override_delimiter) if x]
+        self.__SubItems = [x for x in self.SubItem.split(
+            self._override_delimiter) if x]
         self.__FuncBody = body
         self.__FuncBodyStripped = body.replace(
             "{", "").replace("}", "").replace("\n", "").strip()
@@ -818,6 +819,7 @@ class TaskAssignment(Item):
         """
         return [self.FuncName, self.VarName, self.VarValue]
 
+
 class FunctionExports(Item):
     ATTR_FUNCNAME = "FuncName"
     CLASSIFIER = "FunctionExports"
@@ -860,7 +862,8 @@ class FunctionExports(Item):
             list -- function names in the scope of a bbclass (foo becomes classname-foo in this case)
         """
         _name, _ = os.path.splitext(os.path.basename(self.Origin))
-        return ["{}-{}".format(_name, x) for x in self.get_items()]
+        return ["{name}-{item}".format(name=_name, item=x) for x in self.get_items()]
+
 
 class TaskAdd(Item):
     ATTR_FUNCNAME = "FuncName"
@@ -963,4 +966,3 @@ class MissingFile(Item):
 
     def get_items(self):
         return [self.Filename, self.Statement]
-

@@ -1,6 +1,5 @@
 import glob
 import os
-import re
 
 from oelint_parser.cls_item import Item
 from oelint_parser.cls_item import Variable
@@ -41,7 +40,7 @@ class Stash():
         if _file in self.__seen_files and _ext not in [".inc"]:
             return []
         if not self.__quiet:
-            print("Parsing {}".format(_file))
+            print("Parsing {file}".format(file=_file))
         self.__seen_files.add(_file)
         res = get_items(self, _file, lineOffset=lineOffset)
         if forcedLink:
@@ -92,8 +91,8 @@ class Stash():
     def Finalize(self):
         # cross link all the files
         for k in self.__map.keys():
-            for l in self.__map[k]:
-                self.__map[k] += [x for x in self.__map[l] if x != k]
+            for item in self.__map[k]:
+                self.__map[k] += [x for x in self.__map[item] if x != k]
                 self.__map[k] = list(set(self.__map[k]))
         for k, v in self.__map.items():
             for item in [x for x in self.__list if x.Origin == k]:
@@ -106,7 +105,7 @@ class Stash():
         Returns:
             list -- List of bb files in stash
         """
-        return list(set([x.Origin for x in self.__list if x.Origin.endswith(".bb")]))
+        return sorted({x.Origin for x in self.__list if x.Origin.endswith(".bb")})
 
     def GetLoneAppends(self):
         """Get bbappend without a matching bb
@@ -121,8 +120,7 @@ class Stash():
                 __appends.append(x.Origin)
             else:
                 __linked_appends += x.Links
-        x = list(set([x for x in __appends if x not in __linked_appends]))
-        return x
+        return sorted({x for x in __appends if x not in __linked_appends})
 
     def __is_linked_to(self, item, filename, nolink=False):
         return (filename in item.Links and not nolink) or filename == item.Origin
@@ -177,7 +175,7 @@ class Stash():
         res = self.__get_items_by_file(res, filename, nolink=nolink)
         res = self.__get_items_by_classifier(res, classifier)
         res = self.__get_items_by_attribute(res, attribute, attributeValue)
-        return sorted(list(set(res)), key=lambda x: x.Line)
+        return sorted(set(res), key=lambda x: x.Line)
 
     def ExpandVar(self, filename=None, attribute=None, attributeValue=None, nolink=False):
         """Expand variable to dictionary
@@ -199,7 +197,7 @@ class Stash():
         _exp = {
             "PN": guess_recipe_name(filename),
             "PV": guess_recipe_version(filename),
-            "BPN": guess_base_recipe_name(filename)
+            "BPN": guess_base_recipe_name(filename),
         }
         _exp = {**_exp, **CONSTANTS.SetsBase}
         for item in sorted(_res, key=lambda x: x.Line):
