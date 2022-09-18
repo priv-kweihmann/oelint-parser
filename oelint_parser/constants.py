@@ -28,7 +28,7 @@ class Constants():
         try:
             with open(path) as _in:
                 return json.load(_in)
-        except (FileNotFoundError, OSError, json.JSONDecodeError) as e:
+        except (OSError, json.JSONDecodeError):
             sys.stderr.write('Cannot load constant database\n')
             return {}
 
@@ -99,7 +99,7 @@ class Constants():
             if len(path) == 1:
                 d[crumb] = value
             else:
-                if not crumb in d:
+                if crumb not in d:
                     d[crumb] = {}
                 dict_nested_set(d[crumb], path[1:], value)
         _translated = {}

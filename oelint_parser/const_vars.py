@@ -1,11 +1,12 @@
 import sys
 
-from oelint_parser.constants import CONSTANTS, Constants
+from oelint_parser.constants import CONSTANTS, Constants  # noqa: F401
 
 __warning_shown = False
 
 if not __warning_shown:
-    sys.stderr.write('{} is deprecated. Please use "from oelint_parser.constants import CONSTANTS" instead\n'.format(__name__))
+    sys.stderr.write(
+        '{name} is deprecated. Please use "from oelint_parser.constants import CONSTANTS" instead\n'.format(name=__name__))
     __warning_shown = True
 
 
@@ -74,6 +75,7 @@ def get_protected_append_vars():
 
 VAR_ORDER = CONSTANTS.VariablesOrder
 
+
 def get_known_vars():
     """get list of known variables
 
@@ -82,6 +84,7 @@ def get_known_vars():
     """
     return CONSTANTS.VariablesKnown
 
+
 def get_known_distros():
     """get known distros
 
@@ -89,6 +92,7 @@ def get_known_distros():
         list: list of known distro names
     """
     return CONSTANTS.DistrosKnown
+
 
 def get_known_machines():
     """get known machines
