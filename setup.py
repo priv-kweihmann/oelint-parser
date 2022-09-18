@@ -15,7 +15,7 @@ with open('requirements-dev.txt') as f:
 
 setuptools.setup(
     name='oelint_parser',
-    version='2.7.0',
+    version='2.8.0',
     author='Konrad Weihmann',
     author_email='kweihmann@outlook.com',
     description='Alternative parser for bitbake recipes',
@@ -24,9 +24,6 @@ setuptools.setup(
     url='https://github.com/priv-kweihmann/oelint-parser',
     packages=setuptools.find_packages(),
     install_requires=requirements,
-    extras_require={
-        'dev': requirements_dev,
-    },
     package_data={
         'oelint_parser': ['data/*'],
     },
