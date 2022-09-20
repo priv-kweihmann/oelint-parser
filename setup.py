@@ -9,13 +9,9 @@ requirements = []
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
-requirements_dev = []
-with open('requirements-dev.txt') as f:
-    requirements_dev = f.read().splitlines()
-
 setuptools.setup(
     name='oelint_parser',
-    version='2.8.0',
+    version='2.8.1',
     author='Konrad Weihmann',
     author_email='kweihmann@outlook.com',
     description='Alternative parser for bitbake recipes',
