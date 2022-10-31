@@ -88,7 +88,7 @@ class Constants():
             return a
         self.__db = dict_merge(self.__db, _dict)
 
-    def AddFromRuleFile(self, dict):
+    def AddFromRuleFile(self, _dict):
         """Legacy interface to support rule files
 
         Args:
@@ -104,17 +104,17 @@ class Constants():
                 dict_nested_set(d[crumb], path[1:], value)
         _translated = {}
         for n, r in Constants.LEGACY_MAPPING.items():
-            if n in dict:
-                dict_nested_set(_translated, r.split('/'), dict[n])
+            if n in _dict:
+                dict_nested_set(_translated, r.split('/'), _dict[n])
         self.AddConstants(_translated)
 
-    def AddFromConstantFile(self, dict):
+    def AddFromConstantFile(self, _dict):
         """Legacy interface to support constant files
 
         Args:
             dict (dict): constant file dictionary
         """
-        self.AddFromRuleFile(dict)
+        self.AddFromRuleFile(_dict)
 
     @property
     def FunctionsKnown(self):
