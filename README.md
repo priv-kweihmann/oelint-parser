@@ -96,3 +96,14 @@ Originally offered support for **rule** or **constant** files is offered by the 
 * `oelint_parse.constants.CONSTANT.AddFromConstantFile`
 
 **NOTE** these interfaces are considered *legacy* interfaces and will be removed at some point in the future
+
+## Contributing
+
+Before any contribution please run the following (preferably in an virtual environment)
+
+```shell
+pip install -r requirements.txt
+flake8
+pytest
+./gendoc.sh
+```
