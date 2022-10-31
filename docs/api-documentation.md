@@ -40,7 +40,6 @@
   * [safe\_linesplit](#oelint_parser.helper_files.safe_linesplit)
   * [guess\_recipe\_name](#oelint_parser.helper_files.guess_recipe_name)
   * [guess\_base\_recipe\_name](#oelint_parser.helper_files.guess_base_recipe_name)
-  * [guess\_base\_recipe\_name](#oelint_parser.helper_files.guess_base_recipe_name)
   * [guess\_recipe\_version](#oelint_parser.helper_files.guess_recipe_version)
   * [expand\_term](#oelint_parser.helper_files.expand_term)
   * [get\_valid\_package\_names](#oelint_parser.helper_files.get_valid_package_names)
@@ -774,25 +773,6 @@ Get the base recipe name from filename (aka BPN)
 
 - `str` - recipe name
 
-<a id="oelint_parser.helper_files.guess_base_recipe_name"></a>
-
-#### guess\_base\_recipe\_name
-
-```python
-def guess_base_recipe_name(_file)
-```
-
-Get the base recipe name from filename
-
-**Arguments**:
-
-- `_file` _str_ - filename
-  
-
-**Returns**:
-
-- `str` - recipe name
-
 <a id="oelint_parser.helper_files.guess_recipe_version"></a>
 
 #### guess\_recipe\_version
@@ -817,7 +797,7 @@ Get recipe version from filename
 #### expand\_term
 
 ```python
-def expand_term(stash, _file, value, spare=[], seen={})
+def expand_term(stash, _file, value, spare=None, seen=None)
 ```
 
 Expand a variable (replacing all variables by known content)
@@ -974,7 +954,7 @@ Override constants in the existing db
 #### AddFromRuleFile
 
 ```python
-def AddFromRuleFile(dict)
+def AddFromRuleFile(_dict)
 ```
 
 Legacy interface to support rule files
@@ -988,7 +968,7 @@ Legacy interface to support rule files
 #### AddFromConstantFile
 
 ```python
-def AddFromConstantFile(dict)
+def AddFromConstantFile(_dict)
 ```
 
 Legacy interface to support constant files
