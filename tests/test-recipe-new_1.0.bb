@@ -1,3 +1,6 @@
+SRC_URI = "http://example.com/foobar.tar.bz2;name=foo"
+SRC_URI[foo.md5sum] = "5c274e52576976bd70565cd72505db41"
+
 A:append = " X"
 
 B:remove:qemuall = "X2"

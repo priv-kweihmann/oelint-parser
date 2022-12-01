@@ -61,6 +61,27 @@ class OelintParserTestNew(unittest.TestCase):
             self.assertEqual(x.SubItems, ["remove", "qemuall"])
             self.assertEqual(x.VarOp, " = ")
 
+    def test_var_src_uri(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VARRAW,
+                                          attributeValue="SRC_URI[foo.md5sum]")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarValue, '"5c274e52576976bd70565cd72505db41"')
+            self.assertEqual(x.VarValueStripped, '5c274e52576976bd70565cd72505db41')
+            self.assertEqual(x.VarName, 'SRC_URI')
+            self.assertEqual(x.Flag, "foo.md5sum")
+            self.assertEqual(x.RawVarName, 'SRC_URI[foo.md5sum]')
+            self.assertEqual(x.get_items(), ["5c274e52576976bd70565cd72505db41"])
+            self.assertEqual(x.VarOp, " = ")
+
     def test_var_rdepends(self):
         from oelint_parser.cls_item import Variable
         from oelint_parser.helper_files import expand_term
