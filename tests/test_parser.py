@@ -63,6 +63,7 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.get_items(), ["foo"])
             self.assertEqual(x.SubItems, ["${PN}-test"])
             self.assertEqual(x.VarOp, " += ")
+            self.assertEqual(x.OverrideDelimiter, "_")
 
     def test_include(self):
         from oelint_parser.cls_item import Include
@@ -200,6 +201,7 @@ class OelintParserTest(unittest.TestCase):
         self.assertEqual(x.FuncBodyStripped, 'bb.warn("This is another example warning")')
         self.assertEqual(x.GetDistroEntry(), "")
         self.assertEqual(x.GetMachineEntry(), "")
+        self.assertEqual(x.OverrideDelimiter, "_")
 
     def test_anon_function(self):
         from oelint_parser.cls_item import Function

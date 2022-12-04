@@ -78,6 +78,7 @@
     * [IncludedFrom](#oelint_parser.cls_item.Item.IncludedFrom)
     * [RealRaw](#oelint_parser.cls_item.Item.RealRaw)
     * [IsFromClass](#oelint_parser.cls_item.Item.IsFromClass)
+    * [OverrideDelimiter](#oelint_parser.cls_item.Item.OverrideDelimiter)
     * [safe\_linesplit](#oelint_parser.cls_item.Item.safe_linesplit)
     * [get\_items](#oelint_parser.cls_item.Item.get_items)
     * [extract\_sub](#oelint_parser.cls_item.Item.extract_sub)
@@ -1338,6 +1339,21 @@ Item comes from a bbclass
 **Returns**:
 
 - `bool` - if item was set in a bbclass
+
+<a id="oelint_parser.cls_item.Item.OverrideDelimiter"></a>
+
+#### OverrideDelimiter
+
+```python
+@property
+def OverrideDelimiter()
+```
+
+Override delimiter
+
+**Returns**:
+
+- `str` - Override delimiter
 
 <a id="oelint_parser.cls_item.Item.safe_linesplit"></a>
 

@@ -31,7 +31,7 @@ class Item():
         self.__InFileLine = infileline
         self.__IncludedFrom = []
         self.__RealRaw = realraw or rawtext
-        self._override_delimiter = "_"
+        self.__OverrideDelimiter = "_"
 
     @property
     def Line(self):
@@ -125,6 +125,15 @@ class Item():
         """
         return self.__Origin.endswith(".bbclass")
 
+    @property
+    def OverrideDelimiter(self):
+        """Override delimiter
+
+        Returns:
+            str: Override delimiter
+        """
+        return self.__OverrideDelimiter
+
     @staticmethod
     def safe_linesplit(string):
         """Safely split an input line to chunks
@@ -158,8 +167,8 @@ class Item():
             tuple -- clean variable name, modifiers, package specific modifiers
         """
         if ":" in name:
-            self._override_delimiter = ":"
-        chunks = name.split(self._override_delimiter)
+            self.__OverrideDelimiter = ":"
+        chunks = name.split(self.__OverrideDelimiter)
         _suffix = []
         _var = [chunks[0]]
         for i in chunks[1:]:
@@ -177,7 +186,7 @@ class Item():
                 _var.append(i + tmp)
         _var = [x for x in _var if x]
         _suffix = [x for x in _suffix if x]
-        return (self._override_delimiter.join(_var), self._override_delimiter.join(_suffix))
+        return (self.__OverrideDelimiter.join(_var), self.__OverrideDelimiter.join(_suffix))
 
     def extract_sub_func(self, name):
         """Extract modifiers for functions
@@ -189,21 +198,21 @@ class Item():
             tuple -- clean function name, modifiers
         """
         if ":" in name:
-            self._override_delimiter = ":"
-        chunks = name.split(self._override_delimiter)
+            self.__OverrideDelimiter = ":"
+        chunks = name.split(self.__OverrideDelimiter)
         _marker = ["append", "prepend", "class-native",
                    "class-cross", "class-target", "remove"]
         _suffix = []
         _var = [chunks[0]]
         for i in chunks[1:]:
-            if i in _marker or self._override_delimiter.join(_var) in CONSTANTS.FunctionsKnown:
+            if i in _marker or self.__OverrideDelimiter.join(_var) in CONSTANTS.FunctionsKnown:
                 _suffix = chunks[chunks.index(i):]
                 break
             else:
                 _var.append(i)
         _var = [x for x in _var if x]
         _suffix = [x for x in _suffix if x]
-        return (self._override_delimiter.join(_var), self._override_delimiter.join(_suffix))
+        return (self.__OverrideDelimiter.join(_var), self.__OverrideDelimiter.join(_suffix))
 
     def IsFromAppend(self):
         """Item originates from a bbappend
@@ -278,7 +287,7 @@ class Variable(Item):
             self.__VarName = name
             self.__SubItem = ""
         self.__SubItems = [x for x in self.SubItem.split(
-            self._override_delimiter) if x]
+            self.OverrideDelimiter) if x]
         self.__VarValue = value
         self.__VarOp = operator
         self.__Flag = flag or ""
@@ -351,7 +360,7 @@ class Variable(Item):
         Returns:
             str: complete variable name
         """
-        _var = self._override_delimiter.join([self.VarName] + self.SubItems)
+        _var = self.OverrideDelimiter.join([self.VarName] + self.SubItems)
         return "{name}[{flag}]".format(name=_var, flag=self.Flag) if self.Flag else _var
 
     @property
@@ -599,7 +608,7 @@ class Function(Item):
         name = name or ""
         self.__FuncName, self.__SubItem = self.extract_sub_func(name.strip())
         self.__SubItems = [x for x in self.SubItem.split(
-            self._override_delimiter) if x]
+            self.OverrideDelimiter) if x]
         self.__FuncBody = body
         self.__FuncBodyStripped = body.replace(
             "{", "").replace("}", "").replace("\n", "").strip()
@@ -640,7 +649,7 @@ class Function(Item):
         Returns:
             str: complete name of function
         """
-        return self._override_delimiter.join([self.__FuncName] + self.__SubItems)
+        return self.OverrideDelimiter.join([self.__FuncName] + self.__SubItems)
 
     @property
     def SubItem(self):
