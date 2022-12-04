@@ -39,6 +39,7 @@ class OelintParserTestNew(unittest.TestCase):
             self.assertEqual(x.get_items(), ["X"])
             self.assertEqual(x.SubItems, ["append"])
             self.assertEqual(x.VarOp, " = ")
+            self.assertEqual(x.OverrideDelimiter, ":")
 
     def test_var_b(self):
         from oelint_parser.cls_item import Variable
@@ -60,6 +61,7 @@ class OelintParserTestNew(unittest.TestCase):
             self.assertEqual(x.get_items(), ["X2"])
             self.assertEqual(x.SubItems, ["remove", "qemuall"])
             self.assertEqual(x.VarOp, " = ")
+            self.assertEqual(x.OverrideDelimiter, ":")
 
     def test_var_src_uri(self):
         from oelint_parser.cls_item import Variable
@@ -103,6 +105,7 @@ class OelintParserTestNew(unittest.TestCase):
             self.assertEqual(x.get_items(), ["foo"])
             self.assertEqual(x.SubItems, ["${PN}-test"])
             self.assertEqual(x.VarOp, " += ")
+            self.assertEqual(x.OverrideDelimiter, ":")
 
     def test_function(self):
         from oelint_parser.cls_item import Function
@@ -128,6 +131,7 @@ class OelintParserTestNew(unittest.TestCase):
                          'bbwarn "This is an example warning"')
         self.assertEqual(_stash[0].GetDistroEntry(), "poky")
         self.assertEqual(_stash[0].GetMachineEntry(), "qemux86-64")
+        self.assertEqual(_stash[0].OverrideDelimiter, ":")
 
     def test_var_bp(self):
         from oelint_parser.cls_item import Variable
