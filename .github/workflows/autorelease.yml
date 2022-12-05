@@ -40,7 +40,7 @@ jobs:
           exit 1
         fi
         if [ "${{ github.event_name == 'workflow_dispatch' }}" = "true" ]; then
-          if [ -z "${{ github.inputs.release-type }}" ]; then
+          if [ -z "${{ github.event.inputs.release-type }}" ]; then
             echo "::error ::release-type cannot be empty"
             exit 1
           fi
@@ -63,11 +63,11 @@ jobs:
         [ "${{ steps.code-changes.outputs.relevant-for-release == 'true' }}" = "true" ] && do_release=1
         if [ "${{ github.event_name == 'workflow_dispatch' }}" = "true" ]; then
           do_release=1
-          [ "${{ github.inputs.bump-version }}" = "true" ] && do_bump=1
+          [ "${{ github.event.inputs.bump-version }}" = "true" ] && do_bump=1
         fi
 
         if [ "${{ github.event_name == 'workflow_dispatch' }}" = "true" ]; then
-          echo RELEASE_TYPE="${{ github.inputs.release-type }}" >> $GITHUB_OUTPUT
+          echo RELEASE_TYPE="${{ github.event.inputs.release-type }}" >> $GITHUB_OUTPUT
         else
           echo RELEASE_TYPE="patch" >> $GITHUB_OUTPUT
         fi
