@@ -44,9 +44,9 @@ jobs:
           relevant-for-release:
             - 'requirements.txt'
             - '${{ env.MODULE_CODE }}'
-            - '.bumpversion'
+            - '.bumpversion.cfg'
           manual-bumped-version:
-            - '.bumpversion'
+            - '.bumpversion.cfg'
 
     - name: Check if we need to release
       id: release-needed
