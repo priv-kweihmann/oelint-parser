@@ -38,7 +38,13 @@ jobs:
         if [ -z "${{ secrets.TOKEN }}" ]; then
           echo "::error ::secrets.TOKEN needs to be set for this action"
           exit 1
-        fi        
+        fi
+        if [ "${{ github.event_name == 'workflow_dispatch' }}" = "true" ];
+          if [ -z "${{ github.inputs.release-types }}" ]; then
+            echo "::error ::release-types cannot be empty"
+            exit 1
+          fi
+        fi
 
     - name: Check if relevant for release
       uses: dorny/paths-filter@v2.11.1
