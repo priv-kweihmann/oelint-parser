@@ -44,6 +44,7 @@ jobs:
           relevant-for-release:
             - 'requirements.txt'
             - '${{ env.MODULE_CODE }}'
+            - '.bumpversion'
           manual-bumped-version:
             - '.bumpversion'
 
@@ -53,7 +54,7 @@ jobs:
         do_release=0
         do_bump=0
         [ "${{ steps.code-changes.outputs.relevant-for-release == 'true' }}" = "true" ] && do_release=1
-        [ "${{ steps.code-changes.outputs.manual-bumped-version != 'true' }}" = "true" ] && [ $do_release -eq 1 ] && do_bump=1
+        [ "${{ steps.code-changes.outputs.manual-bumped-version == 'true' }}" = "true" ] && [ $do_release -eq 1 ] && do_bump=1
         if [ "${{ github.event_name == 'workflow_dispatch' }}" = "true" ]; then
           do_release=1
           [ "${{ github.inputs.bump-version }}" = "true" ] && do_bump=1
