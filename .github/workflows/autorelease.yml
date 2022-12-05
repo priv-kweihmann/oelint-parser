@@ -10,6 +10,10 @@ on:
         description: 'Automatically increase patch version (true|false)'
         default: 'true'
         required: false
+      release-types:
+        description: 'Type of release (patch|minor|major)'
+        default: 'patch'
+        required: false
 
 env:
   VERSION_FILE: setup.py
@@ -44,9 +48,6 @@ jobs:
           relevant-for-release:
             - 'requirements.txt'
             - '${{ env.MODULE_CODE }}'
-            - '.bumpversion.cfg'
-          manual-bumped-version:
-            - '.bumpversion.cfg'
 
     - name: Check if we need to release
       id: release-needed
@@ -54,16 +55,15 @@ jobs:
         do_release=0
         do_bump=0
         [ "${{ steps.code-changes.outputs.relevant-for-release == 'true' }}" = "true" ] && do_release=1
-        [ "${{ steps.code-changes.outputs.manual-bumped-version != 'true' }}" = "true" ] && [ $do_release -eq 1 ] && do_bump=1
         if [ "${{ github.event_name == 'workflow_dispatch' }}" = "true" ]; then
           do_release=1
           [ "${{ github.inputs.bump-version }}" = "true" ] && do_bump=1
         fi
 
-        if [ $do_bump -eq 1 ]; then
-          echo DO_BUMP=true >> $GITHUB_OUTPUT
+        if [ "${{ github.event_name == 'workflow_dispatch' }}" = "true" ]; then
+          echo RELEASE_TYPE="${{ github.inputs.release-types }}" >> $GITHUB_OUTPUT
         else
-          echo DO_BUMP=false >> $GITHUB_OUTPUT
+          echo RELEASE_TYPE="patch" >> $GITHUB_OUTPUT
         fi
 
         if [ $do_release -eq 1 ] || [ $do_bump -eq 1 ]; then
@@ -80,10 +80,9 @@ jobs:
     
     - name: Bump version
       id: version-bump
-      if: steps.release-needed.outputs.DO_BUMP == 'true'
       run: |
         pip install -r requirements-dev.txt
-        bump2version --list patch ${{ env.VERSION_FILE }} >> $GITHUB_OUTPUT
+        bump2version --list ${{ env.RELEASE_TYPE }} ${{ env.VERSION_FILE }} >> $GITHUB_OUTPUT
       
     - name: Build
       if: steps.release-needed.outputs.DO_RELEASE == 'true'
@@ -91,7 +90,7 @@ jobs:
         python3 setup.py build sdist bdist_wheel --universal
 
     - name: Commit new version
-      if: steps.release-needed.outputs.DO_BUMP == 'true'
+      if: steps.release-needed.outputs.DO_RELEASE == 'true'
       uses: actions-x/commit@v6
       with:
         message: 'Release ${{ steps.version-bump.outputs.new_version }}'
