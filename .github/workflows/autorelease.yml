@@ -88,7 +88,7 @@ jobs:
       id: version-bump
       run: |
         pip install -r requirements-dev.txt
-        bump2version --list ${{ env.RELEASE_TYPE }} ${{ env.VERSION_FILE }} >> $GITHUB_OUTPUT
+        bump2version --list ${{ steps.release-needed.outputs.RELEASE_TYPE }} ${{ env.VERSION_FILE }} >> $GITHUB_OUTPUT
       
     - name: Build
       if: steps.release-needed.outputs.DO_RELEASE == 'true'
