@@ -534,8 +534,8 @@ class Include(Item):
 
 
 class Export(Item):
-    CLASSIFIER = "Exclude"
-    ATTR_INCNAME = "Name"
+    CLASSIFIER = "Export"
+    ATTR_NAME = "Name"
     ATTR_STATEMENT = "Value"
 
     def __init__(self, origin, line, infileline, rawtext, name, value, realraw):
