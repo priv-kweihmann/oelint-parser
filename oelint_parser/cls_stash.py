@@ -75,6 +75,18 @@ class Stash():
         self.__list += res
         return res
 
+    def Append(self, item):
+        """appends one or mote items to the stash
+
+        Args:
+            item (Item): Item(s) to append
+        """
+        if isinstance(item, (list, tuple)):
+            for _item in item:
+                self.__list.append(_item)
+        else:
+            self.__list.append(item)
+
     def Remove(self, item):
         """removes one or more items from the stash
 

@@ -436,5 +436,23 @@ class OelintParserTest(unittest.TestCase):
 
         assert not any(_stash)
 
+    def test_append_to_stash(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Comment
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Comment.CLASSIFIER)
+
+        assert len(_stash) == 2
+
+        new_comment = Comment('foo', 1, 1, '# abc', '# def')
+        self.__stash.Append(new_comment)
+
+        _stash = self.__stash.GetItemsFor(classifier=Comment.CLASSIFIER)
+
+        assert len(_stash) == 3
+
+
 if __name__ == "__main__":
     unittest.main()
