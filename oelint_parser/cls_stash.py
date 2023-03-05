@@ -76,7 +76,16 @@ class Stash():
         return res
 
     def Remove(self, item):
-        self.__list.remove(item)
+        """removes one or more items from the stash
+
+        Args:
+            item (Item): Item(s) to remove
+        """
+        if isinstance(item, (list, tuple)):
+            for _item in item:
+                self.__list.remove(_item)
+        else:
+            self.__list.remove(item)
 
     def AddDistroMachineFromLayer(self, path):
         _root = get_layer_root(path)
