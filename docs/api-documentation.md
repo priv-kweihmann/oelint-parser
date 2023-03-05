@@ -18,6 +18,8 @@
   * [Stash](#oelint_parser.cls_stash.Stash)
     * [\_\_init\_\_](#oelint_parser.cls_stash.Stash.__init__)
     * [AddFile](#oelint_parser.cls_stash.Stash.AddFile)
+    * [Append](#oelint_parser.cls_stash.Stash.Append)
+    * [Remove](#oelint_parser.cls_stash.Stash.Remove)
     * [GetRecipes](#oelint_parser.cls_stash.Stash.GetRecipes)
     * [GetLoneAppends](#oelint_parser.cls_stash.Stash.GetLoneAppends)
     * [GetLinksForFile](#oelint_parser.cls_stash.Stash.GetLinksForFile)
@@ -396,6 +398,34 @@ Adds a file to the stash
 **Returns**:
 
 - `list` - List of {oelint_parser.cls_item.Item}
+
+<a id="oelint_parser.cls_stash.Stash.Append"></a>
+
+#### Append
+
+```python
+def Append(item)
+```
+
+appends one or mote items to the stash
+
+**Arguments**:
+
+- `item` _Item_ - Item(s) to append
+
+<a id="oelint_parser.cls_stash.Stash.Remove"></a>
+
+#### Remove
+
+```python
+def Remove(item)
+```
+
+removes one or more items from the stash
+
+**Arguments**:
+
+- `item` _Item_ - Item(s) to remove
 
 <a id="oelint_parser.cls_stash.Stash.GetRecipes"></a>
 
