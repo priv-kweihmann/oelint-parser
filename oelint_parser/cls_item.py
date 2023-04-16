@@ -722,7 +722,7 @@ class Function(Item):
         Returns:
             bool -- True is append or prepend operation
         """
-        return any([x in ["append", "prepend"] for x in self.SubItems])
+        return any(x in ["append", "prepend"] for x in self.SubItems)
 
     def get_items(self):
         """Get items of function body

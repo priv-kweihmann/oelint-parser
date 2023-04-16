@@ -257,7 +257,7 @@ def get_items(stash, _file, lineOffset=0):
                     break
                 elif k == "addtask":
                     # treat the following as variables
-                    if any([m.group("func").startswith(x) for x in ['pkg_preinst', 'pkg_postinst', 'pkg_prerm', 'pkg_postrm']]):
+                    if any(m.group("func").startswith(x) for x in ['pkg_preinst', 'pkg_postinst', 'pkg_prerm', 'pkg_postrm']):
                         continue
                     _g = m.groupdict()
                     if "before" in _g.keys():
