@@ -5,15 +5,6 @@ processors:
   - type: smart
   - type: crossref
 renderer:
-  type: mkdocs
-  pages:
-    - title: Home
-      name: index
-      source: README.md
-    - title: API Documentation
-      contents:
-        - 'oelint_parser.*'
-  mkdocs_config:
-    mkdocs_config:
-      site_name: oelint-parser
-      theme: readthedocs
+  type: markdown
+  filename: docs/api-documentation.md
+  encoding: utf-8
