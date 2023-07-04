@@ -1,5 +1,6 @@
 # Table of Contents
 
+* [oelint\_parser](#oelint_parser)
 * [oelint\_parser.const\_vars](#oelint_parser.const_vars)
   * [set\_constantfile](#oelint_parser.const_vars.set_constantfile)
   * [set\_rulefile](#oelint_parser.const_vars.set_rulefile)
@@ -164,6 +165,10 @@
   * [prepare\_lines\_subparser](#oelint_parser.parser.prepare_lines_subparser)
   * [prepare\_lines](#oelint_parser.parser.prepare_lines)
   * [get\_items](#oelint_parser.parser.get_items)
+
+<a id="oelint_parser"></a>
+
+# oelint\_parser
 
 <a id="oelint_parser.const_vars"></a>
 
