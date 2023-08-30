@@ -120,6 +120,9 @@ class OelintParserTest(unittest.TestCase):
 
         self.assertEqual(_woval[0].Name, "PYTHON_ABI")
         self.assertEqual(_woval[0].Value, "")
+        
+        self.assertTrue(not any(x.Name in ['something', 'SOMETHING']) for x in _withval)
+        self.assertTrue(not any(x.Name in ['something', 'SOMETHING']) for x in _woval)
 
     def test_taskassignment(self):
         from oelint_parser.cls_item import TaskAssignment
