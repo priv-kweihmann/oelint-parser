@@ -51,4 +51,14 @@ do_configure[noexec] = "1"
 export lib = "${bindir}/foo"
 export PYTHON_ABI
 
+do_foo() {
+    export SOMETHING=1
+}
+
+python do_bar() {
+    export = 'something'
+    if export == "PSEUDO_DISABLED":
+        print('bar')
+}
+
 RDEPENDS_${PN}-test += "foo"
