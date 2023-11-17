@@ -43,6 +43,32 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.Flag, "")
             self.assertEqual(x.GetClassOverride(), "")
 
+    def test_some_var_with_periods(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
+                                          attributeValue="SOME.VAR.WITH.PERIODS")
+        self.assertTrue(_stash, msg="Stash has no items for SOME.VAR.WITH.PERIODS")
+
+        for x in _stash:
+            self.assertEqual(x.VarValue, '"foo"')
+            self.assertEqual(x.VarValueStripped, 'foo')
+            self.assertEqual(x.VarName, 'SOME.VAR.WITH.PERIODS')
+            self.assertEqual(x.VarNameComplete, 'SOME.VAR.WITH.PERIODS')
+            self.assertEqual(x.Raw, 'SOME.VAR.WITH.PERIODS = "foo"\n')
+            self.assertEqual(x.RawVarName, 'SOME.VAR.WITH.PERIODS')
+            self.assertEqual(x.get_items(), ["foo"])
+            self.assertEqual(x.SubItem, "")
+            self.assertEqual(x.SubItems, [])
+            self.assertEqual(x.VarOp, " = ")
+            self.assertEqual(x.Flag, "")
+            self.assertEqual(x.GetClassOverride(), "")
+
     def test_var_rdepends(self):
         from oelint_parser.cls_item import Variable
         from oelint_parser.helper_files import expand_term
