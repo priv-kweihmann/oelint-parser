@@ -1,6 +1,7 @@
 LICENSE = "BSD-2-Clause"
 SOMEOTHERVAR = "${SOMEVAR}/SOMEMORE"
 SOMEVAR = "source"
+SOME.VAR.WITH.PERIODS = "foo"
 SOMELIST += "a \
              b \
              c \ 
