@@ -6,7 +6,7 @@ class RegexRpl():
     """
 
     @staticmethod
-    def search(pattern, string, timeout=5, default=None, *args, **kwargs):
+    def search(pattern, string, timeout=5, default=None, **kwargs):
         """replacement for re.search
 
         Args:
@@ -19,12 +19,12 @@ class RegexRpl():
             Match: Match object or None
         """
         try:
-            return regex.search(pattern, string, timeout=timeout, *args, **kwargs)
+            return regex.search(pattern, string, timeout=timeout, **kwargs)
         except TimeoutError:
             return default
 
     @staticmethod
-    def split(pattern, string, timeout=5, default=None, *args, **kwargs):
+    def split(pattern, string, timeout=5, default=None, **kwargs):
         """replacement for re.split
 
         Args:
@@ -37,12 +37,12 @@ class RegexRpl():
             list: list object or None
         """
         try:
-            return regex.split(pattern, string, timeout=timeout, *args, **kwargs)
+            return regex.split(pattern, string, timeout=timeout, **kwargs)
         except TimeoutError:
             return default
 
     @staticmethod
-    def match(pattern, string, timeout=5, default=None, *args, **kwargs):
+    def match(pattern, string, timeout=5, default=None, **kwargs):
         """replacement for re.match
 
         Args:
@@ -55,12 +55,12 @@ class RegexRpl():
             Match: Match object or None
         """
         try:
-            return regex.match(pattern, string, timeout=timeout, *args, **kwargs)
+            return regex.match(pattern, string, timeout=timeout, **kwargs)
         except TimeoutError:
             return default
 
     @staticmethod
-    def sub(pattern, repl, string, timeout=5, default='', *args, **kwargs):
+    def sub(pattern, repl, string, timeout=5, default='', **kwargs):
         """replacement for re.sub
 
         Args:
@@ -74,12 +74,12 @@ class RegexRpl():
             str: string
         """
         try:
-            return regex.sub(pattern, repl, string, timeout=timeout, *args, **kwargs)
+            return regex.sub(pattern, repl, string, timeout=timeout, **kwargs)
         except TimeoutError:
             return default
 
     @staticmethod
-    def finditer(pattern, string, timeout=5, default=None, *args, **kwargs):
+    def finditer(pattern, string, timeout=5, default=None, **kwargs):
         """replacement for re.finditer
 
         Args:
@@ -92,6 +92,6 @@ class RegexRpl():
             Scanner: Scanner object or None
         """
         try:
-            return regex.finditer(pattern, string, timeout=timeout, *args, **kwargs)
+            return regex.finditer(pattern, string, timeout=timeout, **kwargs)
         except TimeoutError:
             return default
