@@ -976,6 +976,8 @@
             "ROOTFS_BOOTSTRAP_INSTALL",
             "ROOTFS_PKGMANAGE",
             "ROOTFS_POSTPROCESS_COMMAND",
+            "ROOTFS_PREPROCESS_COMMAND",
+            "ROOTFS_POSTINSTALL_COMMAND",
             "ROOTFS_RO_UNNEEDED",
             "RPMDEPS",
             "RPROVIDES",
