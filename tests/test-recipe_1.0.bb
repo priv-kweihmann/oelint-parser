@@ -47,6 +47,8 @@ require another_file.inc
 
 inherit someclass
 
+A[doc] = "This string is not an inherit statement."
+
 do_configure[noexec] = "1"
 
 export lib = "${bindir}/foo"
