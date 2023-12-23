@@ -482,6 +482,21 @@ class OelintParserTest(unittest.TestCase):
 
         assert len(_stash) == 3
 
+    def test_inherit(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
+                                          attributeValue="inherit")
+        self.assertTrue(_stash, msg="Stash has no items")
+        self.assertEqual(len(_stash), 1, msg="Only one item is found")
+        for x in _stash:
+            self.assertEqual(x.VarValue, 'someclass')
 
 if __name__ == "__main__":
     unittest.main()
