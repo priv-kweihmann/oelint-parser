@@ -31,7 +31,7 @@ class Item():
         self.__InFileLine = infileline
         self.__IncludedFrom = []
         self.__RealRaw = realraw or rawtext
-        self.__OverrideDelimiter = "_"
+        self.__OverrideDelimiter = ":"
 
     @property
     def Line(self):
