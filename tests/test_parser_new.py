@@ -8,6 +8,7 @@ import sys
 class OelintParserTestNew(unittest.TestCase):
 
     RECIPE = os.path.join(os.path.dirname(__file__), "test-recipe-new_1.0.bb")
+    RECIPE_2 = os.path.join(os.path.dirname(__file__), "test-recipe-new_2.0.bb")
     RECIPE_NATIVE = os.path.join(os.path.dirname(__file__), "test-recipe-new-native_1.0.bb")
 
     def setUp(self):
@@ -170,10 +171,22 @@ class OelintParserTestNew(unittest.TestCase):
         _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
                                           attribute=Variable.ATTR_VAR,
                                           attributeValue="Y")
-        self.assertTrue(_stash, msg="Stash has no items")
+        self.assertTrue(_stash, msg="Stash has items")
         for x in _stash:
             value = expand_term(self.__stash, OelintParserTestNew.RECIPE, x.VarValueStripped)
             self.assertEqual(value, "test-recipe-new-1.0")
+
+    def test_override_syntax_detection(self):
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE_2)
+
+        _stash = self.__stash.GetItemsFor()
+        self.assertTrue(_stash, msg="Stash has items")
+        for x in _stash:
+            self.assertEqual(x.IsNewStyleOverrideSyntax, True)
+            self.assertEqual(x.OverrideDelimiter, ':')
 
 
 if __name__ == "__main__":
