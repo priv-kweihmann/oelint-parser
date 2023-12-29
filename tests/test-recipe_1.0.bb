@@ -1,6 +1,8 @@
 LICENSE = "BSD-2-Clause"
 SOMEOTHERVAR = "${SOMEVAR}/SOMEMORE"
 SOMEVAR = "source"
+SOMEVAR_class-target = "destination"
+YETANOTHERVAR = "destination"
 SOME.VAR.WITH.PERIODS = "foo"
 SOMELIST += "a \
              b \

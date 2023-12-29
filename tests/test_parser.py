@@ -146,7 +146,7 @@ class OelintParserTest(unittest.TestCase):
 
         self.assertEqual(_woval[0].Name, "PYTHON_ABI")
         self.assertEqual(_woval[0].Value, "")
-        
+
         self.assertTrue(not any(x.Name in ['something', 'SOMETHING']) for x in _withval)
         self.assertTrue(not any(x.Name in ['something', 'SOMETHING']) for x in _woval)
 
@@ -497,6 +497,32 @@ class OelintParserTest(unittest.TestCase):
         self.assertEqual(len(_stash), 1, msg="Only one item is found")
         for x in _stash:
             self.assertEqual(x.VarValue, 'someclass')
+
+    def test_multi_filter(self):
+        from oelint_parser.cls_item import Variable, Function
+        from oelint_parser.helper_files import expand_term
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=[Variable.CLASSIFIER, Function.CLASSIFIER])
+        self.assertTrue(_stash, msg="Stash has items")
+        self.assertTrue(all(isinstance(x, (Function, Variable)) for x in _stash))
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, attributeValue=['SOMEVAR', 'LICENSE'])
+        self.assertTrue(_stash, msg="Stash has items")
+        self.assertTrue(all(x.VarName in ['SOMEVAR', 'LICENSE']) for x in _stash)
+        self.assertEqual(len(_stash), 3)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=(Variable.ATTR_VAR, Variable.ATTR_VARVALSTRIPPED),
+                                          attributeValue='destination')
+        self.assertTrue(_stash, msg="Stash has items")
+        self.assertTrue(all(x.VarName in ['SOMEVAR', 'YETANOTHERVAR']) for x in _stash)
+        self.assertEqual(len(_stash), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

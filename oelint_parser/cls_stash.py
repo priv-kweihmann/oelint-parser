@@ -154,17 +154,20 @@ class Stash():
     def __get_items_by_classifier(self, items, classifier):
         if not classifier:
             return items
-        return [x for x in items if x.CLASSIFIER == classifier]
+        return [x for x in items if x.CLASSIFIER in classifier]
 
     def __get_items_by_attribute(self, items, attname, attvalue):
         if not attname:
             return items
-        # v is a list
-        res = [x for x in items if attname in x.GetAttributes().keys()]
-        if attvalue:
-            res = [x for x in res if (attname in x.GetAttributes(
-            ).keys() and x.GetAttributes()[attname] == attvalue)]
-        return res
+
+        def _filter(x, attname, attvalue):
+            attr_ = x.GetAttributes()
+            res = False
+            for name in attname:
+                res |= name in attr_ and (not attvalue or any(x in attr_[name] for x in attvalue))
+            return res
+
+        return [x for x in items if _filter(x, attname, attvalue)]
 
     def GetLinksForFile(self, filename):
         """Get file which this file is linked against
@@ -184,14 +187,20 @@ class Stash():
 
         Keyword Arguments:
             filename {str} -- Full path to file (default: {None})
-            classifier {str} -- class specifier (e.g. Variable) (default: {None})
-            attribute {str} -- class attribute name (default: {None})
-            attributeValue {str} -- value of the class attribute name (default: {None})
+            classifier {str | iterable of str} -- (iterable of) class specifier (e.g. Variable) (default: {None})
+            attribute {str | iterable of str} -- (iterable of) class attribute name (default: {None})
+            attributeValue {str | iterable of str} -- (iterable of) value of the class attribute name (default: {None})
             nolink {bool} -- Consider linked files (default: {False})
 
         Returns:
-            [type] -- [description]
+            List[Item] -- Returns a list of items fitting the set filters
         """
+        if not isinstance(classifier, (list, set, tuple)):
+            classifier = [classifier] if classifier else []
+        if not isinstance(attribute, (list, set, tuple)):
+            attribute = [attribute] if attribute else []
+        if not isinstance(attributeValue, (list, set, tuple)):
+            attributeValue = [attributeValue] if attributeValue else []
         res = self.__list
         res = self.__get_items_by_file(res, filename, nolink=nolink)
         res = self.__get_items_by_classifier(res, classifier)
