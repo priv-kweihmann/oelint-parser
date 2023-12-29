@@ -497,15 +497,15 @@ Get items for filename
 **Arguments**:
 
 - `filename` _str_ - Full path to file (default: {None})
-- `classifier` _str_ - class specifier (e.g. Variable) (default: {None})
-- `attribute` _str_ - class attribute name (default: {None})
-- `attributeValue` _str_ - value of the class attribute name (default: {None})
+  classifier {str | iterable of str} -- (iterable of) class specifier (e.g. Variable) (default: {None})
+  attribute {str | iterable of str} -- (iterable of) class attribute name (default: {None})
+  attributeValue {str | iterable of str} -- (iterable of) value of the class attribute name (default: {None})
 - `nolink` _bool_ - Consider linked files (default: {False})
   
 
 **Returns**:
 
-- `[type]` - [description]
+- `List[Item]` - Returns a list of items fitting the set filters
 
 <a id="oelint_parser.cls_stash.Stash.ExpandVar"></a>
 
