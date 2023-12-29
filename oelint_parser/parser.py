@@ -178,6 +178,7 @@ def get_items(stash, _file, lineOffset=0):
     ])
 
     includeOffset = 0
+    override_syntax_new = False
 
     for line in prepare_lines(_file, lineOffset):
         good = False
@@ -185,34 +186,73 @@ def get_items(stash, _file, lineOffset=0):
             m = RegexRpl.match(v, line["cnt"], regex.regex.MULTILINE)
             if m:
                 if k == "python":
-                    res.append(PythonBlock(
-                        _file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group("funcname"), line["realraw"]))
+                    res.append(
+                        PythonBlock(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("funcname"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
                 elif k == "exportfunc":
-                    res.append(FunctionExports(
-                        _file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group("func"), line["realraw"]))
+                    res.append(
+                        FunctionExports(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("func"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
                 elif k == "vars":
-                    res.append(Variable(
-                        _file, line["line"] + includeOffset, line["line"] -
-                        lineOffset, line["raw"], m.group(
-                            "varname"), m.group("varval"),
-                        m.group("varop"), m.group("ident"), line["realraw"]))
+                    res.append(
+                        Variable(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("varname"),
+                            m.group("varval"),
+                            m.group("varop"),
+                            m.group("ident"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
                 elif k == "func":
-                    res.append(Function(
-                        _file, line["line"] + includeOffset, line["line"] -
-                        lineOffset, line["raw"],
-                        m.group("func"), m.group("funcbody"), line["realraw"],
-                        m.group("py"), m.group("fr")))
+                    res.append(
+                        Function(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("func"),
+                            m.group("funcbody"),
+                            line["realraw"],
+                            m.group("py"),
+                            m.group("fr"),
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
                 elif k == "comment":
                     res.append(
-                        Comment(_file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], line["realraw"]))
+                        Comment(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
                 elif k == "inherit":
@@ -231,28 +271,62 @@ def get_items(stash, _file, lineOffset=0):
                             _path, lineOffset=line["line"], forcedLink=_file)
                         if any(tmp):
                             includeOffset += max([x.InFileLine for x in tmp])
-                    res.append(Variable(
-                        _file, line["line"] + includeOffset, line["line"] -
-                        lineOffset, line["raw"], "inherit", m.group(
-                            "inhname"), line["realraw"],
-                        "", ""))
+                    res.append(
+                        Variable(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            "inherit",
+                            m.group("inhname"),
+                            line["realraw"],
+                            "",
+                            "",
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
                 elif k == "export":
-                    res.append(Export(
-                        _file, line["line"] + includeOffset, line["line"] -
-                        lineOffset, line["raw"], m.group("name").strip(), m.group("value"), line["realraw"]))
+                    res.append(
+                        Export(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("name").strip(),
+                            m.group("value"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
                 elif k == "export_noval":
-                    res.append(Export(
-                        _file, line["line"] + includeOffset, line["line"] -
-                        lineOffset, line["raw"], m.group("name").strip(), "", line["realraw"]))
+                    res.append(
+                        Export(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("name").strip(),
+                            "",
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
                 elif k == "taskassign":
-                    res.append(TaskAssignment(_file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group(
-                        "func"), m.group("ident"), m.group("varval"), line["realraw"]))
+                    res.append(
+                        TaskAssignment(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("func"),
+                            m.group("ident"),
+                            m.group("varval"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
                 elif k == "addtask":
@@ -268,8 +342,18 @@ def get_items(stash, _file, lineOffset=0):
                         _a = _g["after"]
                     else:
                         _a = ""
-                    res.append(TaskAdd(
-                        _file, line["line"] + includeOffset, line["line"] - lineOffset, line["raw"], m.group("func"), line["realraw"], _b, _a))
+                    res.append(
+                        TaskAdd(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("func"),
+                            line["realraw"],
+                            _b,
+                            _a,
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     break
                 elif k == "include":
                     _path = find_local_or_in_layer(
@@ -279,11 +363,29 @@ def get_items(stash, _file, lineOffset=0):
                             _path, lineOffset=line["line"], forcedLink=_file)
                         if any(tmp):
                             includeOffset += max([x.InFileLine for x in tmp])
-                    res.append(Include(
-                        _file, line["line"], line["line"] - lineOffset, line["raw"], m.group("incname"), m.group("statement"), line["realraw"]))
+                    res.append(
+                        Include(
+                            _file,
+                            line["line"],
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("incname"),
+                            m.group("statement"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
                     good = True
                     break
         if not good:
             res.append(
-                Item(_file, line["line"], line["line"] - lineOffset, line["raw"], line["realraw"]))
+                Item(
+                    _file,
+                    line["line"],
+                    line["line"] - lineOffset,
+                    line["raw"],
+                    line["realraw"],
+                    new_style_override_syntax=override_syntax_new,
+                ))
+        override_syntax_new |= res[-1].IsNewStyleOverrideSyntax
+
     return res

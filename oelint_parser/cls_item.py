@@ -14,7 +14,7 @@ class Item():
     CLASSIFIER = "Item"
     ATTR_SUB = "SubItem"
 
-    def __init__(self, origin, line, infileline, rawtext, realraw):
+    def __init__(self, origin, line, infileline, rawtext, realraw, new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -23,6 +23,8 @@ class Item():
             infileline {int} -- Line number in file
             rawtext {str} -- Raw input string (except inline code blocks)
             realraw {str} -- Unprocessed input
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
         self.__Line = line
         self.__Raw = rawtext
@@ -31,7 +33,7 @@ class Item():
         self.__InFileLine = infileline
         self.__IncludedFrom = []
         self.__RealRaw = realraw or rawtext
-        self.__OverrideDelimiter = "_"
+        self.__OverrideDelimiter = ':' if new_style_override_syntax else '_'
 
     @property
     def Line(self):
@@ -133,6 +135,15 @@ class Item():
             str: Override delimiter
         """
         return self.__OverrideDelimiter
+
+    @property
+    def IsNewStyleOverrideSyntax(self):
+        """New style override syntax detected
+
+        Returns:
+            bool: True if new style has been detected
+        """
+        return self.__OverrideDelimiter == ':'
 
     @staticmethod
     def safe_linesplit(string):
@@ -265,7 +276,7 @@ class Variable(Item):
     VAR_VALID_OPERATOR = [" = ", " += ",
                           " ?= ", " ??= ", " := ", " .= ", " =+ ", " =. "]
 
-    def __init__(self, origin, line, infileline, rawtext, name, value, operator, flag, realraw):
+    def __init__(self, origin, line, infileline, rawtext, name, value, operator, flag, realraw, new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -278,8 +289,11 @@ class Variable(Item):
             value {str} -- Variable value
             operator {str} -- Operation performed to the variable
             flag {str} -- Optional variable flag
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext, realraw)
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         if "inherit" != name and not flag:
             self.__VarName, self.__SubItem = self.extract_sub(
                 name)
@@ -464,7 +478,7 @@ class Variable(Item):
 class Comment(Item):
     CLASSIFIER = "Comment"
 
-    def __init__(self, origin, line, infileline, rawtext, realraw):
+    def __init__(self, origin, line, infileline, rawtext, realraw, new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -473,8 +487,11 @@ class Comment(Item):
             infileline {int} -- Line counter in the particular file
             rawtext {str} -- Raw input string (except inline code blocks)
             realraw {str} -- Unprocessed input
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext, realraw)
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
 
     def get_items(self):
         """Get single lines of block
@@ -490,7 +507,7 @@ class Include(Item):
     ATTR_INCNAME = "IncName"
     ATTR_STATEMENT = "Statement"
 
-    def __init__(self, origin, line, infileline, rawtext, incname, statement, realraw):
+    def __init__(self, origin, line, infileline, rawtext, incname, statement, realraw, new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -501,8 +518,11 @@ class Include(Item):
             realraw {str} -- Unprocessed input
             incname {str} -- raw name of the include file
             statement {str} -- either include or require
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext, realraw)
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__IncName = incname
         self.__Statement = statement
 
@@ -538,7 +558,7 @@ class Export(Item):
     ATTR_NAME = "Name"
     ATTR_STATEMENT = "Value"
 
-    def __init__(self, origin, line, infileline, rawtext, name, value, realraw):
+    def __init__(self, origin, line, infileline, rawtext, name, value, realraw, new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -549,8 +569,11 @@ class Export(Item):
             realraw {str} -- Unprocessed input
             name {str} -- variable name of the export
             value {str} -- (optional) value of the export
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext, realraw)
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__Name = name
         self.__Value = value
 
@@ -586,7 +609,7 @@ class Function(Item):
     ATTR_FUNCBODY = "FuncBody"
     CLASSIFIER = "Function"
 
-    def __init__(self, origin, line, infileline, rawtext, name, body, realraw, python=False, fakeroot=False):
+    def __init__(self, origin, line, infileline, rawtext, name, body, realraw, python=False, fakeroot=False, new_style_override_syntax=False):
         """[summary]
 
         Arguments:
@@ -601,8 +624,9 @@ class Function(Item):
         Keyword Arguments:
             python {bool} -- python function according to parser (default: {False})
             fakeroot {bool} -- uses fakeroot (default: {False})
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext, realraw)
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__IsPython = python is not None
         self.__IsFakeroot = fakeroot is not None
         name = name or ""
@@ -737,7 +761,7 @@ class PythonBlock(Item):
     ATTR_FUNCNAME = "FuncName"
     CLASSIFIER = "PythonBlock"
 
-    def __init__(self, origin, line, infileline, rawtext, name, realraw):
+    def __init__(self, origin, line, infileline, rawtext, name, realraw, new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -747,8 +771,11 @@ class PythonBlock(Item):
             rawtext {str} -- Raw input string (except inline code blocks)
             realraw {str} -- Unprocessed input
             name {str} -- Function name
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext, realraw)
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__FuncName = name
 
     @property
@@ -775,7 +802,7 @@ class TaskAssignment(Item):
     ATTR_VARVAL = "VarValue"
     CLASSIFIER = "TaskAssignment"
 
-    def __init__(self, origin, line, infileline, rawtext, name, ident, value, realraw):
+    def __init__(self, origin, line, infileline, rawtext, name, ident, value, realraw, new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -787,8 +814,11 @@ class TaskAssignment(Item):
             name {str} -- name of task to be modified
             ident {str} -- task flag
             value {str} -- value of modification
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext, realraw)
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__FuncName = name
         self.__VarName = ident
         self.__VarValue = value
@@ -833,7 +863,7 @@ class FunctionExports(Item):
     ATTR_FUNCNAME = "FuncName"
     CLASSIFIER = "FunctionExports"
 
-    def __init__(self, origin, line, infileline, rawtext, name, realraw):
+    def __init__(self, origin, line, infileline, rawtext, name, realraw, new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -843,8 +873,11 @@ class FunctionExports(Item):
             rawtext {str} -- Raw input string (except inline code blocks)
             realraw {str} -- Unprocessed input
             name {str} -- name of function to be exported
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext, realraw)
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__FuncNames = name
 
     @property
@@ -880,7 +913,7 @@ class TaskAdd(Item):
     ATTR_AFTER = "After"
     CLASSIFIER = "TaskAdd"
 
-    def __init__(self, origin, line, infileline, rawtext, name, realraw, before="", after=""):
+    def __init__(self, origin, line, infileline, rawtext, name, realraw, before="", after="", new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -894,8 +927,9 @@ class TaskAdd(Item):
         Keyword Arguments:
             before {str} -- before statement (default: {""})
             after {str} -- after statement (default: {""})
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, rawtext, realraw)
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__FuncName = name
         self.__Before = [x for x in (before or "").split(" ") if x]
         self.__After = [x for x in (after or "").split(" ") if x]
@@ -941,7 +975,7 @@ class MissingFile(Item):
     ATTR_STATEMENT = "Statement"
     CLASSIFIER = "MissingFile"
 
-    def __init__(self, origin, line, infileline, filename, statement):
+    def __init__(self, origin, line, infileline, filename, statement, new_style_override_syntax=False):
         """constructor
 
         Arguments:
@@ -950,8 +984,11 @@ class MissingFile(Item):
             infileline {int} -- Line counter in the particular file
             filename {str} -- filename of the file that can't be found
             statement {str} -- either include or require
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
-        super().__init__(origin, line, infileline, "", "")
+        super().__init__(origin, line, infileline, "", "", new_style_override_syntax)
         self.__Filename = filename
         self.__Statement = statement
 
