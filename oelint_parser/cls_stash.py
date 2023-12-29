@@ -164,7 +164,7 @@ class Stash():
             attr_ = x.GetAttributes()
             res = False
             for name in attname:
-                res |= name in attr_ and (not attvalue or any(x in attr_[name] for x in attvalue))
+                res |= name in attr_ and (not attvalue or any(x == attr_.get(name) for x in attvalue))
             return res
 
         return [x for x in items if _filter(x, attname, attvalue)]
