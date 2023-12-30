@@ -139,7 +139,7 @@ class Stash():
         for x in self.__list:
             if x.Origin.endswith(".bbappend"):
                 __appends.append(x.Origin)
-            else:
+            elif x.Origin.endswith(".bb"):
                 __linked_appends += x.Links
         return sorted({x for x in __appends if x not in __linked_appends})
 
