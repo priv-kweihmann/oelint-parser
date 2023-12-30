@@ -6,6 +6,7 @@ import sys
 class OelintBBClassTest(unittest.TestCase):
 
     RECIPE = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-foo_1.0.bb")
+    RECIPE_MULTILINEINHERIT = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-foo_2.0.bb")
     RECIPE_GLOBAL = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-bar_1.0.bb")
     RECIPE_RECIPE = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-baz_1.0.bb")
 
@@ -115,6 +116,18 @@ class OelintBBClassTest(unittest.TestCase):
                                           attributeValue="B")
         self.assertTrue(_stash, msg="Stash has no items")
         self.assertEqual(_stash[0].IsFromClass, False)
+
+    def test_multiitem_inherit(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintBBClassTest.RECIPE_MULTILINEINHERIT)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
+                                          attribute=Variable.ATTR_VAR, 
+                                          attributeValue=["A", "B"])
+        self.assertEqual(len(_stash), 2, msg="Stash has items")
 
 if __name__ == "__main__": 
     unittest.main()

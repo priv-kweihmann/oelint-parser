@@ -257,20 +257,21 @@ def get_items(stash, _file, lineOffset=0):
                     break
                 elif k == "inherit":
                     inhname = expand_term(stash, _file, m.group("inhname"))
-                    if not inhname.endswith(".bbclass"):
-                        inhname += ".bbclass"
-                    _path = None
-                    for location in ["classes", "classes-recipe", "classes-global"]:
-                        _path = find_local_or_in_layer(
-                            os.path.join(location, inhname),
-                            os.path.dirname(_file))
+                    for inh_item in [x for x in inhname.split(' ') if x]:
+                        if not inh_item.endswith(".bbclass"):
+                            inh_item += ".bbclass"
+                        _path = None
+                        for location in ["classes", "classes-recipe", "classes-global"]:
+                            _path = find_local_or_in_layer(
+                                os.path.join(location, inh_item),
+                                os.path.dirname(_file))
+                            if _path:
+                                break
                         if _path:
-                            break
-                    if _path:
-                        tmp = stash.AddFile(
-                            _path, lineOffset=line["line"], forcedLink=_file)
-                        if any(tmp):
-                            includeOffset += max([x.InFileLine for x in tmp])
+                            tmp = stash.AddFile(
+                                _path, lineOffset=line["line"], forcedLink=_file)
+                            if any(tmp):
+                                includeOffset += max([x.InFileLine for x in tmp])
                     res.append(
                         Variable(
                             _file,
