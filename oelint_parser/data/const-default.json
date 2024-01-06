@@ -346,6 +346,7 @@
             "BASE_GOARM",
             "BASE_LIB",
             "BASE_WORKDIR",
+            "BBCLASSEXTEND",
             "BBDEBUG",
             "BBFILES",
             "BBFILES_DYNAMIC",
