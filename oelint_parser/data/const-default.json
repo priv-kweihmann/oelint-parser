@@ -392,6 +392,7 @@
             "BB_VERBOSE_LOGS",
             "BB_VERSION",
             "BB_WORKERCONTEXT",
+            "BBCLASSEXTEND",
             "BBDEBUG",
             "BBFILE_COLLECTIONS",
             "BBFILE_PATTERN_IGNORE_EMPTY",
