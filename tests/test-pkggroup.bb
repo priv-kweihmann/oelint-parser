@@ -1,3 +1,3 @@
-inherit packagegroup
+inherit someotherclass packagegroup
 
 RDEPENDS_${PN} += "foo"
