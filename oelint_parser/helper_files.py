@@ -302,4 +302,4 @@ def is_packagegroup(stash, _file):
     """
     _inherits = stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                                   attribute=Variable.ATTR_VAR, attributeValue="inherit")
-    return any(x for x in _inherits if x.VarValueStripped in ["packagegroup"])
+    return any(x for x in _inherits if "packagegroup" in x.get_items())
