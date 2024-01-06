@@ -228,18 +228,18 @@ def get_valid_package_names(stash, _file, strippn=False):
                               attribute=Variable.ATTR_VAR, attributeValue="PACKAGES")
     _comp += stash.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                                attribute=Variable.ATTR_VAR, attributeValue="PACKAGE_BEFORE_PN")
-    _recipe_name = guess_recipe_name(_file)
-    res.add(_recipe_name)
-    res.add("{recipe}-ptest".format(recipe=_recipe_name))
-    res.update(["{recipe}-{pkg}".format(recipe=_recipe_name, pkg=x)
-               for x in ["src", "dbg", "staticdev", "dev", "doc", "locale"]])
-    for item in _comp:
-        for pkg in [x for x in safe_linesplit(expand_term(stash, _file, item.VarValueStripped, spare=["PN"])) if x]:
-            if not strippn:
-                _pkg = pkg.replace("${PN}", _recipe_name)
-            else:
-                _pkg = pkg.replace("${PN}", "")
-            res.add(_pkg)
+    for _pn in ['${PN}', guess_recipe_name(_file)]:
+        res.add(_pn)
+        res.add("{recipe}-ptest".format(recipe=_pn))
+        res.update(["{recipe}-{pkg}".format(recipe=_pn, pkg=x)
+                    for x in ["src", "dbg", "staticdev", "dev", "doc", "locale"]])
+        for item in _comp:
+            for pkg in [x for x in safe_linesplit(expand_term(stash, _file, item.VarValueStripped, spare=["PN"])) if x]:
+                if not strippn:
+                    _pkg = pkg.replace("${PN}", _pn)
+                else:
+                    _pkg = pkg.replace("${PN}", "")
+                res.add(_pkg)
     return res
 
 
