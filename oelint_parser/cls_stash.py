@@ -202,9 +202,12 @@ class Stash():
         if not isinstance(attributeValue, (list, set, tuple)):
             attributeValue = [attributeValue] if attributeValue else []
         res = self.__list
-        res = self.__get_items_by_file(res, filename, nolink=nolink)
-        res = self.__get_items_by_classifier(res, classifier)
-        res = self.__get_items_by_attribute(res, attribute, attributeValue)
+        if filename:
+            res = self.__get_items_by_file(res, filename, nolink=nolink)
+        if classifier:
+            res = self.__get_items_by_classifier(res, classifier)
+        if attribute:
+            res = self.__get_items_by_attribute(res, attribute, attributeValue)
         return sorted(set(res), key=lambda x: x.Line)
 
     def ExpandVar(self, filename=None, attribute=None, attributeValue=None, nolink=False):
