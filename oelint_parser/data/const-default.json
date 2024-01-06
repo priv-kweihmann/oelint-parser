@@ -364,6 +364,7 @@
             "AS",
             "ASNEEDED",
             "ASSUME_PROVIDED",
+            "AUTHOR",
             "AUTOREV",
             "AUTO_LIBNAME_PKGS",
             "AVAILTUNES",
