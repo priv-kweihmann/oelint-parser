@@ -1,5 +1,6 @@
 import os
 import textwrap
+from typing import List, Tuple
 
 from oelint_parser.constants import CONSTANTS
 from oelint_parser.rpl_regex import RegexRpl
@@ -14,7 +15,13 @@ class Item():
     CLASSIFIER = "Item"
     ATTR_SUB = "SubItem"
 
-    def __init__(self, origin, line, infileline, rawtext, realraw, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -36,7 +43,7 @@ class Item():
         self.__OverrideDelimiter = ':' if new_style_override_syntax else '_'
 
     @property
-    def Line(self):
+    def Line(self) -> int:
         """Overall line count
 
         Returns:
@@ -45,11 +52,11 @@ class Item():
         return self.__Line
 
     @Line.setter
-    def Line(self, value):
+    def Line(self, value: int) -> None:
         self.__Line = value
 
     @property
-    def Raw(self):
+    def Raw(self) -> str:
         """Raw string (without inline code blocks)
 
         Returns:
@@ -58,11 +65,11 @@ class Item():
         return self.__Raw
 
     @Raw.setter
-    def Raw(self, value):
+    def Raw(self, value: str) -> None:
         self.__Raw = value
 
     @property
-    def Links(self):
+    def Links(self) -> List[str]:
         """Linked files
 
         Returns:
@@ -71,11 +78,11 @@ class Item():
         return self.__Links
 
     @Links.setter
-    def Links(self, value):
+    def Links(self, value: List[str]) -> None:
         self.__Links = value
 
     @property
-    def Origin(self):
+    def Origin(self) -> str:
         """origin of item
 
         Returns:
@@ -84,7 +91,7 @@ class Item():
         return self.__Origin
 
     @property
-    def InFileLine(self):
+    def InFileLine(self) -> int:
         """Line count in file
 
         Returns:
@@ -93,7 +100,7 @@ class Item():
         return self.__InFileLine
 
     @property
-    def IncludedFrom(self):
+    def IncludedFrom(self) -> List[str]:
         """Files include this item
 
         Returns:
@@ -102,11 +109,11 @@ class Item():
         return self.__IncludedFrom
 
     @IncludedFrom.setter
-    def IncludedFrom(self, value):
+    def IncludedFrom(self, value: List[str]) -> None:
         self.__IncludedFrom = value
 
     @property
-    def RealRaw(self):
+    def RealRaw(self) -> str:
         """Completely unprocessed raw text
 
         Returns:
@@ -115,11 +122,11 @@ class Item():
         return self.__RealRaw
 
     @RealRaw.setter
-    def RealRaw(self, value):
+    def RealRaw(self, value: str) -> None:
         self.__RealRaw = value
 
     @property
-    def IsFromClass(self):
+    def IsFromClass(self) -> bool:
         """Item comes from a bbclass
 
         Returns:
@@ -128,7 +135,7 @@ class Item():
         return self.__Origin.endswith(".bbclass")
 
     @property
-    def OverrideDelimiter(self):
+    def OverrideDelimiter(self) -> str:
         """Override delimiter
 
         Returns:
@@ -137,7 +144,7 @@ class Item():
         return self.__OverrideDelimiter
 
     @property
-    def IsNewStyleOverrideSyntax(self):
+    def IsNewStyleOverrideSyntax(self) -> bool:
         """New style override syntax detected
 
         Returns:
@@ -146,7 +153,7 @@ class Item():
         return self.__OverrideDelimiter == ':'
 
     @staticmethod
-    def safe_linesplit(string):
+    def safe_linesplit(string: str) -> List[str]:
         """Safely split an input line to chunks
 
         Args:
@@ -157,10 +164,10 @@ class Item():
         """
         return Item(None, None, None, None, None)._safe_linesplit(string)
 
-    def _safe_linesplit(self, string):
+    def _safe_linesplit(self, string: str) -> List[str]:
         return [x for x in RegexRpl.split(r"\s|\t|\x1b", string) if x]
 
-    def get_items(self):
+    def get_items(self) -> List[str]:
         """Return single items
 
         Returns:
@@ -168,7 +175,7 @@ class Item():
         """
         return self._safe_linesplit(self.Raw)
 
-    def extract_sub(self, name):
+    def extract_sub(self, name: str) -> Tuple[List[str], List[str]]:
         """Extract modifiers
 
         Arguments:
@@ -199,7 +206,7 @@ class Item():
         _suffix = [x for x in _suffix if x]
         return (self.__OverrideDelimiter.join(_var), self.__OverrideDelimiter.join(_suffix))
 
-    def extract_sub_func(self, name):
+    def extract_sub_func(self, name: str) -> Tuple[List[str], List[str]]:
         """Extract modifiers for functions
 
         Arguments:
@@ -225,7 +232,7 @@ class Item():
         _suffix = [x for x in _suffix if x]
         return (self.__OverrideDelimiter.join(_var), self.__OverrideDelimiter.join(_suffix))
 
-    def IsFromAppend(self):
+    def IsFromAppend(self) -> bool:
         """Item originates from a bbappend
 
         Returns:
@@ -233,7 +240,7 @@ class Item():
         """
         return self.Origin.endswith(".bbappend")
 
-    def AddLink(self, _file):
+    def AddLink(self, _file: str) -> None:
         """Links files to each other in stash
 
         Arguments:
@@ -242,7 +249,7 @@ class Item():
         self.Links.append(_file)
         self.Links = list(set(self.Links))
 
-    def GetAttributes(self):
+    def GetAttributes(self) -> dict:
         """Get all public attributes of this class
 
         Returns:
@@ -261,7 +268,7 @@ class Item():
 
         return res
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{name} -- {attr}\n".format(name=self.__class__.__name__, attr=self.GetAttributes())
 
 
@@ -276,7 +283,17 @@ class Variable(Item):
     VAR_VALID_OPERATOR = [" = ", " += ",
                           " ?= ", " ??= ", " := ", " .= ", " =+ ", " =. "]
 
-    def __init__(self, origin, line, infileline, rawtext, name, value, operator, flag, realraw, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 name: str,
+                 value: str,
+                 operator: str,
+                 flag: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -310,7 +327,7 @@ class Variable(Item):
         self.__VarValueStripped = self.VarValue.strip().lstrip('"').rstrip('"')
 
     @property
-    def VarName(self):
+    def VarName(self) -> str:
         """Variable name
 
         Returns:
@@ -319,7 +336,7 @@ class Variable(Item):
         return self.__VarName
 
     @property
-    def SubItem(self):
+    def SubItem(self) -> str:
         """Variable modifiers
 
         Returns:
@@ -328,7 +345,7 @@ class Variable(Item):
         return self.__SubItem
 
     @property
-    def SubItems(self):
+    def SubItems(self) -> List[str]:
         """Variable modifiers list
 
         Returns:
@@ -337,7 +354,7 @@ class Variable(Item):
         return self.__SubItems
 
     @property
-    def VarValue(self):
+    def VarValue(self) -> str:
         """variable value
 
         Returns:
@@ -346,11 +363,11 @@ class Variable(Item):
         return self.__VarValue
 
     @VarValue.setter
-    def VarValue(self, value):
+    def VarValue(self, value: str) -> None:
         self.__VarValue = value
 
     @property
-    def VarOp(self):
+    def VarOp(self) -> str:
         """Variable operation
 
         Returns:
@@ -359,7 +376,7 @@ class Variable(Item):
         return self.__VarOp
 
     @property
-    def Flag(self):
+    def Flag(self) -> str:
         """Variable flag like PACKAGECONFIG[xyz]
 
         Returns:
@@ -368,7 +385,7 @@ class Variable(Item):
         return self.__Flag
 
     @property
-    def VarNameComplete(self):
+    def VarNameComplete(self) -> str:
         """Complete variable name included overrides and flags
 
         Returns:
@@ -378,7 +395,7 @@ class Variable(Item):
         return "{name}[{flag}]".format(name=_var, flag=self.Flag) if self.Flag else _var
 
     @property
-    def RawVarName(self):
+    def RawVarName(self) -> str:
         """Variable name and flags combined
 
         Returns:
@@ -387,7 +404,7 @@ class Variable(Item):
         return self.__RawVarName
 
     @property
-    def VarValueStripped(self):
+    def VarValueStripped(self) -> str:
         """Stripped variable value
 
         Returns:
@@ -395,7 +412,7 @@ class Variable(Item):
         """
         return self.__VarValueStripped
 
-    def IsAppend(self):
+    def IsAppend(self) -> bool:
         """Check if operation is an append
 
         Returns:
@@ -403,7 +420,7 @@ class Variable(Item):
         """
         return self.VarOp in [" += ", " =+ ", " =. ", " .= "] or "append" in self.SubItems or "prepend" in self.SubItems
 
-    def AppendOperation(self):
+    def AppendOperation(self) -> List[str]:
         """Get variable modifiers
 
         Returns:
@@ -420,7 +437,7 @@ class Variable(Item):
             res.append("remove")
         return res
 
-    def get_items(self, override="", versioned=False):
+    def get_items(self, override: str = "", versioned: bool = False) -> List[str]:
         """Get items of variable value
 
         Arguments:
@@ -435,7 +452,7 @@ class Variable(Item):
             _x = RegexRpl.sub(r"\s*\(.*?\)", "", _x)
         return self._safe_linesplit(_x)
 
-    def IsMultiLine(self):
+    def IsMultiLine(self) -> bool:
         """Check if variable has a multiline assignment
 
         Returns:
@@ -443,7 +460,7 @@ class Variable(Item):
         """
         return "\\x1b" in self.Raw or "\\\n" in self.Raw
 
-    def GetDistroEntry(self):
+    def GetDistroEntry(self) -> str:
         """Get distro specific entries in variable
 
         Returns:
@@ -452,7 +469,7 @@ class Variable(Item):
         _x = [x for x in self.SubItems if x in CONSTANTS.DistrosKnown]
         return _x[0] if _x else ""
 
-    def GetMachineEntry(self):
+    def GetMachineEntry(self) -> str:
         """Get machine specific entries in variable
 
         Returns:
@@ -463,7 +480,7 @@ class Variable(Item):
                 return x
         return ""
 
-    def GetClassOverride(self):
+    def GetClassOverride(self) -> str:
         """Get class specific entries in variable
 
         Returns:
@@ -478,7 +495,13 @@ class Variable(Item):
 class Comment(Item):
     CLASSIFIER = "Comment"
 
-    def __init__(self, origin, line, infileline, rawtext, realraw, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -493,7 +516,7 @@ class Comment(Item):
         """
         super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
 
-    def get_items(self):
+    def get_items(self) -> List[str]:
         """Get single lines of block
 
         Returns:
@@ -507,7 +530,15 @@ class Include(Item):
     ATTR_INCNAME = "IncName"
     ATTR_STATEMENT = "Statement"
 
-    def __init__(self, origin, line, infileline, rawtext, incname, statement, realraw, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 incname: str,
+                 statement: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -527,7 +558,7 @@ class Include(Item):
         self.__Statement = statement
 
     @property
-    def IncName(self):
+    def IncName(self) -> str:
         """Include name
 
         Returns:
@@ -536,7 +567,7 @@ class Include(Item):
         return self.__IncName
 
     @property
-    def Statement(self):
+    def Statement(self) -> str:
         """statement either include or require
 
         Returns:
@@ -544,7 +575,7 @@ class Include(Item):
         """
         return self.__Statement
 
-    def get_items(self):
+    def get_items(self) -> Tuple[str, str]:
         """Get items
 
         Returns:
@@ -558,7 +589,15 @@ class Export(Item):
     ATTR_NAME = "Name"
     ATTR_STATEMENT = "Value"
 
-    def __init__(self, origin, line, infileline, rawtext, name, value, realraw, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 name: str,
+                 value: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -578,7 +617,7 @@ class Export(Item):
         self.__Value = value
 
     @property
-    def Name(self):
+    def Name(self) -> str:
         """Name of the exported var
 
         Returns:
@@ -587,7 +626,7 @@ class Export(Item):
         return self.__Name
 
     @property
-    def Value(self):
+    def Value(self) -> str:
         """value of the export
 
         Returns:
@@ -595,7 +634,7 @@ class Export(Item):
         """
         return self.__Value
 
-    def get_items(self):
+    def get_items(self) -> Tuple[str, str]:
         """Get items
 
         Returns:
@@ -609,7 +648,17 @@ class Function(Item):
     ATTR_FUNCBODY = "FuncBody"
     CLASSIFIER = "Function"
 
-    def __init__(self, origin, line, infileline, rawtext, name, body, realraw, python=False, fakeroot=False, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 name: str,
+                 body: str,
+                 realraw: str,
+                 python: bool = False,
+                 fakeroot: bool = False,
+                 new_style_override_syntax: bool = False) -> None:
         """[summary]
 
         Arguments:
@@ -640,7 +689,7 @@ class Function(Item):
             rawtext[rawtext.find("{") + 1:].rstrip().rstrip("}"))
 
     @property
-    def IsPython(self):
+    def IsPython(self) -> bool:
         """Is python function
 
         Returns:
@@ -649,7 +698,7 @@ class Function(Item):
         return self.__IsPython
 
     @property
-    def IsFakeroot(self):
+    def IsFakeroot(self) -> bool:
         """Is fakeroot function
 
         Returns:
@@ -658,7 +707,7 @@ class Function(Item):
         return self.__IsFakeroot
 
     @property
-    def FuncName(self):
+    def FuncName(self) -> str:
         """Function name
 
         Returns:
@@ -667,7 +716,7 @@ class Function(Item):
         return self.__FuncName
 
     @property
-    def FuncNameComplete(self):
+    def FuncNameComplete(self) -> str:
         """Complete function name (including overrides)
 
         Returns:
@@ -676,7 +725,7 @@ class Function(Item):
         return self.OverrideDelimiter.join([self.__FuncName] + self.__SubItems)
 
     @property
-    def SubItem(self):
+    def SubItem(self) -> str:
         """Function modifiers
 
         Returns:
@@ -685,7 +734,7 @@ class Function(Item):
         return self.__SubItem
 
     @property
-    def SubItems(self):
+    def SubItems(self) -> List[str]:
         """Function modifiers list
 
         Returns:
@@ -694,7 +743,7 @@ class Function(Item):
         return self.__SubItems
 
     @property
-    def FuncBody(self):
+    def FuncBody(self) -> str:
         """Function body
 
         Returns:
@@ -703,7 +752,7 @@ class Function(Item):
         return self.__FuncBody
 
     @property
-    def FuncBodyStripped(self):
+    def FuncBodyStripped(self) -> str:
         """Stripped function body
 
         Returns:
@@ -712,7 +761,7 @@ class Function(Item):
         return self.__FuncBodyStripped
 
     @property
-    def FuncBodyRaw(self):
+    def FuncBodyRaw(self) -> str:
         """Raw function body (including brackets)
 
         Returns:
@@ -720,7 +769,7 @@ class Function(Item):
         """
         return self.__FuncBodyRaw
 
-    def GetDistroEntry(self):
+    def GetDistroEntry(self) -> str:
         """Get distro specific modifiers
 
         Returns:
@@ -729,7 +778,7 @@ class Function(Item):
         _x = [x for x in self.SubItems if x in CONSTANTS.DistrosKnown]
         return _x[0] if _x else ""
 
-    def GetMachineEntry(self):
+    def GetMachineEntry(self) -> str:
         """Get machine specific modifiers
 
         Returns:
@@ -740,7 +789,7 @@ class Function(Item):
                 return x
         return ""
 
-    def IsAppend(self):
+    def IsAppend(self) -> bool:
         """Return if function appends another function
 
         Returns:
@@ -748,7 +797,7 @@ class Function(Item):
         """
         return any(x in ["append", "prepend"] for x in self.SubItems)
 
-    def get_items(self):
+    def get_items(self) -> List[str]:
         """Get items of function body
 
         Returns:
@@ -761,7 +810,14 @@ class PythonBlock(Item):
     ATTR_FUNCNAME = "FuncName"
     CLASSIFIER = "PythonBlock"
 
-    def __init__(self, origin, line, infileline, rawtext, name, realraw, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 name: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -779,7 +835,7 @@ class PythonBlock(Item):
         self.__FuncName = name
 
     @property
-    def FuncName(self):
+    def FuncName(self) -> str:
         """Function name
 
         Returns:
@@ -787,7 +843,7 @@ class PythonBlock(Item):
         """
         return self.__FuncName
 
-    def get_items(self):
+    def get_items(self) -> List[str]:
         """Get lines of function body
 
         Returns:
@@ -802,7 +858,16 @@ class TaskAssignment(Item):
     ATTR_VARVAL = "VarValue"
     CLASSIFIER = "TaskAssignment"
 
-    def __init__(self, origin, line, infileline, rawtext, name, ident, value, realraw, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 name: str,
+                 ident: str,
+                 value: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -824,7 +889,7 @@ class TaskAssignment(Item):
         self.__VarValue = value
 
     @property
-    def FuncName(self):
+    def FuncName(self) -> str:
         """Function name
 
         Returns:
@@ -833,7 +898,7 @@ class TaskAssignment(Item):
         return self.__FuncName
 
     @property
-    def VarValue(self):
+    def VarValue(self) -> str:
         """Task flag value
 
         Returns:
@@ -842,7 +907,7 @@ class TaskAssignment(Item):
         return self.__VarValue
 
     @property
-    def VarName(self):
+    def VarName(self) -> str:
         """Task flag name
 
         Returns:
@@ -850,7 +915,7 @@ class TaskAssignment(Item):
         """
         return self.__VarName
 
-    def get_items(self):
+    def get_items(self) -> Tuple[str, str, str]:
         """Get items
 
         Returns:
@@ -863,7 +928,14 @@ class FunctionExports(Item):
     ATTR_FUNCNAME = "FuncName"
     CLASSIFIER = "FunctionExports"
 
-    def __init__(self, origin, line, infileline, rawtext, name, realraw, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 name: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -881,7 +953,7 @@ class FunctionExports(Item):
         self.__FuncNames = name
 
     @property
-    def FuncNames(self):
+    def FuncNames(self) -> str:
         """Function name
 
         Returns:
@@ -889,7 +961,7 @@ class FunctionExports(Item):
         """
         return self.__FuncNames
 
-    def get_items(self):
+    def get_items(self) -> List[str]:
         """Get items
 
         Returns:
@@ -897,7 +969,7 @@ class FunctionExports(Item):
         """
         return [x for x in self.__FuncNames.split(" ") if x]
 
-    def get_items_unaliased(self):
+    def get_items_unaliased(self) -> List[str]:
         """Get items with their bbclass scope names
 
         Returns:
@@ -913,7 +985,16 @@ class TaskAdd(Item):
     ATTR_AFTER = "After"
     CLASSIFIER = "TaskAdd"
 
-    def __init__(self, origin, line, infileline, rawtext, name, realraw, before="", after="", new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 name: str,
+                 realraw: str,
+                 before: str = "",
+                 after: str = "",
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -935,7 +1016,7 @@ class TaskAdd(Item):
         self.__After = [x for x in (after or "").split(" ") if x]
 
     @property
-    def FuncName(self):
+    def FuncName(self) -> str:
         """Function name
 
         Returns:
@@ -944,7 +1025,7 @@ class TaskAdd(Item):
         return self.__FuncName
 
     @property
-    def Before(self):
+    def Before(self) -> List[str]:
         """Tasks executed before
 
         Returns:
@@ -953,7 +1034,7 @@ class TaskAdd(Item):
         return self.__Before
 
     @property
-    def After(self):
+    def After(self) -> List[str]:
         """Tasks executed after
 
         Returns:
@@ -961,7 +1042,7 @@ class TaskAdd(Item):
         """
         return self.__After
 
-    def get_items(self):
+    def get_items(self) -> List[str]:
         """get items
 
         Returns:
@@ -975,7 +1056,13 @@ class MissingFile(Item):
     ATTR_STATEMENT = "Statement"
     CLASSIFIER = "MissingFile"
 
-    def __init__(self, origin, line, infileline, filename, statement, new_style_override_syntax=False):
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 filename: str,
+                 statement: str,
+                 new_style_override_syntax: bool = False) -> None:
         """constructor
 
         Arguments:
@@ -993,7 +1080,7 @@ class MissingFile(Item):
         self.__Statement = statement
 
     @property
-    def Filename(self):
+    def Filename(self) -> str:
         """Filename of the file missing
 
         Returns:
@@ -1002,7 +1089,7 @@ class MissingFile(Item):
         return self.__Filename
 
     @property
-    def Statement(self):
+    def Statement(self) -> str:
         """statement either include or require
 
         Returns:
@@ -1010,5 +1097,5 @@ class MissingFile(Item):
         """
         return self.__Statement
 
-    def get_items(self):
+    def get_items(self) -> Tuple[str, str]:
         return [self.Filename, self.Statement]

@@ -19,7 +19,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_var(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -71,7 +70,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_var_rdepends(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -94,23 +92,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_include(self):
         from oelint_parser.cls_item import Include
-        from oelint_parser.helper_files import expand_term
-        from oelint_parser.cls_stash import Stash
-
-        self.__stash = Stash()
-        self.__stash.AddFile(OelintParserTest.RECIPE)
-
-        _stash = self.__stash.GetItemsFor(classifier=Include.CLASSIFIER)
-
-        self.assertTrue(_stash, msg="Stash has no items")
-        for x in _stash:
-            self.assertEqual(x.Raw, "require another_file.inc\n")
-            self.assertEqual(x.IncName, "another_file.inc")
-            self.assertEqual(x.Statement, "require")
-
-    def test_include(self):
-        from oelint_parser.cls_item import Include
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -126,7 +107,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_export(self):
         from oelint_parser.cls_item import Export
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -152,7 +132,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_taskassignment(self):
         from oelint_parser.cls_item import TaskAssignment
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -169,7 +148,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_pythonblock(self):
         from oelint_parser.cls_item import PythonBlock
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -183,7 +161,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_taskadd(self):
         from oelint_parser.cls_item import TaskAdd
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -199,7 +176,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_function(self):
         from oelint_parser.cls_item import Function
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -235,7 +211,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_anon_function(self):
         from oelint_parser.cls_item import Function
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -253,7 +228,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_varflag(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -270,7 +244,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_multiline(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -286,7 +259,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_expand(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -298,14 +270,12 @@ class OelintParserTest(unittest.TestCase):
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
             self.assertEqual(x.VarName, "SOMEOTHERVAR")
-            self.assertEqual(expand_term(self.__stash,
-                                         OelintParserTest.RECIPE,
-                                         x.VarValueStripped), "source/SOMEMORE")
+            self.assertEqual(self.__stash.ExpandTerm(OelintParserTest.RECIPE,
+                                                    x.VarValueStripped), "source/SOMEMORE")
             self.assertNotEqual(x.VarValueStripped, "source/SOMEMORE")
 
     def test_inlinecodeblock(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -322,7 +292,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_lineattributerw(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -363,7 +332,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_class_target(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -380,7 +348,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_class_cross(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -397,7 +364,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_class_native(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -414,7 +380,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_class_nativesdk(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -484,7 +449,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_inherit(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -500,7 +464,6 @@ class OelintParserTest(unittest.TestCase):
 
     def test_multi_filter(self):
         from oelint_parser.cls_item import Variable, Function
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()

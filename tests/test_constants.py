@@ -2,6 +2,7 @@ import unittest
 import os
 import sys
 
+
 class OelintParserImageTest(unittest.TestCase):
 
     def setUp(self):
@@ -27,86 +28,7 @@ class OelintParserImageTest(unittest.TestCase):
     def test_singleton_classes(self):
         from oelint_parser.constants import CONSTANTS, Constants
 
-        assert(isinstance(CONSTANTS, Constants))
-
-    def test_rulefile(self):
-        from oelint_parser.constants import Constants
-
-        _constants = {
-            "known_machines": [
-                "libcrypto"
-            ],
-            "known_distros": [
-                "libcrypto"
-            ],
-            "known_vars": [
-                "EXTRA_DEPENDS",
-                "EXTRA_RDEPENDS",
-                "GEMPREFIX",
-                "GEM_BUILT_FILE",
-                "GEM_DIR",
-                "GEM_DISABLE_STRICT_VER",
-                "GEM_FILE",
-                "GEM_FILENAME",
-                "GEM_HOME",
-                "GEM_INSTALL_FLAGS",
-                "GEM_NAME",
-                "GEM_PATH",
-                "GEM_SPEC_CACHE",
-                "GEM_SPEC_FILE",
-                "GEM_SPEC_FILENAME",
-                "GEM_SRC",
-                "GEM_VERSION",
-                "RUBY_SITEDIR"
-            ],
-            "oelint.foo.bar": "info"
-        }
-
-        _const = Constants()
-        _const.AddFromRuleFile(_constants)
-
-        assert ("GEM_FILE" in _const.VariablesKnown)
-        assert ("libcrypto" in _const.DistrosKnown)
-        assert ("libcrypto" in _const.MachinesKnown)
-
-    def test_constantfile(self):
-        from oelint_parser.constants import Constants
-
-        _constants = {
-            "known_machines": [
-                "libcrypto"
-            ],
-            "known_distros": [
-                "libcrypto"
-            ],
-            "known_vars": [
-                "EXTRA_DEPENDS",
-                "EXTRA_RDEPENDS",
-                "GEMPREFIX",
-                "GEM_BUILT_FILE",
-                "GEM_DIR",
-                "GEM_DISABLE_STRICT_VER",
-                "GEM_FILE",
-                "GEM_FILENAME",
-                "GEM_HOME",
-                "GEM_INSTALL_FLAGS",
-                "GEM_NAME",
-                "GEM_PATH",
-                "GEM_SPEC_CACHE",
-                "GEM_SPEC_FILE",
-                "GEM_SPEC_FILENAME",
-                "GEM_SRC",
-                "GEM_VERSION",
-                "RUBY_SITEDIR"
-            ]
-        }
-
-        _const = Constants()
-        _const.AddFromConstantFile(_constants)
-
-        assert ("EXTRA_DEPENDS" in _const.VariablesKnown)
-        assert ("libcrypto" in _const.DistrosKnown)
-        assert ("libcrypto" in _const.MachinesKnown)
+        assert (isinstance(CONSTANTS, Constants))
 
     def test_remove(self):
         from oelint_parser.constants import Constants
@@ -148,5 +70,6 @@ class OelintParserImageTest(unittest.TestCase):
         _const.OverrideConstants(_keys)
         assert (["do_foo"] == list(_const.FunctionsOrder))
 
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     unittest.main()

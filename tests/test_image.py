@@ -17,22 +17,20 @@ class OelintParserImageTest(unittest.TestCase):
         self.assertTrue(_stash, msg="Stash has no items")
 
     def test_isimage(self):
-        from oelint_parser.helper_files import is_image
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserImageTest.RECIPE_IMAGE)
 
-        self.assertTrue(is_image(self.__stash, OelintParserImageTest.RECIPE_IMAGE), msg="Recipe is parsed as image")
+        self.assertTrue(self.__stash.IsImage(OelintParserImageTest.RECIPE_IMAGE), msg="Recipe is parsed as image")
     
     def test_notisimage(self):
-        from oelint_parser.helper_files import is_image
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserImageTest.RECIPE)
 
-        self.assertFalse(is_image(self.__stash, OelintParserImageTest.RECIPE), msg="Recipe is NOT parsed as image")
+        self.assertFalse(self.__stash.IsImage(OelintParserImageTest.RECIPE), msg="Recipe is NOT parsed as image")
 
 
 if __name__ == "__main__": 

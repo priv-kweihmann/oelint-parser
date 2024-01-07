@@ -1,7 +1,7 @@
 from oelint_parser.rpl_regex import RegexRpl
 
 
-def bb_utils_contains(_in):
+def bb_utils_contains(_in: str) -> str:
     m = RegexRpl.match(
         r"(.*)bb\.utils\.contains\(.*?,\s*.*?,\s*(.*?),\s*.*?,\s*.\)", _in)
     if m:
@@ -9,7 +9,7 @@ def bb_utils_contains(_in):
     return None
 
 
-def bb_utils_contains_any(_in):
+def bb_utils_contains_any(_in: str) -> str:
     m = RegexRpl.match(
         r"(.*)bb\.utils\.contains_any\(.*?,\s*.*?,\s*(.*?),\s*.*?,\s*.\)", _in)
     if m:
@@ -17,7 +17,7 @@ def bb_utils_contains_any(_in):
     return None
 
 
-def oe_utils_conditional(_in):
+def oe_utils_conditional(_in: str) -> str:
     m = RegexRpl.match(
         r"(.*)oe\.utils\.conditional\(.*?,\s*.*?,\s*(.*?),\s*.*?,\s*.\)", _in)
     if m:
@@ -25,14 +25,14 @@ def oe_utils_conditional(_in):
     return None
 
 
-def oe_utils_ifelse(_in):
+def oe_utils_ifelse(_in: str) -> str:
     m = RegexRpl.match(r"(.*)oe\.utils\.ifelse\(.*?,\s*(.*?),\s*.*?\)", _in)
     if m:
         return m.group(1) + m.group(2).strip("\"'")
     return None
 
 
-def inlinerep(_in):
+def inlinerep(_in: str) -> str:
     _clean_in = _in.lstrip("${@").rstrip("}")
     for x in [bb_utils_contains(_clean_in),
               bb_utils_contains_any(_clean_in),

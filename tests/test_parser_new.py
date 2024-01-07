@@ -1,8 +1,8 @@
-from logging import log
 import logging
-import unittest
 import os
 import sys
+import unittest
+from logging import log
 
 
 class OelintParserTestNew(unittest.TestCase):
@@ -22,7 +22,6 @@ class OelintParserTestNew(unittest.TestCase):
 
     def test_var_a(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -44,7 +43,6 @@ class OelintParserTestNew(unittest.TestCase):
 
     def test_var_b(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -66,7 +64,6 @@ class OelintParserTestNew(unittest.TestCase):
 
     def test_var_src_uri(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -87,7 +84,6 @@ class OelintParserTestNew(unittest.TestCase):
 
     def test_var_rdepends(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -110,7 +106,6 @@ class OelintParserTestNew(unittest.TestCase):
 
     def test_function(self):
         from oelint_parser.cls_item import Function
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -136,7 +131,6 @@ class OelintParserTestNew(unittest.TestCase):
 
     def test_var_bp(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -147,22 +141,19 @@ class OelintParserTestNew(unittest.TestCase):
                                           attributeValue="X")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
-            logging.warning(x.VarValueStripped)
-            value = expand_term(self.__stash, OelintParserTestNew.RECIPE, x.VarValueStripped)
-            self.assertEqual(value, "test-recipe-new-1.0")
+            value = self.__stash.ExpandTerm(OelintParserTestNew.RECIPE, x.VarValueStripped)
+            self.assertEqual(value, "test-recipe-new-1.0", msg=f'{x.VarValueStripped} -> {value}')
 
         _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
                                           attribute=Variable.ATTR_VAR,
                                           attributeValue="Y")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
-            logging.warning(x.VarValueStripped)
-            value = expand_term(self.__stash, OelintParserTestNew.RECIPE, x.VarValueStripped)
-            self.assertEqual(value, "test-recipe-new-1.0")
+            value = self.__stash.ExpandTerm(OelintParserTestNew.RECIPE, x.VarValueStripped)
+            self.assertEqual(value, "test-recipe-new-1.0", msg=f'{x.VarValueStripped} -> {value}')
 
     def test_var_p(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
@@ -173,7 +164,7 @@ class OelintParserTestNew(unittest.TestCase):
                                           attributeValue="Y")
         self.assertTrue(_stash, msg="Stash has items")
         for x in _stash:
-            value = expand_term(self.__stash, OelintParserTestNew.RECIPE, x.VarValueStripped)
+            value = self.__stash.ExpandTerm(OelintParserTestNew.RECIPE, x.VarValueStripped)
             self.assertEqual(value, "test-recipe-new-1.0")
 
     def test_override_syntax_detection(self):

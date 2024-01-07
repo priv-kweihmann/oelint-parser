@@ -59,7 +59,7 @@ for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue="PV"):
     # single items from a list
     print(x.get_items())
     # expanded single items from a list
-    print([expand_term(stash, "/some/file", y) for y in x.get_items()])
+    print([_stash.ExpandTerm("/some/file", y) for y in x.get_items()])
 ```
 
 ## Working with constants
@@ -87,15 +87,6 @@ Each of the method accepts a dictionary with the same key mapping as listed belo
 | variables/protected-append | list | variables not to be used in bbappends                 | `oelint_parse.constants.CONSTANT.VariablesProtectedAppend` |
 | variables/suggested        | list | suggested variable in a recipe                        | `oelint_parse.constants.CONSTANT.VariablesSuggested`       |
 | sets/base                  | dict | base set of variables always used for value expansion | `oelint_parse.constants.CONSTANT.SetsBase`                 |
-
-### Backward compatibility with rule/constant file
-
-Originally offered support for **rule** or **constant** files is offered by the two new methods
-
-* `oelint_parse.constants.CONSTANT.AddFromRuleFile`
-* `oelint_parse.constants.CONSTANT.AddFromConstantFile`
-
-**NOTE** these interfaces are considered *legacy* interfaces and will be removed at some point in the future
 
 ## Contributing
 

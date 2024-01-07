@@ -2,6 +2,7 @@ import unittest
 import os
 import sys
 
+
 class OelintVersionedVarTest(unittest.TestCase):
 
     RECIPE = os.path.join(os.path.dirname(__file__), "test-versioned.bb")
@@ -11,14 +12,13 @@ class OelintVersionedVarTest(unittest.TestCase):
 
     def test_versioned(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
         self.__stash.AddFile(OelintVersionedVarTest.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
-                                          attribute=Variable.ATTR_VAR, 
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
                                           attributeValue="DEPENDS")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
@@ -26,14 +26,13 @@ class OelintVersionedVarTest(unittest.TestCase):
 
     def test_unversioned(self):
         from oelint_parser.cls_item import Variable
-        from oelint_parser.helper_files import expand_term
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
         self.__stash.AddFile(OelintVersionedVarTest.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, 
-                                          attribute=Variable.ATTR_VAR, 
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
                                           attributeValue="SOMEVALUE")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
@@ -43,5 +42,5 @@ class OelintVersionedVarTest(unittest.TestCase):
                 self.assertIn(y, x.get_items())
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     unittest.main()
