@@ -1,30 +1,19 @@
+import json
 import os
 import sys
-import json
+from typing import Dict, List
 
 DEFAULT_DB = os.path.join(os.path.dirname(
     __file__), 'data', 'const-default.json')
 
 
 class Constants():
-    """Interface for constants
-    """
+    """Interface for constants"""
 
-    LEGACY_MAPPING = {
-        'known_machines': 'replacements/machines',
-        'known_distros': 'replacements/distros',
-        'known_mirrors': 'replacements/mirrors',
-        'known_vars': 'variables/known',
-        'mandatory_vars': 'variables/mandatory',
-        'protected_append_vars': 'variables/protected-append',
-        'protected_vars': 'variables/protected',
-        'suggested_vars': 'variables/suggested',
-    }
-
-    def __init__(self):
+    def __init__(self) -> None:
         self.__db = self.__load_db(DEFAULT_DB)
 
-    def __load_db(self, path):
+    def __load_db(self, path: str) -> dict:
         try:
             with open(path) as _in:
                 return json.load(_in)
@@ -32,20 +21,20 @@ class Constants():
             sys.stderr.write('Cannot load constant database\n')
             return {}
 
-    def __get_from_path(self, path):
+    def __get_from_path(self, path: str) -> str:
         paths = path.rstrip('/').split('/')
         data = self.__db
         for _, value in enumerate(paths):
             data = data.get(value, {})
         return data
 
-    def AddConstants(self, _dict):
+    def AddConstants(self, _dict: dict) -> None:
         """Add constants to the existing
 
         Args:
             dict (dict): constant dictionary to add
         """
-        def dict_merge(a, b):
+        def dict_merge(a: dict, b: dict) -> dict:
             for k, v in b.items():
                 if isinstance(b[k], dict):
                     dict_merge(a[k], b[k])
@@ -56,13 +45,13 @@ class Constants():
             return a
         self.__db = dict_merge(self.__db, _dict)
 
-    def RemoveConstants(self, _dict):
+    def RemoveConstants(self, _dict: dict) -> None:
         """Remove constants from the existing
 
         Args:
             dict (dict): constant dictionary to remove
         """
-        def dict_merge(a, b):
+        def dict_merge(a: dict, b: dict) -> dict:
             for k, v in b.items():
                 if isinstance(b[k], dict):
                     dict_merge(a[k], b[k])
@@ -73,13 +62,13 @@ class Constants():
             return a
         self.__db = dict_merge(self.__db, _dict)
 
-    def OverrideConstants(self, _dict):
+    def OverrideConstants(self, _dict: dict) -> None:
         """Override constants in the existing db
 
         Args:
             dict (dict]): constant dictionary with override values
         """
-        def dict_merge(a, b):
+        def dict_merge(a: dict, b: dict) -> dict:
             for k, v in b.items():
                 if isinstance(b[k], dict):
                     dict_merge(a[k], b[k])
@@ -88,36 +77,8 @@ class Constants():
             return a
         self.__db = dict_merge(self.__db, _dict)
 
-    def AddFromRuleFile(self, _dict):
-        """Legacy interface to support rule files
-
-        Args:
-            dict (dict): rule file dictionary
-        """
-        def dict_nested_set(d, path, value):
-            crumb = path[0]
-            if len(path) == 1:
-                d[crumb] = value
-            else:
-                if crumb not in d:
-                    d[crumb] = {}
-                dict_nested_set(d[crumb], path[1:], value)
-        _translated = {}
-        for n, r in Constants.LEGACY_MAPPING.items():
-            if n in _dict:
-                dict_nested_set(_translated, r.split('/'), _dict[n])
-        self.AddConstants(_translated)
-
-    def AddFromConstantFile(self, _dict):
-        """Legacy interface to support constant files
-
-        Args:
-            dict (dict): constant file dictionary
-        """
-        self.AddFromRuleFile(_dict)
-
     @property
-    def FunctionsKnown(self):
+    def FunctionsKnown(self) -> List[str]:
         """Return known functions
 
         Returns:
@@ -126,7 +87,7 @@ class Constants():
         return self.__get_from_path('functions/known')
 
     @property
-    def FunctionsOrder(self):
+    def FunctionsOrder(self) -> List[str]:
         """Return function order
 
         Returns:
@@ -135,7 +96,7 @@ class Constants():
         return self.__get_from_path('functions/order')
 
     @property
-    def VariablesMandatory(self):
+    def VariablesMandatory(self) -> List[str]:
         """Return mandatory variables
 
         Returns:
@@ -144,7 +105,7 @@ class Constants():
         return self.__get_from_path('variables/mandatory')
 
     @property
-    def VariablesSuggested(self):
+    def VariablesSuggested(self) -> List[str]:
         """Return suggested variables
 
         Returns:
@@ -153,7 +114,7 @@ class Constants():
         return self.__get_from_path('variables/suggested')
 
     @property
-    def MirrorsKnown(self):
+    def MirrorsKnown(self) -> Dict[str, str]:
         """Return known mirrors and their replacements
 
         Returns:
@@ -162,7 +123,7 @@ class Constants():
         return self.__get_from_path('replacements/mirrors')
 
     @property
-    def VariablesProtected(self):
+    def VariablesProtected(self) -> List[str]:
         """Return protected variables
 
         Returns:
@@ -171,7 +132,7 @@ class Constants():
         return self.__get_from_path('variables/protected')
 
     @property
-    def VariablesProtectedAppend(self):
+    def VariablesProtectedAppend(self) -> List[str]:
         """Return protected variables in bbappend files
 
         Returns:
@@ -180,7 +141,7 @@ class Constants():
         return self.__get_from_path('variables/protected-append')
 
     @property
-    def VariablesOrder(self):
+    def VariablesOrder(self) -> List[str]:
         """Variable order
 
         Returns:
@@ -189,7 +150,7 @@ class Constants():
         return self.__get_from_path('variables/order')
 
     @property
-    def VariablesKnown(self):
+    def VariablesKnown(self) -> List[str]:
         """Known variables
 
         Returns:
@@ -198,7 +159,7 @@ class Constants():
         return self.__get_from_path('variables/known')
 
     @property
-    def DistrosKnown(self):
+    def DistrosKnown(self) -> List[str]:
         """Known distros
 
         Returns:
@@ -207,7 +168,7 @@ class Constants():
         return self.__get_from_path('replacements/distros')
 
     @property
-    def MachinesKnown(self):
+    def MachinesKnown(self) -> List[str]:
         """Known machines
 
         Returns:
@@ -216,7 +177,7 @@ class Constants():
         return self.__get_from_path('replacements/machines')
 
     @property
-    def ImagesClasses(self):
+    def ImagesClasses(self) -> List[str]:
         """Classes that are used in images
 
         Returns:
@@ -225,7 +186,7 @@ class Constants():
         return self.__get_from_path('images/known-classes')
 
     @property
-    def ImagesVariables(self):
+    def ImagesVariables(self) -> List[str]:
         """Variables that are used in images
 
         Returns:
@@ -234,7 +195,7 @@ class Constants():
         return self.__get_from_path('images/known-variables')
 
     @property
-    def SetsBase(self):
+    def SetsBase(self) -> Dict[str, str]:
         """Base variable set
 
         Returns:

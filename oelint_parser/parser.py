@@ -1,27 +1,28 @@
 import collections
 import os
+from typing import Iterable, List
 
 import regex
 
-from oelint_parser.cls_item import Comment
-from oelint_parser.cls_item import Export
-from oelint_parser.cls_item import Function
-from oelint_parser.cls_item import FunctionExports
-from oelint_parser.cls_item import Include
-from oelint_parser.cls_item import Item
-from oelint_parser.cls_item import PythonBlock
-from oelint_parser.cls_item import TaskAdd
-from oelint_parser.cls_item import TaskAssignment
-from oelint_parser.cls_item import Variable
-from oelint_parser.helper_files import expand_term
-from oelint_parser.helper_files import find_local_or_in_layer
+from oelint_parser.cls_item import (
+    Comment,
+    Export,
+    Function,
+    FunctionExports,
+    Include,
+    Item,
+    PythonBlock,
+    TaskAdd,
+    TaskAssignment,
+    Variable,
+)
 from oelint_parser.inlinerep import inlinerep
 from oelint_parser.rpl_regex import RegexRpl
 
 INLINE_BLOCK = "!!!inlineblock!!!"
 
 
-def get_full_scope(_string, offset, _sstart, _send):
+def get_full_scope(_string: str, offset: int, _sstart: int, _send: int) -> str:
     """get full block of an inline statement
 
     Args:
@@ -46,11 +47,11 @@ def get_full_scope(_string, offset, _sstart, _send):
     return _string[:pos + offset]
 
 
-def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None):
+def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: int, raw_line: str = None) -> List[str]:
     """preprocess raw input
 
     Args:
-        _iter (interator): line interator object
+        _iter (iterator): line interator object
         lineOffset (int): current line index
         num (int): internal line counter
         line (int): input string
@@ -117,7 +118,7 @@ def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None):
     return res
 
 
-def prepare_lines(_file, lineOffset=0):
+def prepare_lines(_file: str, lineOffset: int = 0) -> List[str]:
     """break raw file input into preprocessed chunks
 
     Args:
@@ -139,7 +140,7 @@ def prepare_lines(_file, lineOffset=0):
     return prep_lines
 
 
-def get_items(stash, _file, lineOffset=0):
+def get_items(stash: object, _file: str, lineOffset: int = 0) -> List[Item]:
     """parses file
 
     Args:
@@ -256,13 +257,13 @@ def get_items(stash, _file, lineOffset=0):
                     good = True
                     break
                 elif k == "inherit":
-                    inhname = expand_term(stash, _file, m.group("inhname"))
+                    inhname = stash.ExpandTerm(_file, m.group("inhname"))
                     for inh_item in [x for x in inhname.split(' ') if x]:
                         if not inh_item.endswith(".bbclass"):
                             inh_item += ".bbclass"
                         _path = None
                         for location in ["classes", "classes-recipe", "classes-global"]:
-                            _path = find_local_or_in_layer(
+                            _path = stash.FindLocalOrLayer(
                                 os.path.join(location, inh_item),
                                 os.path.dirname(_file))
                             if _path:
@@ -357,8 +358,8 @@ def get_items(stash, _file, lineOffset=0):
                         ))
                     break
                 elif k == "include":
-                    _path = find_local_or_in_layer(
-                        expand_term(stash, _file, m.group("incname")), os.path.dirname(_file))
+                    _path = stash.FindLocalOrLayer(
+                        stash.ExpandTerm(_file, m.group("incname")), os.path.dirname(_file))
                     if _path:
                         tmp = stash.AddFile(
                             _path, lineOffset=line["line"], forcedLink=_file)

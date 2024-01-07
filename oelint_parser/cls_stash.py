@@ -1,21 +1,17 @@
 import glob
 import os
+from typing import Iterable, List, Union
+from urllib.parse import urlparse
 
-from oelint_parser.cls_item import Item
-from oelint_parser.cls_item import Variable
+from oelint_parser.cls_item import Item, Variable
 from oelint_parser.constants import CONSTANTS
-from oelint_parser.helper_files import expand_term
-from oelint_parser.helper_files import get_layer_root
-from oelint_parser.helper_files import guess_base_recipe_name
-from oelint_parser.helper_files import guess_recipe_name
-from oelint_parser.helper_files import guess_recipe_version
 from oelint_parser.parser import get_items
 from oelint_parser.rpl_regex import RegexRpl
 
 
 class Stash():
 
-    def __init__(self, quiet=False):
+    def __init__(self, quiet: bool = False) -> None:
         """constructor
         """
         self.__list = []
@@ -23,7 +19,7 @@ class Stash():
         self.__map = {}
         self.__quiet = quiet
 
-    def AddFile(self, _file, lineOffset=0, forcedLink=None):
+    def AddFile(self, _file: str, lineOffset: int = 0, forcedLink: str = None) -> List[Item]:
         """Adds a file to the stash
 
         Arguments:
@@ -75,7 +71,7 @@ class Stash():
         self.__list += res
         return res
 
-    def Append(self, item):
+    def Append(self, item: Item) -> None:
         """appends one or mote items to the stash
 
         Args:
@@ -87,7 +83,7 @@ class Stash():
         else:
             self.__list.append(item)
 
-    def Remove(self, item):
+    def Remove(self, item: Item) -> None:
         """removes one or more items from the stash
 
         Args:
@@ -99,8 +95,13 @@ class Stash():
         else:
             self.__list.remove(item)
 
-    def AddDistroMachineFromLayer(self, path):
-        _root = get_layer_root(path)
+    def AddDistroMachineFromLayer(self, path: str) -> None:
+        """adds machine and distro configuration from the layer of the provided file
+
+        Args:
+            path (str): Path to file
+        """
+        _root = self.GetLayerRoot(path)
         if _root:
             for conf in glob.glob(os.path.join(_root, "conf", "distro", "*.conf")):
                 _fn, _ = os.path.splitext(os.path.basename(conf))
@@ -109,7 +110,9 @@ class Stash():
                 _fn, _ = os.path.splitext(os.path.basename(conf))
                 CONSTANTS.AddConstants({'replacements': {'machines': [_fn]}})
 
-    def Finalize(self):
+    def Finalize(self) -> None:
+        """finalize the dependencies within the stash
+        """
         # cross link all the files
         for k in self.__map.keys():
             for item in self.__map[k]:
@@ -120,7 +123,7 @@ class Stash():
                 for link in v:
                     item.AddLink(link)
 
-    def GetRecipes(self):
+    def GetRecipes(self) -> None:
         """Get bb files in stash
 
         Returns:
@@ -128,7 +131,7 @@ class Stash():
         """
         return sorted({x.Origin for x in self.__list if x.Origin.endswith(".bb")})
 
-    def GetLoneAppends(self):
+    def GetLoneAppends(self) -> None:
         """Get bbappend without a matching bb
 
         Returns:
@@ -143,24 +146,24 @@ class Stash():
                 __linked_appends += x.Links
         return sorted({x for x in __appends if x not in __linked_appends})
 
-    def __is_linked_to(self, item, filename, nolink=False):
+    def __is_linked_to(self, item: Item, filename: str, nolink: bool = False) -> bool:
         return (filename in item.Links and not nolink) or filename == item.Origin
 
-    def __get_items_by_file(self, items, filename, nolink=False):
+    def __get_items_by_file(self, items: Iterable[Item], filename: str, nolink: bool = False) -> List[Item]:
         if not filename:
             return items
         return [x for x in items if self.__is_linked_to(x, filename, nolink=nolink)]
 
-    def __get_items_by_classifier(self, items, classifier):
+    def __get_items_by_classifier(self, items: Iterable[Item], classifier: Iterable[str]) -> List[Item]:
         if not classifier:
             return items
         return [x for x in items if x.CLASSIFIER in classifier]
 
-    def __get_items_by_attribute(self, items, attname, attvalue):
+    def __get_items_by_attribute(self, items: Iterable[Item], attname: Iterable[str], attvalue: Iterable[str]) -> List[Item]:
         if not attname:
             return items
 
-        def _filter(x, attname, attvalue):
+        def _filter(x: Item, attname: Iterable[str], attvalue: Iterable[str]) -> bool:
             attr_ = x.GetAttributes()
             res = False
             for name in attname:
@@ -169,7 +172,7 @@ class Stash():
 
         return [x for x in items if _filter(x, attname, attvalue)]
 
-    def GetLinksForFile(self, filename):
+    def GetLinksForFile(self, filename: str) -> List[str]:
         """Get file which this file is linked against
 
         Arguments:
@@ -182,7 +185,12 @@ class Stash():
             return []
         return [x.Origin for x in self.__get_items_by_file(self.__list, filename) if x.Origin != filename]
 
-    def GetItemsFor(self, filename=None, classifier=None, attribute=None, attributeValue=None, nolink=False):
+    def GetItemsFor(self,
+                    filename: str = None,
+                    classifier: Union[Iterable[str], str] = None,
+                    attribute: Union[Iterable[str], str] = None,
+                    attributeValue: Union[Iterable[str], str] = None,
+                    nolink: bool = False) -> List[Item]:
         """Get items for filename
 
         Keyword Arguments:
@@ -210,7 +218,11 @@ class Stash():
             res = self.__get_items_by_attribute(res, attribute, attributeValue)
         return sorted(set(res), key=lambda x: x.Line)
 
-    def ExpandVar(self, filename=None, attribute=None, attributeValue=None, nolink=False):
+    def ExpandVar(self,
+                  filename: str = None,
+                  attribute: Union[Iterable[str], str] = None,
+                  attributeValue: Union[Iterable[str], str] = None,
+                  nolink: bool = False) -> dict:
         """Expand variable to dictionary
 
         Args:
@@ -228,9 +240,9 @@ class Stash():
                                 attributeValue=attributeValue,
                                 nolink=nolink)
         _exp = {
-            "PN": guess_recipe_name(filename),
-            "PV": guess_recipe_version(filename),
-            "BPN": guess_base_recipe_name(filename),
+            "PN": self.GuessRecipeName(filename),
+            "PV": self.GuessRecipeVersion(filename),
+            "BPN": self.GuessBaseRecipeName(filename),
         }
         _exp = {**_exp, **CONSTANTS.SetsBase}
         for item in sorted(_res, key=lambda x: x.Line):
@@ -297,9 +309,287 @@ class Stash():
         # final run and explode the settings
         _finalexp = {}
         for k, v in _exp.items():
-            _newkey = expand_term(self, filename, k)
+            _newkey = self.ExpandTerm(self, filename, k)
             if _newkey not in _finalexp:
                 _finalexp[_newkey] = []
             _finalexp[_newkey] += Item.safe_linesplit(
-                expand_term(self, filename, v or ""))
+                self.ExpandTerm(filename, v or ""))
         return _finalexp
+
+    def GetFiles(self, _file: str, pattern: str) -> List[str]:
+        """Get files matching SRC_URI entries
+
+        Arguments:
+            _file {str} -- Full path to filename
+            pattern {str} -- glob pattern to apply
+
+        Returns:
+            list -- list of files matching pattern
+        """
+        res = set()
+        src_uris = self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                                    attribute=Variable.ATTR_VAR, attributeValue="SRC_URI")
+        files_paths = {
+            "{dir}/*/{pattern}".format(dir=os.path.dirname(x.Origin), pattern=pattern) for x in src_uris}
+        for item in src_uris:
+            files_paths.update({"{dir}/*/{pattern}".format(dir=os.path.dirname(x.Origin), pattern=pattern)
+                                for x in self.GetItemsFor(filename=item.Origin)})
+        for item in files_paths:
+            res.update(glob.glob(item))
+        return sorted(res)
+
+    def GetLayerRoot(self, name: str) -> str:
+        """Find the path to the layer root of a file
+
+        Arguments:
+            name {str} -- filename
+
+        Returns:
+            str -- path to layer root or empty string
+        """
+        _curdir = os.path.dirname(name) if os.path.isfile(name) else name
+        while os.path.isdir(_curdir):
+            if _curdir == "/":
+                break
+            _curdir = os.path.dirname(_curdir)
+            if os.path.exists(os.path.join(_curdir, "conf/layer.conf")):
+                return _curdir
+        return ""
+
+    def FindLocalOrLayer(self, name: str, localdir: str) -> str:
+        """Find file in local dir or in layer
+
+        Arguments:
+            name {str} -- filename
+            localdir {str} -- path to local dir
+
+        Returns:
+            str -- path to found file or None
+        """
+        if os.path.exists(os.path.join(localdir, name)):
+            return os.path.join(localdir, name)
+        _curdir = localdir
+        while os.path.isdir(_curdir):
+            if _curdir == "/":
+                break
+            _curdir = os.path.dirname(_curdir)
+            if os.path.exists(os.path.join(_curdir, "conf/layer.conf")):
+                if os.path.exists(os.path.join(_curdir, name)):
+                    return os.path.join(_curdir, name)
+                else:
+                    break
+        return ""
+
+    def _replace_with_known_mirrors(self, _in: dict) -> dict:
+        """
+        Replace the known mirror configuration items
+        """
+        for k, v in CONSTANTS.MirrorsKnown.items():
+            _in = _in.replace(k, v)
+        return _in
+
+    def GetScrComponents(self, string: str) -> dict:
+        """Return SRC_URI components
+
+        Arguments:
+            string {str} -- raw string
+
+        Returns:
+            dict -- scheme: protocol used, src: source URI, options: parsed options
+        """
+        _raw = self._replace_with_known_mirrors(string)
+        _url = urlparse(self._replace_with_known_mirrors(string))
+        _scheme = _url.scheme
+        _tmp = _url.netloc
+        if _url.path:
+            _tmp += "/" + _url.path.lstrip("/")
+        _path = _tmp.split(";")[0]
+        _options = _raw.split(";")[1:] if ";" in _raw else []
+        _parsed_opt = {x.split("=")[0]: x.split("=")[1]
+                       for x in _options if "=" in x}
+        return {"scheme": _scheme, "src": _path, "options": _parsed_opt}
+
+    def SafeLineSplit(self, string: str) -> List[str]:
+        """Split line in a safe manner
+
+        Arguments:
+            string {str} -- raw input
+
+        Returns:
+            list -- safely split input
+        """
+        return RegexRpl.split(r"\s|\t|\x1b", string)
+
+    def GuessRecipeName(self, _file: str) -> str:
+        """Get the recipe name from filename
+
+        Arguments:
+            _file {str} -- filename
+
+        Returns:
+            str -- recipe name
+        """
+        _name, _ = os.path.splitext(os.path.basename(_file))
+        return _name.split("_")[0]
+
+    def GuessBaseRecipeName(self, _file: str) -> str:
+        """Get the base recipe name from filename (aka BPN)
+
+        Arguments:
+            _file {str} -- filename
+
+        Returns:
+            str -- recipe name
+        """
+        tmp_ = RegexRpl.sub(r"^(nativesdk-)*(.+)(-native)*(-cross)*", r"\2", self.GuessRecipeName(_file))
+        tmp_ = RegexRpl.sub(r"^(.+)(-native)$", r"\1", tmp_)
+        tmp_ = RegexRpl.sub(r"^(.+)(-cross)$", r"\1", tmp_)
+        return tmp_
+
+    def GuessRecipeVersion(self, _file: str) -> str:
+        """Get recipe version from filename
+
+        Arguments:
+            _file {str} -- filename
+
+        Returns:
+            str -- recipe version
+        """
+        _name, _ = os.path.splitext(os.path.basename(_file))
+        return _name.split("_")[-1]
+
+    def ExpandTerm(self, _file: str, value: str, spare: List[str] = None, seen: List[str] = None) -> str:
+        """Expand a variable (replacing all variables by known content)
+
+        Arguments:
+            _file {str} -- Full path to file
+            value {str} -- Variable value to expand
+            spare {list[str]} -- items to keep unexpanded (default: None)
+            seen {list[str]} -- seen items (default: None)
+
+        Returns:
+            str -- expanded value
+        """
+        baseset = CONSTANTS.SetsBase
+        pattern = r"\$\{(.+?)\}"
+        seen = seen or {}
+        spare = spare or []
+        res = str(value)
+        for m in RegexRpl.finditer(pattern, value):
+            if m.group(1) in spare:
+                continue
+            _comp = [x for x in self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                                                 attribute=Variable.ATTR_VAR, attributeValue=m.group(1)) if not x.AppendOperation()]
+
+            if any(_comp):
+                if m.group(1) in seen.keys():
+                    _rpl = seen[m.group(1)]
+                else:
+                    seen[m.group(1)] = ""
+                    _rpl = self.ExpandTerm(_file, _comp[0].VarValueStripped, seen=seen)
+                    seen[m.group(1)] = _rpl
+                res = res.replace(m.group(0), _rpl)
+            elif m.group(1) in baseset:
+                if m.group(1) in seen.keys():
+                    _rpl = seen[m.group(1)]
+                elif m.group(1) in baseset:
+                    seen[m.group(1)] = ""
+                    _rpl = self.ExpandTerm(_file, baseset[m.group(1)], seen=seen)
+                    seen[m.group(1)] = _rpl
+                else:
+                    _rpl = m.group(1)
+                res = res.replace(m.group(0), _rpl)
+            elif m.group(1) in ["PN"]:
+                res = res.replace(m.group(0), self.GuessRecipeName(_file))
+            elif m.group(1) in ["BPN"]:
+                res = res.replace(m.group(0), self.GuessBaseRecipeName(_file))
+            elif m.group(1) in ["PV"]:
+                res = res.replace(m.group(0), self.GuessRecipeVersion(_file))
+            elif not any(_comp):
+                continue
+        return res
+
+    def GetValidPackageNames(self, _file: str, strippn: bool = False) -> List[str]:
+        """Get known valid names for packages
+
+        Arguments:
+            _file {str} -- Full path to file
+            strippn {bool} -- strip the package name (default: False)
+
+        Returns:
+            list -- list of valid package names
+        """
+        res = set()
+        _comp = self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                                 attribute=Variable.ATTR_VAR, attributeValue="PACKAGES")
+        _comp += self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                                  attribute=Variable.ATTR_VAR, attributeValue="PACKAGE_BEFORE_PN")
+        for _pn in ['${PN}', self.GuessRecipeName(_file)]:
+            res.add(_pn)
+            res.add("{recipe}-ptest".format(recipe=_pn))
+            res.update(["{recipe}-{pkg}".format(recipe=_pn, pkg=x)
+                        for x in ["src", "dbg", "staticdev", "dev", "doc", "locale"]])
+            for item in _comp:
+                for pkg in [x for x in self.SafeLineSplit(self.ExpandTerm(_file, item.VarValueStripped, spare=["PN"])) if x]:
+                    if not strippn:
+                        _pkg = pkg.replace("${PN}", _pn)
+                    else:
+                        _pkg = pkg.replace("${PN}", "")
+                    res.add(_pkg)
+        return res
+
+    def GetValidNamedResources(self, _file: str) -> List[str]:
+        """Get list of valid SRCREV resource names
+
+        Arguments:
+            _file {str} -- Full path to file
+
+        Returns:
+            list -- list of valid SRCREV resource names
+        """
+        res = set()
+        _comp = self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                                 attribute=Variable.ATTR_VAR, attributeValue="SRC_URI")
+        _recipe_name = self.GuessRecipeName(_file)
+        res.add(_recipe_name)
+        for item in _comp:
+            for name in [x for x in self.SafeLineSplit(item.VarValueStripped) if x]:
+                _url = self.GetScrComponents(name)
+                if "name" in _url["options"]:
+                    res.add(_url["options"]["name"].replace("${PN}", _recipe_name))
+        return res
+
+    def IsImage(self, _file: str) -> bool:
+        """returns if the file is likely an image recipe or not
+
+        Args:
+            _file {str} -- Full path to file
+
+        Returns:
+            bool -- True if _file is an image recipe
+        """
+        res = False
+
+        _inherits = self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                                     attribute=Variable.ATTR_VAR, attributeValue="inherit")
+        res |= any(
+            x for x in _inherits if x.VarValueStripped in CONSTANTS.ImagesClasses)
+
+        for _var in CONSTANTS.ImagesVariables:
+            res |= any(self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                                        attribute=Variable.ATTR_VAR, attributeValue=_var))
+
+        return res
+
+    def IsPackageGroup(self, _file: str) -> bool:
+        """returns if the file is likely a packagegroup recipe or not
+
+        Args:
+            _file {str} -- Full path to file
+
+        Returns:
+            bool -- True if _file is a packagegroup recipe
+        """
+        _inherits = self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                                     attribute=Variable.ATTR_VAR, attributeValue="inherit")
+        return any(x for x in _inherits if "packagegroup" in x.get_items())

@@ -1,4 +1,6 @@
-from regex import regex
+from typing import List, Union
+
+from regex import Match, Scanner, regex
 
 
 class RegexRpl():
@@ -6,7 +8,7 @@ class RegexRpl():
     """
 
     @staticmethod
-    def search(pattern, string, timeout=5, default=None, **kwargs):
+    def search(pattern: str, string: str, timeout: int = 5, default: object = None, **kwargs) -> Union[Match, None]:
         """replacement for re.search
 
         Args:
@@ -24,7 +26,7 @@ class RegexRpl():
             return default
 
     @staticmethod
-    def split(pattern, string, timeout=5, default=None, **kwargs):
+    def split(pattern: str, string: str, timeout: int = 5, default: object = None, **kwargs) -> List[str]:
         """replacement for re.split
 
         Args:
@@ -39,10 +41,10 @@ class RegexRpl():
         try:
             return regex.split(pattern, string, timeout=timeout, **kwargs)
         except TimeoutError:
-            return default
+            return default or []
 
     @staticmethod
-    def match(pattern, string, timeout=5, default=None, **kwargs):
+    def match(pattern: str, string: str, timeout: int = 5, default: object = None, **kwargs) -> Union[Match, None]:
         """replacement for re.match
 
         Args:
@@ -60,7 +62,7 @@ class RegexRpl():
             return default
 
     @staticmethod
-    def sub(pattern, repl, string, timeout=5, default='', **kwargs):
+    def sub(pattern: str, repl: str, string: str, timeout: int = 5, default: str = '', **kwargs) -> str:
         """replacement for re.sub
 
         Args:
@@ -79,7 +81,7 @@ class RegexRpl():
             return default
 
     @staticmethod
-    def finditer(pattern, string, timeout=5, default=None, **kwargs):
+    def finditer(pattern: str, string: str, timeout: int = 5, default: object = None, **kwargs) -> Scanner:
         """replacement for re.finditer
 
         Args:
