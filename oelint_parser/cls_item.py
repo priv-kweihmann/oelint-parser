@@ -2,6 +2,8 @@ import os
 import textwrap
 from typing import List, Tuple
 
+from deprecated import deprecated
+
 from oelint_parser.constants import CONSTANTS
 from oelint_parser.rpl_regex import RegexRpl
 
@@ -290,7 +292,6 @@ class Variable(Item):
                  name: str,
                  value: str,
                  operator: str,
-                 flag: str,
                  realraw: str,
                  new_style_override_syntax: bool = False) -> None:
         """constructor
@@ -304,13 +305,12 @@ class Variable(Item):
             name {str} -- Variable name
             value {str} -- Variable value
             operator {str} -- Operation performed to the variable
-            flag {str} -- Optional variable flag
 
         Keyword Arguments:
             new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
         super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
-        if "inherit" != name and not flag:
+        if "inherit" != name:
             self.__VarName, self.__SubItem = self.extract_sub(
                 name)
         else:
@@ -320,9 +320,7 @@ class Variable(Item):
             self.OverrideDelimiter) if x]
         self.__VarValue = value
         self.__VarOp = operator
-        self.__Flag = flag or ""
-        self.__RawVarName = "{name}[{flag}]".format(
-            name=self.VarName, flag=self.Flag) if self.Flag else self.VarName
+        self.__RawVarName = self.VarName
         self.__VarValueStripped = self.VarValue.strip().lstrip('"').rstrip('"')
 
     @property
@@ -366,6 +364,18 @@ class Variable(Item):
         self.__VarValue = value
 
     @property
+    @deprecated(version='3.0.0', reason='Flag values are now part of FlagAssignment class')
+    def Flag(self) -> str:
+        """Flag value (deprecated)
+
+        Use FlagAssignment class instead.
+
+        Returns:
+            str: Empty string.
+        """
+        return ''
+
+    @property
     def VarOp(self) -> str:
         """Variable operation
 
@@ -375,23 +385,13 @@ class Variable(Item):
         return self.__VarOp
 
     @property
-    def Flag(self) -> str:
-        """Variable flag like PACKAGECONFIG[xyz]
-
-        Returns:
-            str: variable sub flags
-        """
-        return self.__Flag
-
-    @property
     def VarNameComplete(self) -> str:
         """Complete variable name included overrides and flags
 
         Returns:
             str: complete variable name
         """
-        _var = self.OverrideDelimiter.join([self.VarName] + self.SubItems)
-        return "{name}[{flag}]".format(name=_var, flag=self.Flag) if self.Flag else _var
+        return self.OverrideDelimiter.join([self.VarName] + self.SubItems)
 
     @property
     def RawVarName(self) -> str:
@@ -860,13 +860,15 @@ class PythonBlock(Item):
         return self.Raw.split("\n")
 
 
-class TaskAssignment(Item):
+class FlagAssignment(Item):
     """Items representing flag assignments in bitbake."""
 
-    ATTR_FUNCNAME = "FuncName"
-    ATTR_VAR = "VarName"
-    ATTR_VARVAL = "VarValue"
-    CLASSIFIER = "TaskAssignment"
+    ATTR_NAME = "VarName"
+    ATTR_FLAG = "Flag"
+    ATTR_VARVAL = "Value"
+    ATTR_VARVAL_STRIPPED = "ValueStripped"
+    ATTR_VAROP = "VarOp"
+    CLASSIFIER = "FlagAssignment"
 
     def __init__(self,
                  origin: str,
@@ -876,6 +878,7 @@ class TaskAssignment(Item):
                  name: str,
                  ident: str,
                  value: str,
+                 varop: str,
                  realraw: str,
                  new_style_override_syntax: bool = False) -> None:
         """constructor
@@ -889,49 +892,69 @@ class TaskAssignment(Item):
             name {str} -- name of task to be modified
             ident {str} -- task flag
             value {str} -- value of modification
+            varop {str} -- variable operation
 
         Keyword Arguments:
             new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
         super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
-        self.__FuncName = name
-        self.__VarName = ident
-        self.__VarValue = value
-
-    @property
-    def FuncName(self) -> str:
-        """Function name
-
-        Returns:
-            str: name of function
-        """
-        return self.__FuncName
-
-    @property
-    def VarValue(self) -> str:
-        """Task flag value
-
-        Returns:
-            str: Task flag value
-        """
-        return self.__VarValue
+        self.__name = name
+        self.__flag = ident
+        self.__value = value
+        self.__varop = varop
 
     @property
     def VarName(self) -> str:
-        """Task flag name
+        """Variable name
 
         Returns:
-            str: name of task flag
+            str: name of variable
         """
-        return self.__VarName
+        return self.__name
 
-    def get_items(self) -> Tuple[str, str, str]:
+    @property
+    def Flag(self) -> str:
+        """Flag name
+
+        Returns:
+            str: Flag name
+        """
+        return self.__flag
+
+    @property
+    def VarOp(self) -> str:
+        """Modifier operation
+
+        Returns:
+            str: used modifier in operation
+        """
+        return self.__varop
+
+    @property
+    def Value(self) -> str:
+        """Value
+
+        Returns:
+            str: value set
+        """
+        return self.__value
+
+    @property
+    def ValueStripped(self) -> str:
+        """Value stripped of the quotes
+
+        Returns:
+            str: value set
+        """
+        return self.__value.strip('"')
+
+    def get_items(self) -> Tuple[str, str, str, str]:
         """Get items
 
         Returns:
             list -- function name, flag, modification value
         """
-        return [self.FuncName, self.VarName, self.VarValue]
+        return [self.VarName, self.Flag, self.VarOp, self.ValueStripped]
 
 
 class FunctionExports(Item):
@@ -1115,3 +1138,59 @@ class MissingFile(Item):
 
     def get_items(self) -> Tuple[str, str]:
         return [self.Filename, self.Statement]
+
+
+@deprecated(version='3.0.0', reason='TaskAssignment is now part of FlagAssignment class')
+class TaskAssignment(Item):
+    """Deprecated. Use FlagAssignment class instead."""
+
+    ATTR_FUNCNAME = "FuncName"
+    ATTR_VAR = "VarName"
+    ATTR_VARVAL = "VarValue"
+    CLASSIFIER = "TaskAssignment"
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    @property
+    def FuncName(self) -> str:
+        """Deprecated.
+
+        Use FlagAssignment class instead
+
+        Returns:
+            str: Empty string
+        """
+        return ''
+
+    @property
+    def VarValue(self) -> str:
+        """Deprecated.
+
+        Use FlagAssignment class instead
+
+        Returns:
+            str: Empty string
+        """
+        return ''
+
+    @property
+    def VarName(self) -> str:
+        """Deprecated.
+
+        Use FlagAssignment class instead
+
+        Returns:
+            str: Empty string
+        """
+        return ''
+
+    def get_items(self) -> List:
+        """Deprecated.
+
+        Use FlagAssignment class instead
+
+        Returns:
+            list: Empty list
+        """
+        return []

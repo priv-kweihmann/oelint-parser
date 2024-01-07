@@ -39,7 +39,6 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.SubItem, "")
             self.assertEqual(x.SubItems, [])
             self.assertEqual(x.VarOp, " = ")
-            self.assertEqual(x.Flag, "")
             self.assertEqual(x.GetClassOverride(), "")
 
     def test_some_var_with_periods(self):
@@ -65,7 +64,6 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.SubItem, "")
             self.assertEqual(x.SubItems, [])
             self.assertEqual(x.VarOp, " = ")
-            self.assertEqual(x.Flag, "")
             self.assertEqual(x.GetClassOverride(), "")
 
     def test_var_rdepends(self):
@@ -130,21 +128,23 @@ class OelintParserTest(unittest.TestCase):
         self.assertTrue(not any(x.Name in ['something', 'SOMETHING']) for x in _withval)
         self.assertTrue(not any(x.Name in ['something', 'SOMETHING']) for x in _woval)
 
-    def test_taskassignment(self):
-        from oelint_parser.cls_item import TaskAssignment
+    def test_FlagAssignment(self):
+        from oelint_parser.cls_item import FlagAssignment
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserTest.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=TaskAssignment.CLASSIFIER)
+        _stash = self.__stash.GetItemsFor(classifier=FlagAssignment.CLASSIFIER,
+                                          attribute=FlagAssignment.ATTR_NAME,
+                                          attributeValue="do_configure")
 
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
             self.assertEqual(x.Raw, 'do_configure[noexec] = "1"\n')
-            self.assertEqual(x.FuncName, "do_configure")
-            self.assertEqual(x.VarValue, '"1"')
-            self.assertEqual(x.VarName, "noexec")
+            self.assertEqual(x.VarName, "do_configure")
+            self.assertEqual(x.Value, '"1"')
+            self.assertEqual(x.Flag, "noexec")
 
     def test_pythonblock(self):
         from oelint_parser.cls_item import PythonBlock
@@ -227,20 +227,19 @@ class OelintParserTest(unittest.TestCase):
             self.assertIn(item.FuncName, ["", "anonymous"])
 
     def test_varflag(self):
-        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_item import FlagAssignment
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserTest.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
-                                          attribute=Variable.ATTR_VAR,
+        _stash = self.__stash.GetItemsFor(classifier=FlagAssignment.CLASSIFIER,
+                                          attribute=FlagAssignment.ATTR_NAME,
                                           attributeValue="PACKAGECONFIG")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
             self.assertEqual(x.VarName, "PACKAGECONFIG")
             self.assertEqual(x.Flag, "abc")
-            self.assertEqual(x.RawVarName, "PACKAGECONFIG[abc]")
 
     def test_multiline(self):
         from oelint_parser.cls_item import Variable
@@ -271,7 +270,7 @@ class OelintParserTest(unittest.TestCase):
         for x in _stash:
             self.assertEqual(x.VarName, "SOMEOTHERVAR")
             self.assertEqual(self.__stash.ExpandTerm(OelintParserTest.RECIPE,
-                                                    x.VarValueStripped), "source/SOMEMORE")
+                                                     x.VarValueStripped), "source/SOMEMORE")
             self.assertNotEqual(x.VarValueStripped, "source/SOMEMORE")
 
     def test_inlinecodeblock(self):

@@ -13,7 +13,7 @@ from oelint_parser.cls_item import (
     Item,
     PythonBlock,
     TaskAdd,
-    TaskAssignment,
+    FlagAssignment,
     Variable,
 )
 from oelint_parser.inlinerep import inlinerep
@@ -156,7 +156,7 @@ def get_items(stash: object,
         list: List of oelint_parser.cls_item.* representations
     """
     res = []
-    __regex_var = r"^(?P<varname>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)(\[(?P<ident>(\w|-|\.)+)\])*(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
+    __regex_var = r"^(?P<varname>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
     __regex_func = r"^((?P<py>python)\s*|(?P<fr>fakeroot\s*))*(?P<func>[\w\.\-\+\{\}:\$]+)?\s*\(\s*\)\s*\{(?P<funcbody>.*)\s*\}"
     __regex_inherit = r"^(\s|\t)*inherit(\s+|\t+)(?P<inhname>.+)"
     __regex_export_wval = r"^\s*?export(\s+|\t+)(?P<name>.+)\s*=\s*\"(?P<value>.*)\""
@@ -165,7 +165,7 @@ def get_items(stash: object,
     __regex_python = r"^(\s*|\t*)def(\s+|\t+)(?P<funcname>[a-z0-9_]+)(\s*|\t*)\(.*\)\:"
     __regex_include = r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)"
     __regex_addtask = r"^(\s*|\t*)addtask\s+(?P<func>\w+)\s*((before\s*(?P<before>((.*(?=after))|(.*))))|(after\s*(?P<after>((.*(?=before))|(.*)))))*"
-    __regex_taskass = r"^(\s*|\t*)(?P<func>[a-z0-9_-]+)\[(?P<ident>\w+)\](\s+|\t+)=(\s+|\t+)(?P<varval>.*)"
+    __regex_flagass = r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
     __regex_export_func = r"^EXPORT_FUNCTIONS\s+(?P<func>.*)"
 
     _order = collections.OrderedDict([
@@ -177,7 +177,7 @@ def get_items(stash: object,
         ("python", __regex_python),
         ("include", __regex_include),
         ("addtask", __regex_addtask),
-        ("taskassign", __regex_taskass),
+        ("flagassign", __regex_flagass),
         ("exportfunc", __regex_export_func),
         ("vars", __regex_var),
     ])
@@ -226,7 +226,6 @@ def get_items(stash: object,
                             m.group("varname"),
                             m.group("varval"),
                             m.group("varop"),
-                            m.group("ident"),
                             line["realraw"],
                             new_style_override_syntax=override_syntax_new,
                         ))
@@ -287,7 +286,6 @@ def get_items(stash: object,
                             m.group("inhname"),
                             line["realraw"],
                             "",
-                            "",
                             new_style_override_syntax=override_syntax_new,
                         ))
                     good = True
@@ -320,16 +318,18 @@ def get_items(stash: object,
                         ))
                     good = True
                     break
-                elif k == "taskassign":
+                elif k == "flagassign":
+                    print(f'FlagAssignment {m}')
                     res.append(
-                        TaskAssignment(
+                        FlagAssignment(
                             _file,
                             line["line"] + includeOffset,
                             line["line"] - lineOffset,
                             line["raw"],
-                            m.group("func"),
+                            m.group("name"),
                             m.group("ident"),
                             m.group("varval"),
+                            m.group("varop"),
                             line["realraw"],
                             new_style_override_syntax=override_syntax_new,
                         ))
