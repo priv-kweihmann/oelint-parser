@@ -58,8 +58,8 @@
     * [SubItem](#oelint_parser.cls_item.Variable.SubItem)
     * [SubItems](#oelint_parser.cls_item.Variable.SubItems)
     * [VarValue](#oelint_parser.cls_item.Variable.VarValue)
-    * [VarOp](#oelint_parser.cls_item.Variable.VarOp)
     * [Flag](#oelint_parser.cls_item.Variable.Flag)
+    * [VarOp](#oelint_parser.cls_item.Variable.VarOp)
     * [VarNameComplete](#oelint_parser.cls_item.Variable.VarNameComplete)
     * [RawVarName](#oelint_parser.cls_item.Variable.RawVarName)
     * [VarValueStripped](#oelint_parser.cls_item.Variable.VarValueStripped)
@@ -102,12 +102,14 @@
     * [\_\_init\_\_](#oelint_parser.cls_item.PythonBlock.__init__)
     * [FuncName](#oelint_parser.cls_item.PythonBlock.FuncName)
     * [get\_items](#oelint_parser.cls_item.PythonBlock.get_items)
-  * [TaskAssignment](#oelint_parser.cls_item.TaskAssignment)
-    * [\_\_init\_\_](#oelint_parser.cls_item.TaskAssignment.__init__)
-    * [FuncName](#oelint_parser.cls_item.TaskAssignment.FuncName)
-    * [VarValue](#oelint_parser.cls_item.TaskAssignment.VarValue)
-    * [VarName](#oelint_parser.cls_item.TaskAssignment.VarName)
-    * [get\_items](#oelint_parser.cls_item.TaskAssignment.get_items)
+  * [FlagAssignment](#oelint_parser.cls_item.FlagAssignment)
+    * [\_\_init\_\_](#oelint_parser.cls_item.FlagAssignment.__init__)
+    * [VarName](#oelint_parser.cls_item.FlagAssignment.VarName)
+    * [Flag](#oelint_parser.cls_item.FlagAssignment.Flag)
+    * [VarOp](#oelint_parser.cls_item.FlagAssignment.VarOp)
+    * [Value](#oelint_parser.cls_item.FlagAssignment.Value)
+    * [ValueStripped](#oelint_parser.cls_item.FlagAssignment.ValueStripped)
+    * [get\_items](#oelint_parser.cls_item.FlagAssignment.get_items)
   * [FunctionExports](#oelint_parser.cls_item.FunctionExports)
     * [\_\_init\_\_](#oelint_parser.cls_item.FunctionExports.__init__)
     * [FuncNames](#oelint_parser.cls_item.FunctionExports.FuncNames)
@@ -123,6 +125,11 @@
     * [\_\_init\_\_](#oelint_parser.cls_item.MissingFile.__init__)
     * [Filename](#oelint_parser.cls_item.MissingFile.Filename)
     * [Statement](#oelint_parser.cls_item.MissingFile.Statement)
+  * [TaskAssignment](#oelint_parser.cls_item.TaskAssignment)
+    * [FuncName](#oelint_parser.cls_item.TaskAssignment.FuncName)
+    * [VarValue](#oelint_parser.cls_item.TaskAssignment.VarValue)
+    * [VarName](#oelint_parser.cls_item.TaskAssignment.VarName)
+    * [get\_items](#oelint_parser.cls_item.TaskAssignment.get_items)
 * [oelint\_parser.helper\_files](#oelint_parser.helper_files)
   * [get\_files](#oelint_parser.helper_files.get_files)
   * [get\_layer\_root](#oelint_parser.helper_files.get_layer_root)
@@ -1065,7 +1072,6 @@ def __init__(origin: str,
              name: str,
              value: str,
              operator: str,
-             flag: str,
              realraw: str,
              new_style_override_syntax: bool = False) -> None
 ```
@@ -1082,7 +1088,6 @@ constructor
 - `name` _str_ - Variable name
 - `value` _str_ - Variable value
 - `operator` _str_ - Operation performed to the variable
-- `flag` _str_ - Optional variable flag
   
 
 **Arguments**:
@@ -1149,6 +1154,25 @@ variable value
 
 - `str` - unstripped variable value
 
+<a id="oelint_parser.cls_item.Variable.Flag"></a>
+
+#### Flag
+
+```python
+@property
+@deprecated(version='3.0.0',
+            reason='Flag values are now part of FlagAssignment class')
+def Flag() -> str
+```
+
+Flag value (deprecated)
+
+Use FlagAssignment class instead.
+
+**Returns**:
+
+- `str` - Empty string.
+
 <a id="oelint_parser.cls_item.Variable.VarOp"></a>
 
 #### VarOp
@@ -1163,21 +1187,6 @@ Variable operation
 **Returns**:
 
 - `str` - operation did on the variable
-
-<a id="oelint_parser.cls_item.Variable.Flag"></a>
-
-#### Flag
-
-```python
-@property
-def Flag() -> str
-```
-
-Variable flag like PACKAGECONFIG[xyz]
-
-**Returns**:
-
-- `str` - variable sub flags
 
 <a id="oelint_parser.cls_item.Variable.VarNameComplete"></a>
 
@@ -1858,17 +1867,17 @@ Get lines of function body
 
 - `list` - lines of function body
 
-<a id="oelint_parser.cls_item.TaskAssignment"></a>
+<a id="oelint_parser.cls_item.FlagAssignment"></a>
 
-## TaskAssignment Objects
+## FlagAssignment Objects
 
 ```python
-class TaskAssignment(Item)
+class FlagAssignment(Item)
 ```
 
 Items representing flag assignments in bitbake.
 
-<a id="oelint_parser.cls_item.TaskAssignment.__init__"></a>
+<a id="oelint_parser.cls_item.FlagAssignment.__init__"></a>
 
 #### \_\_init\_\_
 
@@ -1880,6 +1889,7 @@ def __init__(origin: str,
              name: str,
              ident: str,
              value: str,
+             varop: str,
              realraw: str,
              new_style_override_syntax: bool = False) -> None
 ```
@@ -1896,43 +1906,14 @@ constructor
 - `name` _str_ - name of task to be modified
 - `ident` _str_ - task flag
 - `value` _str_ - value of modification
+- `varop` _str_ - variable operation
   
 
 **Arguments**:
 
 - `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
-<a id="oelint_parser.cls_item.TaskAssignment.FuncName"></a>
-
-#### FuncName
-
-```python
-@property
-def FuncName() -> str
-```
-
-Function name
-
-**Returns**:
-
-- `str` - name of function
-
-<a id="oelint_parser.cls_item.TaskAssignment.VarValue"></a>
-
-#### VarValue
-
-```python
-@property
-def VarValue() -> str
-```
-
-Task flag value
-
-**Returns**:
-
-- `str` - Task flag value
-
-<a id="oelint_parser.cls_item.TaskAssignment.VarName"></a>
+<a id="oelint_parser.cls_item.FlagAssignment.VarName"></a>
 
 #### VarName
 
@@ -1941,18 +1922,78 @@ Task flag value
 def VarName() -> str
 ```
 
-Task flag name
+Variable name
 
 **Returns**:
 
-- `str` - name of task flag
+- `str` - name of variable
 
-<a id="oelint_parser.cls_item.TaskAssignment.get_items"></a>
+<a id="oelint_parser.cls_item.FlagAssignment.Flag"></a>
+
+#### Flag
+
+```python
+@property
+def Flag() -> str
+```
+
+Flag name
+
+**Returns**:
+
+- `str` - Flag name
+
+<a id="oelint_parser.cls_item.FlagAssignment.VarOp"></a>
+
+#### VarOp
+
+```python
+@property
+def VarOp() -> str
+```
+
+Modifier operation
+
+**Returns**:
+
+- `str` - used modifier in operation
+
+<a id="oelint_parser.cls_item.FlagAssignment.Value"></a>
+
+#### Value
+
+```python
+@property
+def Value() -> str
+```
+
+Value
+
+**Returns**:
+
+- `str` - value set
+
+<a id="oelint_parser.cls_item.FlagAssignment.ValueStripped"></a>
+
+#### ValueStripped
+
+```python
+@property
+def ValueStripped() -> str
+```
+
+Value stripped of the quotes
+
+**Returns**:
+
+- `str` - value set
+
+<a id="oelint_parser.cls_item.FlagAssignment.get_items"></a>
 
 #### get\_items
 
 ```python
-def get_items() -> Tuple[str, str, str]
+def get_items() -> Tuple[str, str, str, str]
 ```
 
 Get items
@@ -2214,6 +2255,84 @@ statement either include or require
 **Returns**:
 
 - `str` - include or require
+
+<a id="oelint_parser.cls_item.TaskAssignment"></a>
+
+## TaskAssignment Objects
+
+```python
+@deprecated(version='3.0.0', reason='TaskAssignment is now part of FlagAssignment class')
+class TaskAssignment(Item)
+```
+
+Deprecated. Use FlagAssignment class instead.
+
+<a id="oelint_parser.cls_item.TaskAssignment.FuncName"></a>
+
+#### FuncName
+
+```python
+@property
+def FuncName() -> str
+```
+
+Deprecated.
+
+Use FlagAssignment class instead
+
+**Returns**:
+
+- `str` - Empty string
+
+<a id="oelint_parser.cls_item.TaskAssignment.VarValue"></a>
+
+#### VarValue
+
+```python
+@property
+def VarValue() -> str
+```
+
+Deprecated.
+
+Use FlagAssignment class instead
+
+**Returns**:
+
+- `str` - Empty string
+
+<a id="oelint_parser.cls_item.TaskAssignment.VarName"></a>
+
+#### VarName
+
+```python
+@property
+def VarName() -> str
+```
+
+Deprecated.
+
+Use FlagAssignment class instead
+
+**Returns**:
+
+- `str` - Empty string
+
+<a id="oelint_parser.cls_item.TaskAssignment.get_items"></a>
+
+#### get\_items
+
+```python
+def get_items() -> List
+```
+
+Deprecated.
+
+Use FlagAssignment class instead
+
+**Returns**:
+
+- `list` - Empty list
 
 <a id="oelint_parser.helper_files"></a>
 
