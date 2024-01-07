@@ -140,13 +140,17 @@ def prepare_lines(_file: str, lineOffset: int = 0) -> List[str]:
     return prep_lines
 
 
-def get_items(stash: object, _file: str, lineOffset: int = 0) -> List[Item]:
+def get_items(stash: object, 
+              _file: str, 
+              lineOffset: int = 0, 
+              new_style_override_syntax: bool = False) -> List[Item]:
     """parses file
 
     Args:
         stash (oelint_parser.cls_stash.Stash): Stash object
         _file (string): Full path to file
         lineOffset (int, optional): line offset counter. Defaults to 0.
+        new_style_override_syntax (bool, optional): default to new override syntax (default: False)
 
     Returns:
         list: List of oelint_parser.cls_item.* representations
@@ -179,7 +183,7 @@ def get_items(stash: object, _file: str, lineOffset: int = 0) -> List[Item]:
     ])
 
     includeOffset = 0
-    override_syntax_new = False
+    override_syntax_new = new_style_override_syntax
 
     for line in prepare_lines(_file, lineOffset):
         good = False

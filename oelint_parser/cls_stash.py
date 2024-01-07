@@ -11,13 +11,18 @@ from oelint_parser.rpl_regex import RegexRpl
 
 class Stash():
 
-    def __init__(self, quiet: bool = False) -> None:
-        """constructor
+    def __init__(self, quiet: bool = False, new_style_override_syntax: bool = False) -> None:
+        """Stash object
+
+        Args:
+            quiet (bool, optional): No progress printing. Defaults to False.
+            new_style_override_syntax (bool, optional): Enforce new override syntax. Defaults to False.
         """
         self.__list = []
         self.__seen_files = set()
         self.__map = {}
         self.__quiet = quiet
+        self.__new_style_override_syntax = new_style_override_syntax
 
     def AddFile(self, _file: str, lineOffset: int = 0, forcedLink: str = None) -> List[Item]:
         """Adds a file to the stash
@@ -38,7 +43,10 @@ class Stash():
         if not self.__quiet:
             print("Parsing {file}".format(file=_file))
         self.__seen_files.add(_file)
-        res = get_items(self, _file, lineOffset=lineOffset)
+        res = get_items(self,
+                        _file,
+                        lineOffset=lineOffset,
+                        new_style_override_syntax=self.__new_style_override_syntax)
         if forcedLink:
             for r in res:
                 r.IncludedFrom = forcedLink
