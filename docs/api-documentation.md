@@ -1,32 +1,32 @@
 # Table of Contents
 
 * [oelint\_parser](#oelint_parser)
-* [oelint\_parser.const\_vars](#oelint_parser.const_vars)
-  * [set\_constantfile](#oelint_parser.const_vars.set_constantfile)
-  * [set\_rulefile](#oelint_parser.const_vars.set_rulefile)
-  * [get\_mandatory\_vars](#oelint_parser.const_vars.get_mandatory_vars)
-  * [get\_suggested\_vars](#oelint_parser.const_vars.get_suggested_vars)
-  * [get\_known\_mirrors](#oelint_parser.const_vars.get_known_mirrors)
-  * [get\_protected\_vars](#oelint_parser.const_vars.get_protected_vars)
-  * [get\_protected\_append\_vars](#oelint_parser.const_vars.get_protected_append_vars)
-  * [get\_known\_vars](#oelint_parser.const_vars.get_known_vars)
-  * [get\_known\_distros](#oelint_parser.const_vars.get_known_distros)
-  * [get\_known\_machines](#oelint_parser.const_vars.get_known_machines)
-  * [get\_image\_classes](#oelint_parser.const_vars.get_image_classes)
-  * [get\_image\_variables](#oelint_parser.const_vars.get_image_variables)
-  * [get\_base\_varset](#oelint_parser.const_vars.get_base_varset)
 * [oelint\_parser.cls\_stash](#oelint_parser.cls_stash)
   * [Stash](#oelint_parser.cls_stash.Stash)
     * [\_\_init\_\_](#oelint_parser.cls_stash.Stash.__init__)
     * [AddFile](#oelint_parser.cls_stash.Stash.AddFile)
     * [Append](#oelint_parser.cls_stash.Stash.Append)
     * [Remove](#oelint_parser.cls_stash.Stash.Remove)
+    * [AddDistroMachineFromLayer](#oelint_parser.cls_stash.Stash.AddDistroMachineFromLayer)
+    * [Finalize](#oelint_parser.cls_stash.Stash.Finalize)
     * [GetRecipes](#oelint_parser.cls_stash.Stash.GetRecipes)
     * [GetLoneAppends](#oelint_parser.cls_stash.Stash.GetLoneAppends)
     * [GetLinksForFile](#oelint_parser.cls_stash.Stash.GetLinksForFile)
     * [GetItemsFor](#oelint_parser.cls_stash.Stash.GetItemsFor)
     * [ExpandVar](#oelint_parser.cls_stash.Stash.ExpandVar)
-* [oelint\_parser.const\_func](#oelint_parser.const_func)
+    * [GetFiles](#oelint_parser.cls_stash.Stash.GetFiles)
+    * [GetLayerRoot](#oelint_parser.cls_stash.Stash.GetLayerRoot)
+    * [FindLocalOrLayer](#oelint_parser.cls_stash.Stash.FindLocalOrLayer)
+    * [GetScrComponents](#oelint_parser.cls_stash.Stash.GetScrComponents)
+    * [SafeLineSplit](#oelint_parser.cls_stash.Stash.SafeLineSplit)
+    * [GuessRecipeName](#oelint_parser.cls_stash.Stash.GuessRecipeName)
+    * [GuessBaseRecipeName](#oelint_parser.cls_stash.Stash.GuessBaseRecipeName)
+    * [GuessRecipeVersion](#oelint_parser.cls_stash.Stash.GuessRecipeVersion)
+    * [ExpandTerm](#oelint_parser.cls_stash.Stash.ExpandTerm)
+    * [GetValidPackageNames](#oelint_parser.cls_stash.Stash.GetValidPackageNames)
+    * [GetValidNamedResources](#oelint_parser.cls_stash.Stash.GetValidNamedResources)
+    * [IsImage](#oelint_parser.cls_stash.Stash.IsImage)
+    * [IsPackageGroup](#oelint_parser.cls_stash.Stash.IsPackageGroup)
 * [oelint\_parser.parser](#oelint_parser.parser)
   * [get\_full\_scope](#oelint_parser.parser.get_full_scope)
   * [prepare\_lines\_subparser](#oelint_parser.parser.prepare_lines_subparser)
@@ -149,8 +149,6 @@
     * [AddConstants](#oelint_parser.constants.Constants.AddConstants)
     * [RemoveConstants](#oelint_parser.constants.Constants.RemoveConstants)
     * [OverrideConstants](#oelint_parser.constants.Constants.OverrideConstants)
-    * [AddFromRuleFile](#oelint_parser.constants.Constants.AddFromRuleFile)
-    * [AddFromConstantFile](#oelint_parser.constants.Constants.AddFromConstantFile)
     * [FunctionsKnown](#oelint_parser.constants.Constants.FunctionsKnown)
     * [FunctionsOrder](#oelint_parser.constants.Constants.FunctionsOrder)
     * [VariablesMandatory](#oelint_parser.constants.Constants.VariablesMandatory)
@@ -166,197 +164,17 @@
     * [ImagesVariables](#oelint_parser.constants.Constants.ImagesVariables)
     * [SetsBase](#oelint_parser.constants.Constants.SetsBase)
 * [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
+  * [bb\_utils\_contains](#oelint_parser.inlinerep.bb_utils_contains)
+  * [bb\_utils\_contains\_any](#oelint_parser.inlinerep.bb_utils_contains_any)
+  * [oe\_utils\_conditional](#oelint_parser.inlinerep.oe_utils_conditional)
+  * [oe\_utils\_ifelse](#oelint_parser.inlinerep.oe_utils_ifelse)
+  * [inlinerep](#oelint_parser.inlinerep.inlinerep)
 
 <a id="oelint_parser"></a>
 
 # oelint\_parser
 
-<a id="oelint_parser.const_vars"></a>
-
-# oelint\_parser.const\_vars
-
-<a id="oelint_parser.const_vars.set_constantfile"></a>
-
-#### set\_constantfile
-
-```python
-def set_constantfile(obj)
-```
-
-set constants
-
-**Arguments**:
-
-- `obj` _dict_ - dictionary with constants
-
-<a id="oelint_parser.const_vars.set_rulefile"></a>
-
-#### set\_rulefile
-
-```python
-def set_rulefile(obj)
-```
-
-set rules
-
-**Arguments**:
-
-- `obj` _dict_ - dictionary with rule definitions
-
-<a id="oelint_parser.const_vars.get_mandatory_vars"></a>
-
-#### get\_mandatory\_vars
-
-```python
-def get_mandatory_vars()
-```
-
-get mandatory variables
-
-**Returns**:
-
-- `list` - list of mandatory variable names
-
-<a id="oelint_parser.const_vars.get_suggested_vars"></a>
-
-#### get\_suggested\_vars
-
-```python
-def get_suggested_vars()
-```
-
-get suggested variables
-
-**Returns**:
-
-- `list` - list of suggested variable names
-
-<a id="oelint_parser.const_vars.get_known_mirrors"></a>
-
-#### get\_known\_mirrors
-
-```python
-def get_known_mirrors()
-```
-
-get known mirror replacements
-
-**Returns**:
-
-- `dict` - dictionary of known mirror replacements
-
-<a id="oelint_parser.const_vars.get_protected_vars"></a>
-
-#### get\_protected\_vars
-
-```python
-def get_protected_vars()
-```
-
-get protected variables
-
-**Returns**:
-
-- `list` - list of protected variables
-
-<a id="oelint_parser.const_vars.get_protected_append_vars"></a>
-
-#### get\_protected\_append\_vars
-
-```python
-def get_protected_append_vars()
-```
-
-get protected variables in bbappends
-
-**Returns**:
-
-- `list` - list of protected variables
-
-<a id="oelint_parser.const_vars.get_known_vars"></a>
-
-#### get\_known\_vars
-
-```python
-def get_known_vars()
-```
-
-get list of known variables
-
-**Returns**:
-
-- `list` - list of known variable names
-
-<a id="oelint_parser.const_vars.get_known_distros"></a>
-
-#### get\_known\_distros
-
-```python
-def get_known_distros()
-```
-
-get known distros
-
-**Returns**:
-
-- `list` - list of known distro names
-
-<a id="oelint_parser.const_vars.get_known_machines"></a>
-
-#### get\_known\_machines
-
-```python
-def get_known_machines()
-```
-
-get known machines
-
-**Returns**:
-
-- `list` - list of known machine names
-
-<a id="oelint_parser.const_vars.get_image_classes"></a>
-
-#### get\_image\_classes
-
-```python
-def get_image_classes()
-```
-
-get known classes used exclusively in an image
-
-**Returns**:
-
-- `list` - list of known class names
-
-<a id="oelint_parser.const_vars.get_image_variables"></a>
-
-#### get\_image\_variables
-
-```python
-def get_image_variables()
-```
-
-get known variables used exclusively in an image
-
-**Returns**:
-
-- `list` - list of known variable names
-
-<a id="oelint_parser.const_vars.get_base_varset"></a>
-
-#### get\_base\_varset
-
-```python
-def get_base_varset()
-```
-
-get variable baseset
-Set includes basic package definitions
-
-**Returns**:
-
-- `dict` - base variable set
+oelint_parser is a library to parse bitbake files.
 
 <a id="oelint_parser.cls_stash"></a>
 
@@ -370,22 +188,32 @@ Set includes basic package definitions
 class Stash()
 ```
 
+The Stash object is the central storage for extracting the bitbake information.
+
 <a id="oelint_parser.cls_stash.Stash.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(quiet=False)
+def __init__(quiet: bool = False,
+             new_style_override_syntax: bool = False) -> None
 ```
 
-constructor
+Stash object
+
+**Arguments**:
+
+- `quiet` _bool, optional_ - No progress printing. Defaults to False.
+- `new_style_override_syntax` _bool, optional_ - Enforce new override syntax. Defaults to False.
 
 <a id="oelint_parser.cls_stash.Stash.AddFile"></a>
 
 #### AddFile
 
 ```python
-def AddFile(_file, lineOffset=0, forcedLink=None)
+def AddFile(_file: str,
+            lineOffset: int = 0,
+            forcedLink: str = None) -> List[Item]
 ```
 
 Adds a file to the stash
@@ -410,7 +238,7 @@ Adds a file to the stash
 #### Append
 
 ```python
-def Append(item)
+def Append(item: Item) -> None
 ```
 
 appends one or mote items to the stash
@@ -424,7 +252,7 @@ appends one or mote items to the stash
 #### Remove
 
 ```python
-def Remove(item)
+def Remove(item: Item) -> None
 ```
 
 removes one or more items from the stash
@@ -433,12 +261,36 @@ removes one or more items from the stash
 
 - `item` _Item_ - Item(s) to remove
 
+<a id="oelint_parser.cls_stash.Stash.AddDistroMachineFromLayer"></a>
+
+#### AddDistroMachineFromLayer
+
+```python
+def AddDistroMachineFromLayer(path: str) -> None
+```
+
+adds machine and distro configuration from the layer of the provided file
+
+**Arguments**:
+
+- `path` _str_ - Path to file
+
+<a id="oelint_parser.cls_stash.Stash.Finalize"></a>
+
+#### Finalize
+
+```python
+def Finalize() -> None
+```
+
+finalize the dependencies within the stash
+
 <a id="oelint_parser.cls_stash.Stash.GetRecipes"></a>
 
 #### GetRecipes
 
 ```python
-def GetRecipes()
+def GetRecipes() -> None
 ```
 
 Get bb files in stash
@@ -452,7 +304,7 @@ Get bb files in stash
 #### GetLoneAppends
 
 ```python
-def GetLoneAppends()
+def GetLoneAppends() -> None
 ```
 
 Get bbappend without a matching bb
@@ -466,7 +318,7 @@ Get bbappend without a matching bb
 #### GetLinksForFile
 
 ```python
-def GetLinksForFile(filename)
+def GetLinksForFile(filename: str) -> List[str]
 ```
 
 Get file which this file is linked against
@@ -485,22 +337,22 @@ Get file which this file is linked against
 #### GetItemsFor
 
 ```python
-def GetItemsFor(filename=None,
-                classifier=None,
-                attribute=None,
-                attributeValue=None,
-                nolink=False)
+def GetItemsFor(filename: str = None,
+                classifier: Union[Iterable[str], str] = None,
+                attribute: Union[Iterable[str], str] = None,
+                attributeValue: Union[Iterable[str], str] = None,
+                nolink: bool = False) -> List[Item]
 ```
 
 Get items for filename
 
 **Arguments**:
 
-- `filename` _str_ - Full path to file (default: {None})
-  classifier {str | iterable of str} -- (iterable of) class specifier (e.g. Variable) (default: {None})
-  attribute {str | iterable of str} -- (iterable of) class attribute name (default: {None})
-  attributeValue {str | iterable of str} -- (iterable of) value of the class attribute name (default: {None})
-- `nolink` _bool_ - Consider linked files (default: {False})
+- `filename` _str, optional_ - Full path to file. Defaults to None.
+- `classifier` _Union[Iterable[str], str], optional_ - (iterable of) class specifier (e.g. Variable). Defaults to None.
+- `attribute` _Union[Iterable[str], str], optional_ - (iterable of) class attribute name. Defaults to None.
+- `attributeValue` _Union[Iterable[str], str], optional_ - (iterable of) value of the class attribute value. Defaults to None.
+- `nolink` _bool, optional_ - Consider linked files. Defaults to False.
   
 
 **Returns**:
@@ -512,10 +364,10 @@ Get items for filename
 #### ExpandVar
 
 ```python
-def ExpandVar(filename=None,
-              attribute=None,
-              attributeValue=None,
-              nolink=False)
+def ExpandVar(filename: str = None,
+              attribute: Union[Iterable[str], str] = None,
+              attributeValue: Union[Iterable[str], str] = None,
+              nolink: bool = False) -> dict
 ```
 
 Expand variable to dictionary
@@ -532,9 +384,261 @@ Expand variable to dictionary
 
 - `{dict}` - expanded variables from call + base set of variables
 
-<a id="oelint_parser.const_func"></a>
+<a id="oelint_parser.cls_stash.Stash.GetFiles"></a>
 
-# oelint\_parser.const\_func
+#### GetFiles
+
+```python
+def GetFiles(_file: str, pattern: str) -> List[str]
+```
+
+Get files matching SRC_URI entries
+
+**Arguments**:
+
+- `_file` _str_ - Full path to filename
+- `pattern` _str_ - glob pattern to apply
+  
+
+**Returns**:
+
+- `list` - list of files matching pattern
+
+<a id="oelint_parser.cls_stash.Stash.GetLayerRoot"></a>
+
+#### GetLayerRoot
+
+```python
+def GetLayerRoot(name: str) -> str
+```
+
+Find the path to the layer root of a file
+
+**Arguments**:
+
+- `name` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - path to layer root or empty string
+
+<a id="oelint_parser.cls_stash.Stash.FindLocalOrLayer"></a>
+
+#### FindLocalOrLayer
+
+```python
+def FindLocalOrLayer(name: str, localdir: str) -> str
+```
+
+Find file in local dir or in layer
+
+**Arguments**:
+
+- `name` _str_ - filename
+- `localdir` _str_ - path to local dir
+  
+
+**Returns**:
+
+- `str` - path to found file or None
+
+<a id="oelint_parser.cls_stash.Stash.GetScrComponents"></a>
+
+#### GetScrComponents
+
+```python
+def GetScrComponents(string: str) -> dict
+```
+
+Return SRC_URI components
+
+**Arguments**:
+
+- `string` _str_ - raw string
+  
+
+**Returns**:
+
+- `dict` - scheme: protocol used, src: source URI, options: parsed options
+
+<a id="oelint_parser.cls_stash.Stash.SafeLineSplit"></a>
+
+#### SafeLineSplit
+
+```python
+def SafeLineSplit(string: str) -> List[str]
+```
+
+Split line in a safe manner
+
+**Arguments**:
+
+- `string` _str_ - raw input
+  
+
+**Returns**:
+
+- `list` - safely split input
+
+<a id="oelint_parser.cls_stash.Stash.GuessRecipeName"></a>
+
+#### GuessRecipeName
+
+```python
+def GuessRecipeName(_file: str) -> str
+```
+
+Get the recipe name from filename
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe name
+
+<a id="oelint_parser.cls_stash.Stash.GuessBaseRecipeName"></a>
+
+#### GuessBaseRecipeName
+
+```python
+def GuessBaseRecipeName(_file: str) -> str
+```
+
+Get the base recipe name from filename (aka BPN)
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe name
+
+<a id="oelint_parser.cls_stash.Stash.GuessRecipeVersion"></a>
+
+#### GuessRecipeVersion
+
+```python
+def GuessRecipeVersion(_file: str) -> str
+```
+
+Get recipe version from filename
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe version
+
+<a id="oelint_parser.cls_stash.Stash.ExpandTerm"></a>
+
+#### ExpandTerm
+
+```python
+def ExpandTerm(_file: str,
+               value: str,
+               spare: List[str] = None,
+               seen: List[str] = None) -> str
+```
+
+Expand a variable (replacing all variables by known content)
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+- `value` _str_ - Variable value to expand
+- `spare` _list[str]_ - items to keep unexpanded (default: None)
+- `seen` _list[str]_ - seen items (default: None)
+  
+
+**Returns**:
+
+- `str` - expanded value
+
+<a id="oelint_parser.cls_stash.Stash.GetValidPackageNames"></a>
+
+#### GetValidPackageNames
+
+```python
+def GetValidPackageNames(_file: str, strippn: bool = False) -> List[str]
+```
+
+Get known valid names for packages
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+- `strippn` _bool_ - strip the package name (default: False)
+  
+
+**Returns**:
+
+- `list` - list of valid package names
+
+<a id="oelint_parser.cls_stash.Stash.GetValidNamedResources"></a>
+
+#### GetValidNamedResources
+
+```python
+def GetValidNamedResources(_file: str) -> List[str]
+```
+
+Get list of valid SRCREV resource names
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `list` - list of valid SRCREV resource names
+
+<a id="oelint_parser.cls_stash.Stash.IsImage"></a>
+
+#### IsImage
+
+```python
+def IsImage(_file: str) -> bool
+```
+
+returns if the file is likely an image recipe or not
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `bool` - True if _file is an image recipe
+
+<a id="oelint_parser.cls_stash.Stash.IsPackageGroup"></a>
+
+#### IsPackageGroup
+
+```python
+def IsPackageGroup(_file: str) -> bool
+```
+
+returns if the file is likely a packagegroup recipe or not
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `bool` - True if _file is a packagegroup recipe
 
 <a id="oelint_parser.parser"></a>
 
@@ -545,7 +649,7 @@ Expand variable to dictionary
 #### get\_full\_scope
 
 ```python
-def get_full_scope(_string, offset, _sstart, _send)
+def get_full_scope(_string: str, offset: int, _sstart: int, _send: int) -> str
 ```
 
 get full block of an inline statement
@@ -567,14 +671,18 @@ get full block of an inline statement
 #### prepare\_lines\_subparser
 
 ```python
-def prepare_lines_subparser(_iter, lineOffset, num, line, raw_line=None)
+def prepare_lines_subparser(_iter: Iterable,
+                            lineOffset: int,
+                            num: int,
+                            line: int,
+                            raw_line: str = None) -> List[str]
 ```
 
 preprocess raw input
 
 **Arguments**:
 
-- `_iter` _interator_ - line interator object
+- `_iter` _iterator_ - line interator object
 - `lineOffset` _int_ - current line index
 - `num` _int_ - internal line counter
 - `line` _int_ - input string
@@ -590,7 +698,7 @@ preprocess raw input
 #### prepare\_lines
 
 ```python
-def prepare_lines(_file, lineOffset=0)
+def prepare_lines(_file: str, lineOffset: int = 0) -> List[str]
 ```
 
 break raw file input into preprocessed chunks
@@ -610,7 +718,10 @@ break raw file input into preprocessed chunks
 #### get\_items
 
 ```python
-def get_items(stash, _file, lineOffset=0)
+def get_items(stash: object,
+              _file: str,
+              lineOffset: int = 0,
+              new_style_override_syntax: bool = False) -> List[Item]
 ```
 
 parses file
@@ -620,6 +731,7 @@ parses file
 - `stash` _oelint_parser.cls_stash.Stash_ - Stash object
 - `_file` _string_ - Full path to file
 - `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
+- `new_style_override_syntax` _bool, optional_ - default to new override syntax (default: False)
   
 
 **Returns**:
@@ -645,12 +757,12 @@ Base class for all Stash items
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             realraw,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -673,7 +785,7 @@ constructor
 
 ```python
 @property
-def Line()
+def Line() -> int
 ```
 
 Overall line count
@@ -688,7 +800,7 @@ Overall line count
 
 ```python
 @property
-def Raw()
+def Raw() -> str
 ```
 
 Raw string (without inline code blocks)
@@ -703,7 +815,7 @@ Raw string (without inline code blocks)
 
 ```python
 @property
-def Links()
+def Links() -> List[str]
 ```
 
 Linked files
@@ -718,7 +830,7 @@ Linked files
 
 ```python
 @property
-def Origin()
+def Origin() -> str
 ```
 
 origin of item
@@ -733,7 +845,7 @@ origin of item
 
 ```python
 @property
-def InFileLine()
+def InFileLine() -> int
 ```
 
 Line count in file
@@ -748,7 +860,7 @@ Line count in file
 
 ```python
 @property
-def IncludedFrom()
+def IncludedFrom() -> List[str]
 ```
 
 Files include this item
@@ -763,7 +875,7 @@ Files include this item
 
 ```python
 @property
-def RealRaw()
+def RealRaw() -> str
 ```
 
 Completely unprocessed raw text
@@ -778,7 +890,7 @@ Completely unprocessed raw text
 
 ```python
 @property
-def IsFromClass()
+def IsFromClass() -> bool
 ```
 
 Item comes from a bbclass
@@ -793,7 +905,7 @@ Item comes from a bbclass
 
 ```python
 @property
-def OverrideDelimiter()
+def OverrideDelimiter() -> str
 ```
 
 Override delimiter
@@ -808,7 +920,7 @@ Override delimiter
 
 ```python
 @property
-def IsNewStyleOverrideSyntax()
+def IsNewStyleOverrideSyntax() -> bool
 ```
 
 New style override syntax detected
@@ -823,7 +935,7 @@ New style override syntax detected
 
 ```python
 @staticmethod
-def safe_linesplit(string)
+def safe_linesplit(string: str) -> List[str]
 ```
 
 Safely split an input line to chunks
@@ -842,7 +954,7 @@ Safely split an input line to chunks
 #### get\_items
 
 ```python
-def get_items()
+def get_items() -> List[str]
 ```
 
 Return single items
@@ -856,7 +968,7 @@ Return single items
 #### extract\_sub
 
 ```python
-def extract_sub(name)
+def extract_sub(name: str) -> Tuple[List[str], List[str]]
 ```
 
 Extract modifiers
@@ -875,7 +987,7 @@ Extract modifiers
 #### extract\_sub\_func
 
 ```python
-def extract_sub_func(name)
+def extract_sub_func(name: str) -> Tuple[List[str], List[str]]
 ```
 
 Extract modifiers for functions
@@ -894,7 +1006,7 @@ Extract modifiers for functions
 #### IsFromAppend
 
 ```python
-def IsFromAppend()
+def IsFromAppend() -> bool
 ```
 
 Item originates from a bbappend
@@ -908,7 +1020,7 @@ Item originates from a bbappend
 #### AddLink
 
 ```python
-def AddLink(_file)
+def AddLink(_file: str) -> None
 ```
 
 Links files to each other in stash
@@ -922,7 +1034,7 @@ Links files to each other in stash
 #### GetAttributes
 
 ```python
-def GetAttributes()
+def GetAttributes() -> dict
 ```
 
 Get all public attributes of this class
@@ -939,23 +1051,23 @@ Get all public attributes of this class
 class Variable(Item)
 ```
 
-Stash item for variables
+Items representing variables in bitbake.
 
 <a id="oelint_parser.cls_item.Variable.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             name,
-             value,
-             operator,
-             flag,
-             realraw,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             name: str,
+             value: str,
+             operator: str,
+             flag: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -983,7 +1095,7 @@ constructor
 
 ```python
 @property
-def VarName()
+def VarName() -> str
 ```
 
 Variable name
@@ -998,7 +1110,7 @@ Variable name
 
 ```python
 @property
-def SubItem()
+def SubItem() -> str
 ```
 
 Variable modifiers
@@ -1013,7 +1125,7 @@ Variable modifiers
 
 ```python
 @property
-def SubItems()
+def SubItems() -> List[str]
 ```
 
 Variable modifiers list
@@ -1028,7 +1140,7 @@ Variable modifiers list
 
 ```python
 @property
-def VarValue()
+def VarValue() -> str
 ```
 
 variable value
@@ -1043,7 +1155,7 @@ variable value
 
 ```python
 @property
-def VarOp()
+def VarOp() -> str
 ```
 
 Variable operation
@@ -1058,7 +1170,7 @@ Variable operation
 
 ```python
 @property
-def Flag()
+def Flag() -> str
 ```
 
 Variable flag like PACKAGECONFIG[xyz]
@@ -1073,7 +1185,7 @@ Variable flag like PACKAGECONFIG[xyz]
 
 ```python
 @property
-def VarNameComplete()
+def VarNameComplete() -> str
 ```
 
 Complete variable name included overrides and flags
@@ -1088,7 +1200,7 @@ Complete variable name included overrides and flags
 
 ```python
 @property
-def RawVarName()
+def RawVarName() -> str
 ```
 
 Variable name and flags combined
@@ -1103,7 +1215,7 @@ Variable name and flags combined
 
 ```python
 @property
-def VarValueStripped()
+def VarValueStripped() -> str
 ```
 
 Stripped variable value
@@ -1117,7 +1229,7 @@ Stripped variable value
 #### IsAppend
 
 ```python
-def IsAppend()
+def IsAppend() -> bool
 ```
 
 Check if operation is an append
@@ -1131,7 +1243,7 @@ Check if operation is an append
 #### AppendOperation
 
 ```python
-def AppendOperation()
+def AppendOperation() -> List[str]
 ```
 
 Get variable modifiers
@@ -1145,7 +1257,7 @@ Get variable modifiers
 #### get\_items
 
 ```python
-def get_items(override="", versioned=False)
+def get_items(override: str = "", versioned: bool = False) -> List[str]
 ```
 
 Get items of variable value
@@ -1165,7 +1277,7 @@ Get items of variable value
 #### IsMultiLine
 
 ```python
-def IsMultiLine()
+def IsMultiLine() -> bool
 ```
 
 Check if variable has a multiline assignment
@@ -1179,7 +1291,7 @@ Check if variable has a multiline assignment
 #### GetDistroEntry
 
 ```python
-def GetDistroEntry()
+def GetDistroEntry() -> str
 ```
 
 Get distro specific entries in variable
@@ -1193,7 +1305,7 @@ Get distro specific entries in variable
 #### GetMachineEntry
 
 ```python
-def GetMachineEntry()
+def GetMachineEntry() -> str
 ```
 
 Get machine specific entries in variable
@@ -1207,7 +1319,7 @@ Get machine specific entries in variable
 #### GetClassOverride
 
 ```python
-def GetClassOverride()
+def GetClassOverride() -> str
 ```
 
 Get class specific entries in variable
@@ -1224,17 +1336,19 @@ Get class specific entries in variable
 class Comment(Item)
 ```
 
+Items representing comments in bitbake.
+
 <a id="oelint_parser.cls_item.Comment.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             realraw,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -1257,7 +1371,7 @@ constructor
 #### get\_items
 
 ```python
-def get_items()
+def get_items() -> List[str]
 ```
 
 Get single lines of block
@@ -1274,19 +1388,21 @@ Get single lines of block
 class Include(Item)
 ```
 
+Items that representing include/require statements.
+
 <a id="oelint_parser.cls_item.Include.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             incname,
-             statement,
-             realraw,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             incname: str,
+             statement: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -1312,7 +1428,7 @@ constructor
 
 ```python
 @property
-def IncName()
+def IncName() -> str
 ```
 
 Include name
@@ -1327,7 +1443,7 @@ Include name
 
 ```python
 @property
-def Statement()
+def Statement() -> str
 ```
 
 statement either include or require
@@ -1341,7 +1457,7 @@ statement either include or require
 #### get\_items
 
 ```python
-def get_items()
+def get_items() -> Tuple[str, str]
 ```
 
 Get items
@@ -1358,19 +1474,21 @@ Get items
 class Export(Item)
 ```
 
+Items representing export statements in bitbake.
+
 <a id="oelint_parser.cls_item.Export.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             name,
-             value,
-             realraw,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             name: str,
+             value: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -1396,7 +1514,7 @@ constructor
 
 ```python
 @property
-def Name()
+def Name() -> str
 ```
 
 Name of the exported var
@@ -1411,7 +1529,7 @@ Name of the exported var
 
 ```python
 @property
-def Value()
+def Value() -> str
 ```
 
 value of the export
@@ -1425,7 +1543,7 @@ value of the export
 #### get\_items
 
 ```python
-def get_items()
+def get_items() -> Tuple[str, str]
 ```
 
 Get items
@@ -1442,21 +1560,23 @@ Get items
 class Function(Item)
 ```
 
+Items representing task definitions in bitbake.
+
 <a id="oelint_parser.cls_item.Function.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             name,
-             body,
-             realraw,
-             python=False,
-             fakeroot=False,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             name: str,
+             body: str,
+             realraw: str,
+             python: bool = False,
+             fakeroot: bool = False,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 [summary]
@@ -1484,7 +1604,7 @@ def __init__(origin,
 
 ```python
 @property
-def IsPython()
+def IsPython() -> bool
 ```
 
 Is python function
@@ -1499,7 +1619,7 @@ Is python function
 
 ```python
 @property
-def IsFakeroot()
+def IsFakeroot() -> bool
 ```
 
 Is fakeroot function
@@ -1514,7 +1634,7 @@ Is fakeroot function
 
 ```python
 @property
-def FuncName()
+def FuncName() -> str
 ```
 
 Function name
@@ -1529,7 +1649,7 @@ Function name
 
 ```python
 @property
-def FuncNameComplete()
+def FuncNameComplete() -> str
 ```
 
 Complete function name (including overrides)
@@ -1544,7 +1664,7 @@ Complete function name (including overrides)
 
 ```python
 @property
-def SubItem()
+def SubItem() -> str
 ```
 
 Function modifiers
@@ -1559,7 +1679,7 @@ Function modifiers
 
 ```python
 @property
-def SubItems()
+def SubItems() -> List[str]
 ```
 
 Function modifiers list
@@ -1574,7 +1694,7 @@ Function modifiers list
 
 ```python
 @property
-def FuncBody()
+def FuncBody() -> str
 ```
 
 Function body
@@ -1589,7 +1709,7 @@ Function body
 
 ```python
 @property
-def FuncBodyStripped()
+def FuncBodyStripped() -> str
 ```
 
 Stripped function body
@@ -1604,7 +1724,7 @@ Stripped function body
 
 ```python
 @property
-def FuncBodyRaw()
+def FuncBodyRaw() -> str
 ```
 
 Raw function body (including brackets)
@@ -1618,7 +1738,7 @@ Raw function body (including brackets)
 #### GetDistroEntry
 
 ```python
-def GetDistroEntry()
+def GetDistroEntry() -> str
 ```
 
 Get distro specific modifiers
@@ -1632,7 +1752,7 @@ Get distro specific modifiers
 #### GetMachineEntry
 
 ```python
-def GetMachineEntry()
+def GetMachineEntry() -> str
 ```
 
 Get machine specific modifiers
@@ -1646,7 +1766,7 @@ Get machine specific modifiers
 #### IsAppend
 
 ```python
-def IsAppend()
+def IsAppend() -> bool
 ```
 
 Return if function appends another function
@@ -1660,7 +1780,7 @@ Return if function appends another function
 #### get\_items
 
 ```python
-def get_items()
+def get_items() -> List[str]
 ```
 
 Get items of function body
@@ -1677,18 +1797,20 @@ Get items of function body
 class PythonBlock(Item)
 ```
 
+Items representing python functions in bitbake.
+
 <a id="oelint_parser.cls_item.PythonBlock.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             name,
-             realraw,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             name: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -1713,7 +1835,7 @@ constructor
 
 ```python
 @property
-def FuncName()
+def FuncName() -> str
 ```
 
 Function name
@@ -1727,7 +1849,7 @@ Function name
 #### get\_items
 
 ```python
-def get_items()
+def get_items() -> List[str]
 ```
 
 Get lines of function body
@@ -1744,20 +1866,22 @@ Get lines of function body
 class TaskAssignment(Item)
 ```
 
+Items representing flag assignments in bitbake.
+
 <a id="oelint_parser.cls_item.TaskAssignment.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             name,
-             ident,
-             value,
-             realraw,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             name: str,
+             ident: str,
+             value: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -1784,7 +1908,7 @@ constructor
 
 ```python
 @property
-def FuncName()
+def FuncName() -> str
 ```
 
 Function name
@@ -1799,7 +1923,7 @@ Function name
 
 ```python
 @property
-def VarValue()
+def VarValue() -> str
 ```
 
 Task flag value
@@ -1814,7 +1938,7 @@ Task flag value
 
 ```python
 @property
-def VarName()
+def VarName() -> str
 ```
 
 Task flag name
@@ -1828,7 +1952,7 @@ Task flag name
 #### get\_items
 
 ```python
-def get_items()
+def get_items() -> Tuple[str, str, str]
 ```
 
 Get items
@@ -1845,18 +1969,20 @@ Get items
 class FunctionExports(Item)
 ```
 
+Items representing EXPORT_FUNCTIONS in bitbake.
+
 <a id="oelint_parser.cls_item.FunctionExports.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             name,
-             realraw,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             name: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -1881,7 +2007,7 @@ constructor
 
 ```python
 @property
-def FuncNames()
+def FuncNames() -> str
 ```
 
 Function name
@@ -1895,7 +2021,7 @@ Function name
 #### get\_items
 
 ```python
-def get_items()
+def get_items() -> List[str]
 ```
 
 Get items
@@ -1909,7 +2035,7 @@ Get items
 #### get\_items\_unaliased
 
 ```python
-def get_items_unaliased()
+def get_items_unaliased() -> List[str]
 ```
 
 Get items with their bbclass scope names
@@ -1926,20 +2052,22 @@ Get items with their bbclass scope names
 class TaskAdd(Item)
 ```
 
+Items representing addtask statements in bitbake.
+
 <a id="oelint_parser.cls_item.TaskAdd.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             rawtext,
-             name,
-             realraw,
-             before="",
-             after="",
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             name: str,
+             realraw: str,
+             before: str = "",
+             after: str = "",
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -1966,7 +2094,7 @@ constructor
 
 ```python
 @property
-def FuncName()
+def FuncName() -> str
 ```
 
 Function name
@@ -1981,7 +2109,7 @@ Function name
 
 ```python
 @property
-def Before()
+def Before() -> List[str]
 ```
 
 Tasks executed before
@@ -1996,7 +2124,7 @@ Tasks executed before
 
 ```python
 @property
-def After()
+def After() -> List[str]
 ```
 
 Tasks executed after
@@ -2010,7 +2138,7 @@ Tasks executed after
 #### get\_items
 
 ```python
-def get_items()
+def get_items() -> List[str]
 ```
 
 get items
@@ -2027,17 +2155,19 @@ get items
 class MissingFile(Item)
 ```
 
+Items representing missing files found while parsing.
+
 <a id="oelint_parser.cls_item.MissingFile.__init__"></a>
 
 #### \_\_init\_\_
 
 ```python
-def __init__(origin,
-             line,
-             infileline,
-             filename,
-             statement,
-             new_style_override_syntax=False)
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             filename: str,
+             statement: str,
+             new_style_override_syntax: bool = False) -> None
 ```
 
 constructor
@@ -2061,7 +2191,7 @@ constructor
 
 ```python
 @property
-def Filename()
+def Filename() -> str
 ```
 
 Filename of the file missing
@@ -2076,7 +2206,7 @@ Filename of the file missing
 
 ```python
 @property
-def Statement()
+def Statement() -> str
 ```
 
 statement either include or require
@@ -2094,256 +2224,251 @@ statement either include or require
 #### get\_files
 
 ```python
-def get_files(stash, _file, pattern)
+@deprecated(version='3.0.0', reason='Use Stash.GetFiles instead')
+def get_files(stash: Stash, *args, **kwargs)
 ```
 
-Get files matching SRC_URI entries
+Legacy interface get_files.
+
+Use Stash.GetFiles instead.
 
 **Arguments**:
 
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to filename
-- `pattern` _str_ - glob pattern to apply
+- `stash` _Stash_ - Stash object
   
 
 **Returns**:
 
-- `list` - list of files matching pattern
+- `Stash.GetFiles` - .
 
 <a id="oelint_parser.helper_files.get_layer_root"></a>
 
 #### get\_layer\_root
 
 ```python
-def get_layer_root(name)
+@deprecated(version='3.0.0', reason='Use Stash.GetLayerRoot instead')
+def get_layer_root(*args, **kwargs)
 ```
 
-Find the path to the layer root of a file
+Legacy interface get_layer_root
 
-**Arguments**:
-
-- `name` _str_ - filename
-  
+Use Stash.GetLayerRoot instead.
 
 **Returns**:
 
-- `str` - path to layer root or empty string
+- `Stash.GetLayerRoot` - .
 
 <a id="oelint_parser.helper_files.find_local_or_in_layer"></a>
 
 #### find\_local\_or\_in\_layer
 
 ```python
-def find_local_or_in_layer(name, localdir)
+@deprecated(version='3.0.0', reason='Use Stash.FindLocalOrLayer instead')
+def find_local_or_in_layer(*args, **kwargs)
 ```
 
-Find file in local dir or in layer
+Legacy interface find_local_or_in_layer
 
-**Arguments**:
-
-- `name` _str_ - filename
-- `localdir` _str_ - path to local dir
-  
+Use Stash.FindLocalOrLayer instead.
 
 **Returns**:
 
-- `str` - path to found file or None
+- `Stash.FindLocalOrLayer` - .
 
 <a id="oelint_parser.helper_files.get_scr_components"></a>
 
 #### get\_scr\_components
 
 ```python
-def get_scr_components(string)
+@deprecated(version='3.0.0', reason='Use Stash.GetScrComponents instead')
+def get_scr_components(*args, **kwargs)
 ```
 
-Return SRC_URI components
+Legacy interface get_scr_components
 
-**Arguments**:
-
-- `string` _str_ - raw string
-  
+Use Stash.GetScrComponents instead
 
 **Returns**:
 
-- `dict` - scheme: protocol used, src: source URI, options: parsed options
+- `Stash.GetScrComponents` - .
 
 <a id="oelint_parser.helper_files.safe_linesplit"></a>
 
 #### safe\_linesplit
 
 ```python
-def safe_linesplit(string)
+@deprecated(version='3.0.0', reason='Use Stash.SafeLineSplit instead')
+def safe_linesplit(*args, **kwargs)
 ```
 
-Split line in a safe manner
+Legacy interface safe_linesplit
 
-**Arguments**:
-
-- `string` _str_ - raw input
-  
+Use Stash.SafeLineSplit instead
 
 **Returns**:
 
-- `list` - safely split input
+- `Stash.SafeLineSplit` - .
 
 <a id="oelint_parser.helper_files.guess_recipe_name"></a>
 
 #### guess\_recipe\_name
 
 ```python
-def guess_recipe_name(_file)
+@deprecated(version='3.0.0', reason='Use Stash.GuessRecipeName instead')
+def guess_recipe_name(*args, **kwargs)
 ```
 
-Get the recipe name from filename
+Legacy interface guess_recipe_name
 
-**Arguments**:
-
-- `_file` _str_ - filename
-  
+Use Stash.GuessRecipeName instead
 
 **Returns**:
 
-- `str` - recipe name
+- `Stash.GuessBaseRecipeName` - .
 
 <a id="oelint_parser.helper_files.guess_base_recipe_name"></a>
 
 #### guess\_base\_recipe\_name
 
 ```python
-def guess_base_recipe_name(_file)
+@deprecated(version='3.0.0', reason='Use Stash.GuessBaseRecipeName instead')
+def guess_base_recipe_name(*args, **kwargs)
 ```
 
-Get the base recipe name from filename (aka BPN)
+Legacy interface guess_base_recipe_name
 
-**Arguments**:
-
-- `_file` _str_ - filename
-  
+Use Stash.GuessBaseRecipeName instead
 
 **Returns**:
 
-- `str` - recipe name
+- `Stash.GuessBaseRecipeName` - .
 
 <a id="oelint_parser.helper_files.guess_recipe_version"></a>
 
 #### guess\_recipe\_version
 
 ```python
-def guess_recipe_version(_file)
+@deprecated(version='3.0.0', reason='Use Stash.GuessRecipeVersion instead')
+def guess_recipe_version(*args, **kwargs)
 ```
 
-Get recipe version from filename
+Legacy interface guess_recipe_version
 
-**Arguments**:
-
-- `_file` _str_ - filename
-  
+Use Stash.GuessRecipeVersion instead
 
 **Returns**:
 
-- `str` - recipe version
+- `Stash.GuessRecipeVersion` - .
 
 <a id="oelint_parser.helper_files.expand_term"></a>
 
 #### expand\_term
 
 ```python
-def expand_term(stash, _file, value, spare=None, seen=None)
+@deprecated(version='3.0.0', reason='Use Stash.ExpandTerm instead')
+def expand_term(stash: Stash, *args, **kwargs)
 ```
 
-Expand a variable (replacing all variables by known content)
+Legacy interface expand_term
+
+Use Stash.ExpandTerm instead
 
 **Arguments**:
 
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
-- `value` _str_ - Variable value to expand
+- `stash` _Stash_ - Stash object
   
 
 **Returns**:
 
-- `str` - expanded value
+- `Stash.ExpandTerm` - .
 
 <a id="oelint_parser.helper_files.get_valid_package_names"></a>
 
 #### get\_valid\_package\_names
 
 ```python
-def get_valid_package_names(stash, _file, strippn=False)
+@deprecated(version='3.0.0', reason='Use Stash.GetValidPackageNames instead')
+def get_valid_package_names(stash: Stash, *args, **kwargs)
 ```
 
-Get known valid names for packages
+Legacy interface get_valid_package_names
+
+Use Stash.GetValidPackageNames instead
 
 **Arguments**:
 
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
+- `stash` _Stash_ - Stash object
   
 
 **Returns**:
 
-- `list` - list of valid package names
+- `Stash.GetValidPackageNames` - .
 
 <a id="oelint_parser.helper_files.get_valid_named_resources"></a>
 
 #### get\_valid\_named\_resources
 
 ```python
-def get_valid_named_resources(stash, _file)
+@deprecated(version='3.0.0', reason='Use Stash.GetValidNamedResources instead')
+def get_valid_named_resources(stash: Stash, *args, **kwargs)
 ```
 
-Get list of valid SRCREV resource names
+Legacy interface get_valid_named_resources
+
+Use Stash.GetValidNamedResources instead
 
 **Arguments**:
 
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
+- `stash` _Stash_ - Stash object
   
 
 **Returns**:
 
-- `list` - list of valid SRCREV resource names
+- `Stash.GetValidNamedResources` - .
 
 <a id="oelint_parser.helper_files.is_image"></a>
 
 #### is\_image
 
 ```python
-def is_image(stash, _file)
+@deprecated(version='3.0.0', reason='Use Stash.IsImage instead')
+def is_image(stash: Stash, *args, **kwargs)
 ```
 
-returns if the file is likely an image recipe or not
+Legacy interface is_image
+
+Use Stash.IsImage instead
 
 **Arguments**:
 
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
+- `stash` _Stash_ - Stash object
   
 
 **Returns**:
 
-- `bool` - True if _file is an image recipe
+- `Stash.IsImage` - .
 
 <a id="oelint_parser.helper_files.is_packagegroup"></a>
 
 #### is\_packagegroup
 
 ```python
-def is_packagegroup(stash, _file)
+@deprecated(version='3.0.0', reason='Use Stash.IsPackageGroup instead')
+def is_packagegroup(stash: Stash, *args, **kwargs)
 ```
 
-returns if the file is likely a packagegroup recipe or not
+Legacy interface is_packagegroup
+
+Use Stash.IsPackageGroup instead
 
 **Arguments**:
 
-- `stash` _oelint_parser.cls_stash.Stash_ - current stash
-- `_file` _str_ - Full path to file
+- `stash` _Stash_ - Stash object
   
 
 **Returns**:
 
-- `bool` - True if _file is a packagegroup recipe
+- `Stash.IsPackageGroup` - .
 
 <a id="oelint_parser.rpl_regex"></a>
 
@@ -2365,7 +2490,11 @@ Safe regex replacements
 
 ```python
 @staticmethod
-def search(pattern, string, timeout=5, default=None, **kwargs)
+def search(pattern: str,
+           string: str,
+           timeout: int = 5,
+           default: object = None,
+           **kwargs) -> Union[Match, None]
 ```
 
 replacement for re.search
@@ -2388,7 +2517,11 @@ replacement for re.search
 
 ```python
 @staticmethod
-def split(pattern, string, timeout=5, default=None, **kwargs)
+def split(pattern: str,
+          string: str,
+          timeout: int = 5,
+          default: object = None,
+          **kwargs) -> List[str]
 ```
 
 replacement for re.split
@@ -2411,7 +2544,11 @@ replacement for re.split
 
 ```python
 @staticmethod
-def match(pattern, string, timeout=5, default=None, **kwargs)
+def match(pattern: str,
+          string: str,
+          timeout: int = 5,
+          default: object = None,
+          **kwargs) -> Union[Match, None]
 ```
 
 replacement for re.match
@@ -2434,7 +2571,12 @@ replacement for re.match
 
 ```python
 @staticmethod
-def sub(pattern, repl, string, timeout=5, default='', **kwargs)
+def sub(pattern: str,
+        repl: str,
+        string: str,
+        timeout: int = 5,
+        default: str = '',
+        **kwargs) -> str
 ```
 
 replacement for re.sub
@@ -2458,7 +2600,11 @@ replacement for re.sub
 
 ```python
 @staticmethod
-def finditer(pattern, string, timeout=5, default=None, **kwargs)
+def finditer(pattern: str,
+             string: str,
+             timeout: int = 5,
+             default: object = None,
+             **kwargs) -> Scanner
 ```
 
 replacement for re.finditer
@@ -2494,7 +2640,7 @@ Interface for constants
 #### AddConstants
 
 ```python
-def AddConstants(_dict)
+def AddConstants(_dict: dict) -> None
 ```
 
 Add constants to the existing
@@ -2508,7 +2654,7 @@ Add constants to the existing
 #### RemoveConstants
 
 ```python
-def RemoveConstants(_dict)
+def RemoveConstants(_dict: dict) -> None
 ```
 
 Remove constants from the existing
@@ -2522,7 +2668,7 @@ Remove constants from the existing
 #### OverrideConstants
 
 ```python
-def OverrideConstants(_dict)
+def OverrideConstants(_dict: dict) -> None
 ```
 
 Override constants in the existing db
@@ -2531,41 +2677,13 @@ Override constants in the existing db
 
 - `dict` _dict]_ - constant dictionary with override values
 
-<a id="oelint_parser.constants.Constants.AddFromRuleFile"></a>
-
-#### AddFromRuleFile
-
-```python
-def AddFromRuleFile(_dict)
-```
-
-Legacy interface to support rule files
-
-**Arguments**:
-
-- `dict` _dict_ - rule file dictionary
-
-<a id="oelint_parser.constants.Constants.AddFromConstantFile"></a>
-
-#### AddFromConstantFile
-
-```python
-def AddFromConstantFile(_dict)
-```
-
-Legacy interface to support constant files
-
-**Arguments**:
-
-- `dict` _dict_ - constant file dictionary
-
 <a id="oelint_parser.constants.Constants.FunctionsKnown"></a>
 
 #### FunctionsKnown
 
 ```python
 @property
-def FunctionsKnown()
+def FunctionsKnown() -> List[str]
 ```
 
 Return known functions
@@ -2580,7 +2698,7 @@ Return known functions
 
 ```python
 @property
-def FunctionsOrder()
+def FunctionsOrder() -> List[str]
 ```
 
 Return function order
@@ -2595,7 +2713,7 @@ Return function order
 
 ```python
 @property
-def VariablesMandatory()
+def VariablesMandatory() -> List[str]
 ```
 
 Return mandatory variables
@@ -2610,7 +2728,7 @@ Return mandatory variables
 
 ```python
 @property
-def VariablesSuggested()
+def VariablesSuggested() -> List[str]
 ```
 
 Return suggested variables
@@ -2625,7 +2743,7 @@ Return suggested variables
 
 ```python
 @property
-def MirrorsKnown()
+def MirrorsKnown() -> Dict[str, str]
 ```
 
 Return known mirrors and their replacements
@@ -2640,7 +2758,7 @@ Return known mirrors and their replacements
 
 ```python
 @property
-def VariablesProtected()
+def VariablesProtected() -> List[str]
 ```
 
 Return protected variables
@@ -2655,7 +2773,7 @@ Return protected variables
 
 ```python
 @property
-def VariablesProtectedAppend()
+def VariablesProtectedAppend() -> List[str]
 ```
 
 Return protected variables in bbappend files
@@ -2670,7 +2788,7 @@ Return protected variables in bbappend files
 
 ```python
 @property
-def VariablesOrder()
+def VariablesOrder() -> List[str]
 ```
 
 Variable order
@@ -2685,7 +2803,7 @@ Variable order
 
 ```python
 @property
-def VariablesKnown()
+def VariablesKnown() -> List[str]
 ```
 
 Known variables
@@ -2700,7 +2818,7 @@ Known variables
 
 ```python
 @property
-def DistrosKnown()
+def DistrosKnown() -> List[str]
 ```
 
 Known distros
@@ -2715,7 +2833,7 @@ Known distros
 
 ```python
 @property
-def MachinesKnown()
+def MachinesKnown() -> List[str]
 ```
 
 Known machines
@@ -2730,7 +2848,7 @@ Known machines
 
 ```python
 @property
-def ImagesClasses()
+def ImagesClasses() -> List[str]
 ```
 
 Classes that are used in images
@@ -2745,7 +2863,7 @@ Classes that are used in images
 
 ```python
 @property
-def ImagesVariables()
+def ImagesVariables() -> List[str]
 ```
 
 Variables that are used in images
@@ -2760,7 +2878,7 @@ Variables that are used in images
 
 ```python
 @property
-def SetsBase()
+def SetsBase() -> Dict[str, str]
 ```
 
 Base variable set
@@ -2772,4 +2890,99 @@ Base variable set
 <a id="oelint_parser.inlinerep"></a>
 
 # oelint\_parser.inlinerep
+
+<a id="oelint_parser.inlinerep.bb_utils_contains"></a>
+
+#### bb\_utils\_contains
+
+```python
+def bb_utils_contains(_in: str) -> str
+```
+
+bb.utils.contains emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.bb_utils_contains_any"></a>
+
+#### bb\_utils\_contains\_any
+
+```python
+def bb_utils_contains_any(_in: str) -> str
+```
+
+bb.utils.contains_any emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_conditional"></a>
+
+#### oe\_utils\_conditional
+
+```python
+def oe_utils_conditional(_in: str) -> str
+```
+
+oe.utils.conditional emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_ifelse"></a>
+
+#### oe\_utils\_ifelse
+
+```python
+def oe_utils_ifelse(_in: str) -> str
+```
+
+oe.utils.ifelse emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.inlinerep"></a>
+
+#### inlinerep
+
+```python
+def inlinerep(_in: str) -> str
+```
+
+Replaces inline code expressions
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+  
+
+**Returns**:
+
+- `str` - Expanded string or None, if not applicable
 

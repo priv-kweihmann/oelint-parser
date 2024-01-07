@@ -10,6 +10,7 @@ from oelint_parser.rpl_regex import RegexRpl
 
 
 class Stash():
+    """The Stash object is the central storage for extracting the bitbake information."""
 
     def __init__(self, quiet: bool = False, new_style_override_syntax: bool = False) -> None:
         """Stash object
@@ -201,15 +202,15 @@ class Stash():
                     nolink: bool = False) -> List[Item]:
         """Get items for filename
 
-        Keyword Arguments:
-            filename {str} -- Full path to file (default: {None})
-            classifier {str | iterable of str} -- (iterable of) class specifier (e.g. Variable) (default: {None})
-            attribute {str | iterable of str} -- (iterable of) class attribute name (default: {None})
-            attributeValue {str | iterable of str} -- (iterable of) value of the class attribute name (default: {None})
-            nolink {bool} -- Consider linked files (default: {False})
+        Args:
+            filename (str, optional): Full path to file. Defaults to None.
+            classifier (Union[Iterable[str], str], optional): (iterable of) class specifier (e.g. Variable). Defaults to None.
+            attribute (Union[Iterable[str], str], optional): (iterable of) class attribute name. Defaults to None.
+            attributeValue (Union[Iterable[str], str], optional): (iterable of) value of the class attribute value. Defaults to None.
+            nolink (bool, optional): Consider linked files. Defaults to False.
 
         Returns:
-            List[Item] -- Returns a list of items fitting the set filters
+            List[Item]: Returns a list of items fitting the set filters
         """
         if not isinstance(classifier, (list, set, tuple)):
             classifier = [classifier] if classifier else []

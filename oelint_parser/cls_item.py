@@ -273,8 +273,7 @@ class Item():
 
 
 class Variable(Item):
-    """Stash item for variables
-    """
+    """Items representing variables in bitbake."""
     ATTR_VAR = "VarName"
     ATTR_VARVAL = "VarValue"
     ATTR_VARRAW = "RawVarName"
@@ -493,6 +492,7 @@ class Variable(Item):
 
 
 class Comment(Item):
+    """Items representing comments in bitbake."""
     CLASSIFIER = "Comment"
 
     def __init__(self,
@@ -526,6 +526,8 @@ class Comment(Item):
 
 
 class Include(Item):
+    """Items that representing include/require statements."""
+
     CLASSIFIER = "Include"
     ATTR_INCNAME = "IncName"
     ATTR_STATEMENT = "Statement"
@@ -585,6 +587,8 @@ class Include(Item):
 
 
 class Export(Item):
+    """Items representing export statements in bitbake."""
+
     CLASSIFIER = "Export"
     ATTR_NAME = "Name"
     ATTR_STATEMENT = "Value"
@@ -644,6 +648,8 @@ class Export(Item):
 
 
 class Function(Item):
+    """Items representing task definitions in bitbake."""
+
     ATTR_FUNCNAME = "FuncName"
     ATTR_FUNCBODY = "FuncBody"
     CLASSIFIER = "Function"
@@ -807,6 +813,8 @@ class Function(Item):
 
 
 class PythonBlock(Item):
+    """Items representing python functions in bitbake."""
+
     ATTR_FUNCNAME = "FuncName"
     CLASSIFIER = "PythonBlock"
 
@@ -853,6 +861,8 @@ class PythonBlock(Item):
 
 
 class TaskAssignment(Item):
+    """Items representing flag assignments in bitbake."""
+
     ATTR_FUNCNAME = "FuncName"
     ATTR_VAR = "VarName"
     ATTR_VARVAL = "VarValue"
@@ -925,6 +935,8 @@ class TaskAssignment(Item):
 
 
 class FunctionExports(Item):
+    """Items representing EXPORT_FUNCTIONS in bitbake."""
+
     ATTR_FUNCNAME = "FuncName"
     CLASSIFIER = "FunctionExports"
 
@@ -980,6 +992,8 @@ class FunctionExports(Item):
 
 
 class TaskAdd(Item):
+    """Items representing addtask statements in bitbake."""
+
     ATTR_FUNCNAME = "FuncName"
     ATTR_BEFORE = "Before"
     ATTR_AFTER = "After"
@@ -1052,6 +1066,8 @@ class TaskAdd(Item):
 
 
 class MissingFile(Item):
+    """Items representing missing files found while parsing."""
+
     ATTR_FILENAME = "Filename"
     ATTR_STATEMENT = "Statement"
     CLASSIFIER = "MissingFile"
