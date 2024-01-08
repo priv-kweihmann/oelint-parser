@@ -423,11 +423,36 @@ class OelintParserTest(unittest.TestCase):
 
         assert len(_stash) == 2
 
+        print(_stash)
+
         self.__stash.Remove(_stash)
 
         _stash = self.__stash.GetItemsFor(classifier=Export.CLASSIFIER)
 
         assert not any(_stash)
+
+    def test_list_reduce(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Export
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Export.CLASSIFIER)
+
+        assert len(_stash) == 2
+
+        _stash = _stash.reduce(attribute=Export.ATTR_NAME, attributeValue='PYTHON_ABI')
+
+        assert len(_stash) == 1
+
+        _stash = _stash.reduce(attribute=Export.ATTR_NAME, attributeValue='NOT_EXISTING_VALUE')
+
+        assert not any(_stash)
+
+        _stash = self.__stash.GetItemsFor(classifier=Export.CLASSIFIER).reduce(
+            attribute=Export.ATTR_NAME, attributeValue='PYTHON_ABI')
+
+        assert len(_stash) == 1
 
     def test_append_to_stash(self):
         from oelint_parser.cls_stash import Stash

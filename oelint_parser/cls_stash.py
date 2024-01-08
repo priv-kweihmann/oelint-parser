@@ -3,6 +3,8 @@ import os
 from typing import Iterable, List, Union
 from urllib.parse import urlparse
 
+from collections import UserList
+
 from oelint_parser.cls_item import Item, Variable
 from oelint_parser.constants import CONSTANTS
 from oelint_parser.parser import get_items
@@ -11,6 +13,93 @@ from oelint_parser.rpl_regex import RegexRpl
 
 class Stash():
     """The Stash object is the central storage for extracting the bitbake information."""
+
+    class StashList(UserList):
+        """Extended list of Items."""
+
+        def __init__(self, stash: 'Stash', items: Iterable[Item]) -> None:
+            """StashList - Extended list of Items.
+
+            Args:
+                stash (Stash): Parent stash object
+                items (Iterable): Iterable input
+            """
+            self._stash = stash
+            super().__init__()
+            self.data = items
+
+        def __setitem__(self, index: int, item: Item) -> None:
+            self.data[index] = item
+
+        def __iadd__(self, __value: Iterable) -> List[Item]:
+            return self.data.__iadd__(__value)
+
+        def insert(self, index: int, item: Item) -> None:
+            """Insert into list
+
+            Args:
+                index (int): index where to insert
+                item (Item): object to insert
+            """
+            self.data.insert(index, item)
+
+        def append(self, item: Union[Item, Iterable[Item]]) -> None:
+            """Append to list
+
+            Args:
+                item (Union[Item, Iterable[Item]]): Item or Iterable of Items
+            """
+            if isinstance(item, (list, tuple)):
+                for _item in item:
+                    self.data.append(_item)
+            else:
+                self.data.append(item)
+
+        def extend(self, other: 'Stash.StashList') -> None:
+            """Extend list
+
+            Args:
+                other (Stash.StashList): Other stash other
+            """
+            if isinstance(other, type(Stash.StashList)):
+                self.data.extend(other.data)
+
+        def remove(self, item: Union[Item, Iterable[Item]]) -> None:
+            """Remove from list
+
+            Args:
+                item (Item): Item(s) to remove
+            """
+            if isinstance(item, (list, tuple)):
+                for _item in item:
+                    self.data.remove(_item)
+            else:
+                self.data.remove(item)
+
+        def reduce(self, filename: str = None,
+                   classifier: Union[Iterable[str], str] = None,
+                   attribute: Union[Iterable[str], str] = None,
+                   attributeValue: Union[Iterable[str], str] = None,
+                   nolink: bool = False) -> 'Stash.StashList':
+            """Filters the list
+
+            Args:
+                filename (str, optional): Full path to file. Defaults to None.
+                classifier (Union[Iterable[str], str], optional): (iterable of) class specifier (e.g. Variable). Defaults to None.
+                attribute (Union[Iterable[str], str], optional): (iterable of) class attribute name. Defaults to None.
+                attributeValue (Union[Iterable[str], str], optional): (iterable of) value of the class attribute value. Defaults to None.
+                nolink (bool, optional): Consider linked files. Defaults to False.
+
+            Returns:
+                Stash.StashList: self
+            """
+            self.data = self._stash.Reduce(self.data,
+                                           filename=filename,
+                                           classifier=classifier,
+                                           attribute=attribute,
+                                           attributeValue=attributeValue,
+                                           nolink=nolink)
+            return self
 
     def __init__(self, quiet: bool = False, new_style_override_syntax: bool = False) -> None:
         """Stash object
@@ -80,25 +169,25 @@ class Stash():
         self.__list += res
         return res
 
-    def Append(self, item: Item) -> None:
+    def Append(self, item: Union[Item, Iterable[Item]]) -> None:
         """appends one or mote items to the stash
 
         Args:
             item (Item): Item(s) to append
         """
-        if isinstance(item, (list, tuple)):
+        if isinstance(item, (list, tuple, Stash.StashList)):
             for _item in item:
                 self.__list.append(_item)
         else:
             self.__list.append(item)
 
-    def Remove(self, item: Item) -> None:
+    def Remove(self, item: Union[Item, Iterable[Item]]) -> None:
         """removes one or more items from the stash
 
         Args:
             item (Item): Item(s) to remove
         """
-        if isinstance(item, (list, tuple)):
+        if isinstance(item, (list, tuple, Stash.StashList)):
             for _item in item:
                 self.__list.remove(_item)
         else:
@@ -194,15 +283,17 @@ class Stash():
             return []
         return [x.Origin for x in self.__get_items_by_file(self.__list, filename) if x.Origin != filename]
 
-    def GetItemsFor(self,
-                    filename: str = None,
-                    classifier: Union[Iterable[str], str] = None,
-                    attribute: Union[Iterable[str], str] = None,
-                    attributeValue: Union[Iterable[str], str] = None,
-                    nolink: bool = False) -> List[Item]:
-        """Get items for filename
+    def Reduce(self,
+               in_list: List[Item],
+               filename: str = None,
+               classifier: Union[Iterable[str], str] = None,
+               attribute: Union[Iterable[str], str] = None,
+               attributeValue: Union[Iterable[str], str] = None,
+               nolink: bool = False) -> List[Item]:
+        """Reduce a list by filtering
 
         Args:
+            in_list (Stash.StashList): Input list.
             filename (str, optional): Full path to file. Defaults to None.
             classifier (Union[Iterable[str], str], optional): (iterable of) class specifier (e.g. Variable). Defaults to None.
             attribute (Union[Iterable[str], str], optional): (iterable of) class attribute name. Defaults to None.
@@ -218,14 +309,39 @@ class Stash():
             attribute = [attribute] if attribute else []
         if not isinstance(attributeValue, (list, set, tuple)):
             attributeValue = [attributeValue] if attributeValue else []
-        res = self.__list
         if filename:
-            res = self.__get_items_by_file(res, filename, nolink=nolink)
+            in_list = self.__get_items_by_file(in_list, filename, nolink=nolink)
         if classifier:
-            res = self.__get_items_by_classifier(res, classifier)
+            in_list = self.__get_items_by_classifier(in_list, classifier)
         if attribute:
-            res = self.__get_items_by_attribute(res, attribute, attributeValue)
-        return sorted(set(res), key=lambda x: x.Line)
+            in_list = self.__get_items_by_attribute(in_list, attribute, attributeValue)
+        return sorted(set(in_list), key=lambda x: x.Line)
+
+    def GetItemsFor(self,
+                    filename: str = None,
+                    classifier: Union[Iterable[str], str] = None,
+                    attribute: Union[Iterable[str], str] = None,
+                    attributeValue: Union[Iterable[str], str] = None,
+                    nolink: bool = False) -> 'Stash.StashList':
+        """Get items for filename
+
+        Args:
+            filename (str, optional): Full path to file. Defaults to None.
+            classifier (Union[Iterable[str], str], optional): (iterable of) class specifier (e.g. Variable). Defaults to None.
+            attribute (Union[Iterable[str], str], optional): (iterable of) class attribute name. Defaults to None.
+            attributeValue (Union[Iterable[str], str], optional): (iterable of) value of the class attribute value. Defaults to None.
+            nolink (bool, optional): Consider linked files. Defaults to False.
+
+        Returns:
+            Stash.StashList: Returns a list of items fitting the set filters
+        """
+        res = Stash.StashList(self, self.__list)
+        res.reduce(filename=filename,
+                   classifier=classifier,
+                   attribute=attribute,
+                   attributeValue=attributeValue,
+                   nolink=nolink)
+        return res
 
     def ExpandVar(self,
                   filename: str = None,
