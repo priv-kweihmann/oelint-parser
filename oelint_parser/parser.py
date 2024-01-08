@@ -110,7 +110,9 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
     while raw_line.find("${@") != -1:
         _inline_block = raw_line.find("${@")
         repl = get_full_scope(raw_line[_inline_block:], len("${@"), "{", "}")
-        _repl = inlinerep(repl) or INLINE_BLOCK
+        _repl = inlinerep(repl)
+        if _repl is None:
+            _repl = INLINE_BLOCK
         raw_line = raw_line.replace(repl, _repl)
     res.append({"line": num + 1 + lineOffset, "raw": raw_line,
                 "realraw": real_raw,
