@@ -62,6 +62,41 @@ for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue="PV"):
     print([_stash.ExpandTerm("/some/file", y) for y in x.get_items()])
 ```
 
+### Filtering
+
+You can filter by multiple items
+
+```python
+from oelint_parser.cls_item import Variable
+from oelint_parser.helper_files import expand_term
+
+# get all variables of the name PV or BPV from all files
+for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue=["PV", "BPV"]):
+    # variable name
+    print(x.VarName)
+    # raw unexpanded variable
+    print(x.VarValue)
+    # raw unexpanded variable without quotes
+    print(x.VarValueStripped)
+```
+
+and you can reduce the list after the initial filtering even more
+
+```python
+from oelint_parser.cls_item import Variable
+from oelint_parser.helper_files import expand_term
+
+# get all variables of the name PV or BPV from all files if the value is '1.0'
+for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue=["PV", "BPV"]).reduce(
+                                attribute=Variable.ATTR_VARVAL, attributeValue=["1.0"]):
+    # variable name
+    print(x.VarName)
+    # raw unexpanded variable -> "1.0"
+    print(x.VarValue)
+    # raw unexpanded variable without quotes -> 1.0
+    print(x.VarValueStripped)
+```
+
 ## Working with constants
 
 For this library a few basic sets of constant information, such as basic package definitions, known machines and functions are
