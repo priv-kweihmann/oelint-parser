@@ -129,3 +129,18 @@ class OelintParserInlineReplacements(unittest.TestCase):
         for item in _stash:
             self.assertEqual(item.VarValue, '"true"')
             self.assertEqual(item.VarValueStripped, 'true')
+
+    def test_oe_less_or_equal(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Variable
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserInlineReplacements.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, attributeValue="VAR_OE_LESS_OR_EQUAL")
+
+        self.assertEqual(len(_stash), 2, msg="Stash has items")
+
+        for item in _stash:
+            self.assertEqual(item.VarValue, '"true"')
+            self.assertEqual(item.VarValueStripped, 'true')
