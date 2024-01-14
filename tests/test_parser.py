@@ -174,6 +174,19 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.After, ["do_foo"])
             self.assertEqual(x.Before, ["do_bar"])
 
+    def test_taskdel(self):
+        from oelint_parser.cls_item import TaskDel
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=TaskDel.CLASSIFIER)
+
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.FuncName, "do_baz")
+
     def test_function(self):
         from oelint_parser.cls_item import Function
         from oelint_parser.cls_stash import Stash

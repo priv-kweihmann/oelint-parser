@@ -73,3 +73,5 @@ python do_bar() {
 }
 
 RDEPENDS_${PN}-test += "foo"
+
+deltask do_baz
