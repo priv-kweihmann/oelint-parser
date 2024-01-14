@@ -2,6 +2,7 @@ import unittest
 import os
 import sys
 
+
 class OelintParserInlineReplacements(unittest.TestCase):
 
     RECIPE = os.path.join(os.path.dirname(__file__), "test-inline.bb")
@@ -15,7 +16,8 @@ class OelintParserInlineReplacements(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserInlineReplacements.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue="VAR_CONTAINS")
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, attributeValue="VAR_CONTAINS")
 
         self.assertEqual(len(_stash), 2, msg="Stash has items")
 
@@ -29,7 +31,8 @@ class OelintParserInlineReplacements(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserInlineReplacements.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue="VAR_CONTAINS_ANY")
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, attributeValue="VAR_CONTAINS_ANY")
 
         self.assertEqual(len(_stash), 2, msg="Stash has items")
 
@@ -43,7 +46,8 @@ class OelintParserInlineReplacements(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserInlineReplacements.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue="VAR_OE_CONDITIONAL")
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, attributeValue="VAR_OE_CONDITIONAL")
 
         self.assertEqual(len(_stash), 2, msg="Stash has items")
 
@@ -57,7 +61,8 @@ class OelintParserInlineReplacements(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserInlineReplacements.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue="VAR_OE_IFELSE")
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, attributeValue="VAR_OE_IFELSE")
 
         self.assertEqual(len(_stash), 2, msg="Stash has items")
 
@@ -71,7 +76,8 @@ class OelintParserInlineReplacements(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserInlineReplacements.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue="VAR_BB_FILTER")
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, attributeValue="VAR_BB_FILTER")
 
         self.assertEqual(len(_stash), 2, msg="Stash has items")
 
@@ -85,10 +91,26 @@ class OelintParserInlineReplacements(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserInlineReplacements.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue="VAR_ANY_DISTRO_FEATURE")
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, attributeValue="VAR_ANY_DISTRO_FEATURE")
 
-        self.assertEqual(len(_stash), 2, msg="Stash has items")
+        self.assertEqual(len(_stash), 4, msg="Stash has items")
 
         for item in _stash:
-            self.assertEqual(item.VarValue, '"true"')
-            self.assertEqual(item.VarValueStripped, 'true')
+            self.assertEqual(item.VarValue, '"True"')
+            self.assertEqual(item.VarValueStripped, 'True')
+
+    def test_oe_all_distro_feature(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Variable
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserInlineReplacements.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR, attributeValue="VAR_ALL_DISTRO_FEATURE")
+
+        self.assertEqual(len(_stash), 4, msg="Stash has items")
+
+        for item in _stash:
+            self.assertEqual(item.VarValue, '"True"')
+            self.assertEqual(item.VarValueStripped, 'True')
