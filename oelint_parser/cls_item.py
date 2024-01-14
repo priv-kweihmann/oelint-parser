@@ -1194,3 +1194,64 @@ class TaskAssignment(Item):
             list: Empty list
         """
         return []
+
+
+class AddPylib(Item):
+    """Items representing addpylib statements in bitbake."""
+
+    CLASSIFIER = "AddPylib"
+    ATTR_PATH = "Path"
+    ATTR_NAMESPACE = "Namespace"
+
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 path: str,
+                 namespace: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
+        """constructor
+
+        Arguments:
+            origin {str} -- Full path to file of origin
+            line {int} -- Overall line counter
+            infileline {int} -- Line counter in the particular file
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
+            path {str} -- path to the namespace
+            namespace {str} -- namespace name
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
+        """
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
+        self.__Path = path
+        self.__Namespace = namespace
+
+    @property
+    def Path(self) -> str:
+        """Path of the library addition
+
+        Returns:
+            str: path of the library addition
+        """
+        return self.__Path
+
+    @property
+    def Namespace(self) -> str:
+        """Namespace of the addition
+
+        Returns:
+            str: Namespace of the addition
+        """
+        return self.__Namespace
+
+    def get_items(self) -> Tuple[str, str]:
+        """Get items
+
+        Returns:
+            list -- library path, library namespace
+        """
+        return [self.Path, self.Namespace]

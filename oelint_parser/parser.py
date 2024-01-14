@@ -5,15 +5,16 @@ from typing import Iterable, List
 import regex
 
 from oelint_parser.cls_item import (
+    AddPylib,
     Comment,
     Export,
+    FlagAssignment,
     Function,
     FunctionExports,
     Include,
     Item,
     PythonBlock,
     TaskAdd,
-    FlagAssignment,
     Variable,
 )
 from oelint_parser.inlinerep import inlinerep
@@ -142,9 +143,9 @@ def prepare_lines(_file: str, lineOffset: int = 0) -> List[str]:
     return prep_lines
 
 
-def get_items(stash: object, 
-              _file: str, 
-              lineOffset: int = 0, 
+def get_items(stash: object,
+              _file: str,
+              lineOffset: int = 0,
               new_style_override_syntax: bool = False) -> List[Item]:
     """parses file
 
@@ -169,6 +170,7 @@ def get_items(stash: object,
     __regex_addtask = r"^(\s*|\t*)addtask\s+(?P<func>\w+)\s*((before\s*(?P<before>((.*(?=after))|(.*))))|(after\s*(?P<after>((.*(?=before))|(.*)))))*"
     __regex_flagass = r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
     __regex_export_func = r"^EXPORT_FUNCTIONS\s+(?P<func>.*)"
+    __regex_addpylib = r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)"
 
     _order = collections.OrderedDict([
         ("comment", __regex_comments),
@@ -181,6 +183,7 @@ def get_items(stash: object,
         ("addtask", __regex_addtask),
         ("flagassign", __regex_flagass),
         ("exportfunc", __regex_export_func),
+        ("addpylib", __regex_addpylib),
         ("vars", __regex_var),
     ])
 
@@ -379,6 +382,20 @@ def get_items(stash: object,
                             line["raw"],
                             m.group("incname"),
                             m.group("statement"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
+                    good = True
+                    break
+                elif k == "addpylib":
+                    res.append(
+                        AddPylib(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("path"),
+                            m.group("namespace"),
                             line["realraw"],
                             new_style_override_syntax=override_syntax_new,
                         ))
