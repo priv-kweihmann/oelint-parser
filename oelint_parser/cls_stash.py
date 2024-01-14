@@ -1,11 +1,10 @@
 import glob
 import os
+from collections import UserList
 from typing import Iterable, List, Union
 from urllib.parse import urlparse
 
-from collections import UserList
-
-from oelint_parser.cls_item import Item, Variable
+from oelint_parser.cls_item import Inherit, Item, Variable
 from oelint_parser.constants import CONSTANTS
 from oelint_parser.parser import get_items
 from oelint_parser.rpl_regex import RegexRpl
@@ -695,10 +694,9 @@ class Stash():
         """
         res = False
 
-        _inherits = self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
-                                     attribute=Variable.ATTR_VAR, attributeValue="inherit")
-        res |= any(
-            x for x in _inherits if x.VarValueStripped in CONSTANTS.ImagesClasses)
+        _inherits = self.GetItemsFor(filename=_file, classifier=Inherit.CLASSIFIER)
+        for item in _inherits:
+            res |= any(True for x in item.get_items() if x in CONSTANTS.ImagesClasses)
 
         for _var in CONSTANTS.ImagesVariables:
             res |= any(self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
@@ -715,6 +713,5 @@ class Stash():
         Returns:
             bool -- True if _file is a packagegroup recipe
         """
-        _inherits = self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
-                                     attribute=Variable.ATTR_VAR, attributeValue="inherit")
+        _inherits = self.GetItemsFor(filename=_file, classifier=Inherit.CLASSIFIER)
         return any(x for x in _inherits if "packagegroup" in x.get_items())

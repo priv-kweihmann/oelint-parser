@@ -472,19 +472,20 @@ class OelintParserTest(unittest.TestCase):
         assert len(_stash) == 3
 
     def test_inherit(self):
-        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_item import Inherit
         from oelint_parser.cls_stash import Stash
 
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserTest.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
-                                          attribute=Variable.ATTR_VAR,
-                                          attributeValue="inherit")
+        _stash = self.__stash.GetItemsFor(classifier=Inherit.CLASSIFIER)
         self.assertTrue(_stash, msg="Stash has no items")
-        self.assertEqual(len(_stash), 1, msg="Only one item is found")
+        self.assertEqual(len(_stash), 3, msg="Only one item is found")
         for x in _stash:
-            self.assertEqual(x.VarValue, 'someclass')
+            self.assertIn(x.Class, ['someclass', '${CLASS_TO_INHERIT}'])
+
+        self.assertTrue(any('inherit_defer' in x.Statement for x in _stash), msg='inherit_defer found')
+        self.assertTrue(any('inherit' in x.Statement for x in _stash), msg='inherit found')
 
     def test_multi_filter(self):
         from oelint_parser.cls_item import Variable, Function

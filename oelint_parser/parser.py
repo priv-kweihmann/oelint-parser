@@ -12,6 +12,7 @@ from oelint_parser.cls_item import (
     Function,
     FunctionExports,
     Include,
+    Inherit,
     Item,
     PythonBlock,
     TaskAdd,
@@ -161,7 +162,7 @@ def get_items(stash: object,
     res = []
     __regex_var = r"^(?P<varname>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
     __regex_func = r"^((?P<py>python)\s*|(?P<fr>fakeroot\s*))*(?P<func>[\w\.\-\+\{\}:\$]+)?\s*\(\s*\)\s*\{(?P<funcbody>.*)\s*\}"
-    __regex_inherit = r"^(\s|\t)*inherit(\s+|\t+)(?P<inhname>.+)"
+    __regex_inherit = r"^(\s|\t)*(?P<statement>inherit(_defer)*)(\s+|\t+)(?P<inhname>.+)"
     __regex_export_wval = r"^\s*?export(\s+|\t+)(?P<name>.+)\s*=\s*\"(?P<value>.*)\""
     __regex_export_woval = r"^\s*?export(\s+|\t+)(?P<name>.+)\s*$"
     __regex_comments = r"^(\s|\t)*#+\s*(?P<body>.*)"
@@ -282,15 +283,14 @@ def get_items(stash: object,
                             if any(tmp):
                                 includeOffset += max([x.InFileLine for x in tmp])
                     res.append(
-                        Variable(
+                        Inherit(
                             _file,
                             line["line"] + includeOffset,
                             line["line"] - lineOffset,
                             line["raw"],
-                            "inherit",
+                            m.group("statement"),
                             m.group("inhname"),
                             line["realraw"],
-                            "",
                             new_style_override_syntax=override_syntax_new,
                         ))
                     good = True
@@ -324,7 +324,6 @@ def get_items(stash: object,
                     good = True
                     break
                 elif k == "flagassign":
-                    print(f'FlagAssignment {m}')
                     res.append(
                         FlagAssignment(
                             _file,
