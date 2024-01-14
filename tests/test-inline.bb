@@ -28,3 +28,6 @@ VAR_VARTRUE:aarch64 = "${@oe.utils.vartrue('X', 'true', '', d)}"
 
 VAR_OE_LESS_OR_EQUAL = "${@oe.utils.less_or_equal("X", "1", "true", "", d)}"
 VAR_OE_LESS_OR_EQUAL:aarch64 = "${@oe.utils.less_or_equal('X', '1', 'true', '', d)}"
+
+VAR_OE_VERSION_LESS_OR_EQUAL = "${@oe.utils.version_less_or_equal("X", "1", "true", "", d)}"
+VAR_OE_VERSION_LESS_OR_EQUAL:aarch64 = "${@oe.utils.version_less_or_equal('X', '1', 'true', '', d)}"
