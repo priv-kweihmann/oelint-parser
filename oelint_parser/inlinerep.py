@@ -79,6 +79,21 @@ def oe_utils_ifelse(_in: str) -> str:
     return None
 
 
+def oe_utils_any_distro_features(_in: str) -> str:
+    """oe.utils.any_distro_features emulation
+
+    Args:
+        _in (str): Input string
+
+    Returns:
+        str: True argument of the conditional or None if not applicable
+    """
+    m = RegexRpl.match(r"(.*)oe\.utils\.any_distro_features\(.*?,\s*.*?,\s*(?P<trueval>.*?)\)", _in)
+    if m:
+        return m.group('trueval').strip("\"'")
+    return None
+
+
 def inlinerep(_in: str) -> str:
     """Replaces inline code expressions
 
@@ -95,6 +110,7 @@ def inlinerep(_in: str) -> str:
         bb_utils_filter(_clean_in),
         oe_utils_conditional(_clean_in),
         oe_utils_ifelse(_clean_in),
+        oe_utils_any_distro_features(_clean_in),
     ]:
         if x:
             return x
