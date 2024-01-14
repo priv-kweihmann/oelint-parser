@@ -46,7 +46,6 @@ this returns the raw object representation
 
 ```python
 from oelint_parser.cls_item import Variable
-from oelint_parser.helper_files import expand_term
 
 # get all variables of the name PV from all files
 for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue="PV"):
@@ -68,7 +67,6 @@ You can filter by multiple items
 
 ```python
 from oelint_parser.cls_item import Variable
-from oelint_parser.helper_files import expand_term
 
 # get all variables of the name PV or BPV from all files
 for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue=["PV", "BPV"]):
@@ -84,7 +82,6 @@ and you can reduce the list after the initial filtering even more
 
 ```python
 from oelint_parser.cls_item import Variable
-from oelint_parser.helper_files import expand_term
 
 # get all variables of the name PV or BPV from all files if the value is '1.0'
 for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue=["PV", "BPV"]).reduce(
@@ -95,6 +92,17 @@ for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue=["PV", "
     print(x.VarValue)
     # raw unexpanded variable without quotes -> 1.0
     print(x.VarValueStripped)
+```
+
+### Expanding a Variable
+
+To get the effective value of a Variable after parsing you can use
+
+```python
+from oelint_parser.cls_item import Variable
+
+result_set = _stash.ExpandVar(attribute=Variable.ATTR_VAR, attributeValue=["PV"]):
+print(result_set.get('PV'))
 ```
 
 ## Working with constants
