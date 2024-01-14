@@ -113,6 +113,21 @@ def oe_utils_all_distro_features(_in: str) -> str:
     return None
 
 
+def oe_utils_vartrue(_in: str) -> str:
+    """oe.utils.vartrue emulation
+
+    Args:
+        _in (str): Input string
+
+    Returns:
+        str: True argument of the conditional or None if not applicable
+    """
+    m = RegexRpl.match(r"(.*)oe\.utils\.vartrue\(.*?,\s*(?P<trueval>.*?),\s*.*?,.*?\)", _in)
+    if m:
+        return m.group('trueval').strip("\"'")
+    return None
+
+
 def inlinerep(_in: str) -> str:
     """Replaces inline code expressions
 
@@ -127,10 +142,11 @@ def inlinerep(_in: str) -> str:
         bb_utils_contains(_clean_in),
         bb_utils_contains_any(_clean_in),
         bb_utils_filter(_clean_in),
+        oe_utils_all_distro_features(_clean_in),
+        oe_utils_any_distro_features(_clean_in),
         oe_utils_conditional(_clean_in),
         oe_utils_ifelse(_clean_in),
-        oe_utils_any_distro_features(_clean_in),
-        oe_utils_all_distro_features(_clean_in),
+        oe_utils_vartrue(_clean_in),
     ]:
         if x:
             return x

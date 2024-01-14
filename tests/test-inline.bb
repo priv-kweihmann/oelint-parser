@@ -22,3 +22,6 @@ VAR_ALL_DISTRO_FEATURE = "${@oe.utils.all_distro_features(d, "foo bar", "True")}
 VAR_ALL_DISTRO_FEATURE:aarch64 = "${@oe.utils.all_distro_features(d, 'foo bar', 'True')}"
 VAR_ALL_DISTRO_FEATURE:armv7a = "${@oe.utils.all_distro_features(d, "foo bar")}"
 VAR_ALL_DISTRO_FEATURE:armv4 = "${@oe.utils.all_distro_features(d, 'foo bar')}"
+
+VAR_VARTRUE = "${@oe.utils.vartrue("X", "true", "", d)}"
+VAR_VARTRUE:aarch64 = "${@oe.utils.vartrue('X', 'true', '', d)}"
