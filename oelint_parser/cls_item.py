@@ -485,6 +485,14 @@ class Variable(Item):
                 return x
         return ""
 
+    def IsImmediateModify(self) -> bool:
+        """Variable operation is done immediately
+
+        Returns:
+            bool: true if it isn't a prepend/append or remove operation
+        """
+        return not any(x in ['prepend', 'append', 'remove'] for x in self.SubItems)
+
 
 class Comment(Item):
     """Items representing comments in bitbake."""
