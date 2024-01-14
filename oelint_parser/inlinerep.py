@@ -43,7 +43,7 @@ def oe_utils_conditional(_in: str) -> str:
         str: True argument of the conditional or None if not applicable
     """
     m = RegexRpl.match(
-        r"(.*)oe\.utils\.conditional\(.*?,\s*.*?,\s*(.*?),\s*.*?,\s*.\)", _in)
+        r"(.*)oe\.utils\.conditional\(.*?,\s*.*?,\s*(.*?),\s*.*?,\s*.*?\)", _in)
     if m:
         return m.group(1) + m.group(2).strip("\"'")
     return None
