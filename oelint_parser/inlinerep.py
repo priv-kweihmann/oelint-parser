@@ -158,6 +158,21 @@ def oe_utils_version_less_or_equal(_in: str) -> str:
     return None
 
 
+def oe_utils_both_contain(_in: str) -> str:
+    """oe.utils.both_contain emulation
+
+    Args:
+        _in (str): Input string
+
+    Returns:
+        str: True argument of the conditional or None if not applicable
+    """
+    m = RegexRpl.match(r"(.*)oe\.utils\.both_contain\(.*?,\s*.*?,\s*(?P<trueval>.*?),.*?\)", _in)
+    if m:
+        return m.group('trueval').strip("\"'")
+    return None
+
+
 def inlinerep(_in: str) -> str:
     """Replaces inline code expressions
 
@@ -174,6 +189,7 @@ def inlinerep(_in: str) -> str:
         bb_utils_filter(_clean_in),
         oe_utils_all_distro_features(_clean_in),
         oe_utils_any_distro_features(_clean_in),
+        oe_utils_both_contain(_clean_in),
         oe_utils_conditional(_clean_in),
         oe_utils_ifelse(_clean_in),
         oe_utils_less_or_equal(_clean_in),

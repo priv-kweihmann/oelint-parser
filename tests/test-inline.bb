@@ -31,3 +31,6 @@ VAR_OE_LESS_OR_EQUAL:aarch64 = "${@oe.utils.less_or_equal('X', '1', 'true', '', 
 
 VAR_OE_VERSION_LESS_OR_EQUAL = "${@oe.utils.version_less_or_equal("X", "1", "true", "", d)}"
 VAR_OE_VERSION_LESS_OR_EQUAL:aarch64 = "${@oe.utils.version_less_or_equal('X', '1', 'true', '', d)}"
+
+VAR_OE_BOTH_CONTAIN = "${@oe.utils.both_contain("X", "Y", "true", d)}"
+VAR_OE_BOTH_CONTAIN:aarch64 = "${@oe.utils.both_contain('X', 'Y', 'true', d)}"
