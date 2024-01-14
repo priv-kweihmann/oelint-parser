@@ -524,6 +524,28 @@ class OelintParserTest(unittest.TestCase):
         self.assertTrue(all(x.VarName in ['SOMEVAR', 'YETANOTHERVAR']) for x in _stash)
         self.assertEqual(len(_stash), 2)
 
+    def test_unset(self):
+        from oelint_parser.cls_item import Unset
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Unset.CLASSIFIER,
+                                          attribute=Unset.ATTR_VARNAME,
+                                          attributeValue="Z")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarName, "Z")
+            self.assertEqual(x.Flag, "")
+
+        _stash = self.__stash.GetItemsFor(classifier=Unset.CLASSIFIER,
+                                          attribute=Unset.ATTR_VARNAME,
+                                          attributeValue="A")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for x in _stash:
+            self.assertEqual(x.VarName, "A")
+            self.assertEqual(x.Flag, "my-flag")
 
 if __name__ == "__main__":
     unittest.main()

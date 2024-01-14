@@ -75,3 +75,6 @@ python do_bar() {
 RDEPENDS_${PN}-test += "foo"
 
 deltask do_baz
+
+unset Z
+unset A[my-flag]
