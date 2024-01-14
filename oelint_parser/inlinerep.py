@@ -143,6 +143,21 @@ def oe_utils_less_or_equal(_in: str) -> str:
     return None
 
 
+def oe_utils_version_less_or_equal(_in: str) -> str:
+    """oe.utils.version_less_or_equal emulation
+
+    Args:
+        _in (str): Input string
+
+    Returns:
+        str: True argument of the conditional or None if not applicable
+    """
+    m = RegexRpl.match(r"(.*)oe\.utils\.version_less_or_equal\(.*?,\s*.*?,\s*(?P<trueval>.*?),\s*.*?,.*?\)", _in)
+    if m:
+        return m.group('trueval').strip("\"'")
+    return None
+
+
 def inlinerep(_in: str) -> str:
     """Replaces inline code expressions
 
@@ -163,6 +178,7 @@ def inlinerep(_in: str) -> str:
         oe_utils_ifelse(_clean_in),
         oe_utils_less_or_equal(_clean_in),
         oe_utils_vartrue(_clean_in),
+        oe_utils_version_less_or_equal(_clean_in),
     ]:
         if x:
             return x
