@@ -310,12 +310,7 @@ class Variable(Item):
             new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
         super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
-        if "inherit" != name:
-            self.__VarName, self.__SubItem = self.extract_sub(
-                name)
-        else:
-            self.__VarName = name
-            self.__SubItem = ""
+        self.__VarName, self.__SubItem = self.extract_sub(name)
         self.__SubItems = [x for x in self.SubItem.split(
             self.OverrideDelimiter) if x]
         self.__VarValue = value
@@ -1255,3 +1250,64 @@ class AddPylib(Item):
             list -- library path, library namespace
         """
         return [self.Path, self.Namespace]
+
+
+class Inherit(Item):
+    """Items that representing inherit(_defer) statements."""
+
+    CLASSIFIER = "Inherit"
+    ATTR_STATEMENT = "Statement"
+    ATTR_CLASS = "Class"
+
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 statement: str,
+                 classes: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
+        """constructor
+
+        Arguments:
+            origin {str} -- Full path to file of origin
+            line {int} -- Overall line counter
+            infileline {int} -- Line counter in the particular file
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
+            class {str} -- class code to inherit
+            statement {str} -- inherit statement
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
+        """
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
+        self.__Class = classes
+        self.__Statement = statement
+
+    @property
+    def Class(self) -> str:
+        """Class(es) to inherit
+
+        Returns:
+            str: slass(es) to inherit
+        """
+        return self.__Class
+
+    @property
+    def Statement(self) -> str:
+        """inherit statement
+
+        Returns:
+            str: inherit or inherit_defer
+        """
+        return self.__Statement
+
+    def get_items(self) -> List[str]:
+        """Get items
+
+        Returns:
+            list -- include name, include statement
+        """
+        return self.safe_linesplit(self.__Class)

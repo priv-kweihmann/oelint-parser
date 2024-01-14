@@ -49,6 +49,12 @@ require another_file.inc
 
 inherit someclass
 
+inherit_defer someclass
+
+CLASS_TO_INHERIT = "someclass"
+
+inherit ${CLASS_TO_INHERIT}
+
 A[doc] = "This string is not an inherit statement."
 
 do_configure[noexec] = "1"
