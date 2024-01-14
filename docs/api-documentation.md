@@ -72,6 +72,7 @@
     * [GetDistroEntry](#oelint_parser.cls_item.Variable.GetDistroEntry)
     * [GetMachineEntry](#oelint_parser.cls_item.Variable.GetMachineEntry)
     * [GetClassOverride](#oelint_parser.cls_item.Variable.GetClassOverride)
+    * [IsImmediateModify](#oelint_parser.cls_item.Variable.IsImmediateModify)
   * [Comment](#oelint_parser.cls_item.Comment)
     * [\_\_init\_\_](#oelint_parser.cls_item.Comment.__init__)
     * [get\_items](#oelint_parser.cls_item.Comment.get_items)
@@ -123,6 +124,10 @@
     * [Before](#oelint_parser.cls_item.TaskAdd.Before)
     * [After](#oelint_parser.cls_item.TaskAdd.After)
     * [get\_items](#oelint_parser.cls_item.TaskAdd.get_items)
+  * [TaskDel](#oelint_parser.cls_item.TaskDel)
+    * [\_\_init\_\_](#oelint_parser.cls_item.TaskDel.__init__)
+    * [FuncName](#oelint_parser.cls_item.TaskDel.FuncName)
+    * [get\_items](#oelint_parser.cls_item.TaskDel.get_items)
   * [MissingFile](#oelint_parser.cls_item.MissingFile)
     * [\_\_init\_\_](#oelint_parser.cls_item.MissingFile.__init__)
     * [Filename](#oelint_parser.cls_item.MissingFile.Filename)
@@ -137,6 +142,16 @@
     * [Path](#oelint_parser.cls_item.AddPylib.Path)
     * [Namespace](#oelint_parser.cls_item.AddPylib.Namespace)
     * [get\_items](#oelint_parser.cls_item.AddPylib.get_items)
+  * [Inherit](#oelint_parser.cls_item.Inherit)
+    * [\_\_init\_\_](#oelint_parser.cls_item.Inherit.__init__)
+    * [Class](#oelint_parser.cls_item.Inherit.Class)
+    * [Statement](#oelint_parser.cls_item.Inherit.Statement)
+    * [get\_items](#oelint_parser.cls_item.Inherit.get_items)
+  * [Unset](#oelint_parser.cls_item.Unset)
+    * [\_\_init\_\_](#oelint_parser.cls_item.Unset.__init__)
+    * [VarName](#oelint_parser.cls_item.Unset.VarName)
+    * [Flag](#oelint_parser.cls_item.Unset.Flag)
+    * [get\_items](#oelint_parser.cls_item.Unset.get_items)
 * [oelint\_parser.helper\_files](#oelint_parser.helper_files)
   * [get\_files](#oelint_parser.helper_files.get_files)
   * [get\_layer\_root](#oelint_parser.helper_files.get_layer_root)
@@ -1489,6 +1504,20 @@ Get class specific entries in variable
 
 - `str` - class specific modifier of variable or ""
 
+<a id="oelint_parser.cls_item.Variable.IsImmediateModify"></a>
+
+#### IsImmediateModify
+
+```python
+def IsImmediateModify() -> bool
+```
+
+Variable operation is done immediately
+
+**Returns**:
+
+- `bool` - true if it isn't a prepend/append or remove operation
+
 <a id="oelint_parser.cls_item.Comment"></a>
 
 ## Comment Objects
@@ -2340,6 +2369,75 @@ get items
 
 - `list` - function name, all before statements, all after statements
 
+<a id="oelint_parser.cls_item.TaskDel"></a>
+
+## TaskDel Objects
+
+```python
+class TaskDel(Item)
+```
+
+Items representing deltask statements in bitbake.
+
+<a id="oelint_parser.cls_item.TaskDel.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             name: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
+```
+
+constructor
+
+**Arguments**:
+
+- `origin` _str_ - Full path to file of origin
+- `line` _int_ - Overall line counter
+- `infileline` _int_ - Line counter in the particular file
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
+- `name` _str_ - name of task to be executed
+  
+
+**Arguments**:
+
+- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
+
+<a id="oelint_parser.cls_item.TaskDel.FuncName"></a>
+
+#### FuncName
+
+```python
+@property
+def FuncName() -> str
+```
+
+Function name
+
+**Returns**:
+
+- `str` - name of function
+
+<a id="oelint_parser.cls_item.TaskDel.get_items"></a>
+
+#### get\_items
+
+```python
+def get_items() -> List[str]
+```
+
+get items
+
+**Returns**:
+
+- `list` - function name
+
 <a id="oelint_parser.cls_item.MissingFile"></a>
 
 ## MissingFile Objects
@@ -2571,6 +2669,178 @@ Get items
 **Returns**:
 
 - `list` - library path, library namespace
+
+<a id="oelint_parser.cls_item.Inherit"></a>
+
+## Inherit Objects
+
+```python
+class Inherit(Item)
+```
+
+Items that representing inherit(_defer) statements.
+
+<a id="oelint_parser.cls_item.Inherit.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             statement: str,
+             classes: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
+```
+
+constructor
+
+**Arguments**:
+
+- `origin` _str_ - Full path to file of origin
+- `line` _int_ - Overall line counter
+- `infileline` _int_ - Line counter in the particular file
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
+- `class` _str_ - class code to inherit
+- `statement` _str_ - inherit statement
+  
+
+**Arguments**:
+
+- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
+
+<a id="oelint_parser.cls_item.Inherit.Class"></a>
+
+#### Class
+
+```python
+@property
+def Class() -> str
+```
+
+Class(es) to inherit
+
+**Returns**:
+
+- `str` - slass(es) to inherit
+
+<a id="oelint_parser.cls_item.Inherit.Statement"></a>
+
+#### Statement
+
+```python
+@property
+def Statement() -> str
+```
+
+inherit statement
+
+**Returns**:
+
+- `str` - inherit or inherit_defer
+
+<a id="oelint_parser.cls_item.Inherit.get_items"></a>
+
+#### get\_items
+
+```python
+def get_items() -> List[str]
+```
+
+Get items
+
+**Returns**:
+
+- `list` - include name, include statement
+
+<a id="oelint_parser.cls_item.Unset"></a>
+
+## Unset Objects
+
+```python
+class Unset(Item)
+```
+
+Items representing unset statements in bitbake.
+
+<a id="oelint_parser.cls_item.Unset.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             name: str,
+             realraw: str,
+             flag: str = "",
+             new_style_override_syntax: bool = False) -> None
+```
+
+constructor
+
+**Arguments**:
+
+- `origin` _str_ - Full path to file of origin
+- `line` _int_ - Overall line counter
+- `infileline` _int_ - Line counter in the particular file
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
+- `name` _str_ - name of variable to be unset
+  
+
+**Arguments**:
+
+- `flag` _str_ - Flag to unset
+- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
+
+<a id="oelint_parser.cls_item.Unset.VarName"></a>
+
+#### VarName
+
+```python
+@property
+def VarName() -> str
+```
+
+Variable name
+
+**Returns**:
+
+- `str` - name of the variable
+
+<a id="oelint_parser.cls_item.Unset.Flag"></a>
+
+#### Flag
+
+```python
+@property
+def Flag() -> str
+```
+
+Variable flag
+
+**Returns**:
+
+- `str` - name of the variable flag
+
+<a id="oelint_parser.cls_item.Unset.get_items"></a>
+
+#### get\_items
+
+```python
+def get_items() -> List[str]
+```
+
+get items
+
+**Returns**:
+
+- `list` - variable name, variable flag
 
 <a id="oelint_parser.helper_files"></a>
 
