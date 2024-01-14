@@ -16,6 +16,7 @@ from oelint_parser.cls_item import (
     Item,
     PythonBlock,
     TaskAdd,
+    TaskDel,
     Variable,
 )
 from oelint_parser.inlinerep import inlinerep
@@ -169,6 +170,7 @@ def get_items(stash: object,
     __regex_python = r"^(\s*|\t*)def(\s+|\t+)(?P<funcname>[a-z0-9_]+)(\s*|\t*)\(.*\)\:"
     __regex_include = r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)"
     __regex_addtask = r"^(\s*|\t*)addtask\s+(?P<func>\w+)\s*((before\s*(?P<before>((.*(?=after))|(.*))))|(after\s*(?P<after>((.*(?=before))|(.*)))))*"
+    __regex_deltask = r"^(\s*|\t*)deltask\s+(?P<func>\w+)"
     __regex_flagass = r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
     __regex_export_func = r"^EXPORT_FUNCTIONS\s+(?P<func>.*)"
     __regex_addpylib = r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)"
@@ -182,6 +184,7 @@ def get_items(stash: object,
         ("python", __regex_python),
         ("include", __regex_include),
         ("addtask", __regex_addtask),
+        ("deltask", __regex_deltask),
         ("flagassign", __regex_flagass),
         ("exportfunc", __regex_export_func),
         ("addpylib", __regex_addpylib),
@@ -362,6 +365,18 @@ def get_items(stash: object,
                             line["realraw"],
                             _b,
                             _a,
+                            new_style_override_syntax=override_syntax_new,
+                        ))
+                    break
+                elif k == "deltask":
+                    res.append(
+                        TaskDel(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("func"),
+                            line["realraw"],
                             new_style_override_syntax=override_syntax_new,
                         ))
                     break

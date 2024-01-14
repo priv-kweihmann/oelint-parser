@@ -1083,6 +1083,54 @@ class TaskAdd(Item):
         return [self.FuncName] + self.Before + self.After
 
 
+class TaskDel(Item):
+    """Items representing deltask statements in bitbake."""
+
+    ATTR_FUNCNAME = "FuncName"
+    CLASSIFIER = "TaskDel"
+
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 name: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
+        """constructor
+
+        Arguments:
+            origin {str} -- Full path to file of origin
+            line {int} -- Overall line counter
+            infileline {int} -- Line counter in the particular file
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
+            name {str} -- name of task to be executed
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
+        """
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
+        self.__FuncName = name
+
+    @property
+    def FuncName(self) -> str:
+        """Function name
+
+        Returns:
+            str: name of function
+        """
+        return self.__FuncName
+
+    def get_items(self) -> List[str]:
+        """get items
+
+        Returns:
+            list -- function name
+        """
+        return [self.FuncName]
+
+
 class MissingFile(Item):
     """Items representing missing files found while parsing."""
 
