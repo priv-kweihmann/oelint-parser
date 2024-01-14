@@ -4,7 +4,7 @@ from collections import UserList
 from typing import Iterable, List, Union
 from urllib.parse import urlparse
 
-from oelint_parser.cls_item import Inherit, Item, Variable
+from oelint_parser.cls_item import Inherit, Item, Unset, Variable
 from oelint_parser.constants import CONSTANTS
 from oelint_parser.parser import get_items
 from oelint_parser.rpl_regex import RegexRpl
@@ -363,6 +363,8 @@ class Stash():
                                 attribute=attribute,
                                 attributeValue=attributeValue,
                                 nolink=nolink)
+
+        _res += self.GetItemsFor(filename=filename, classifier=Unset.CLASSIFIER)
         _exp = {
             "PN": self.GuessRecipeName(filename),
             "PV": self.GuessRecipeVersion(filename),
@@ -370,15 +372,20 @@ class Stash():
         }
         _exp = {**_exp, **CONSTANTS.SetsBase}
         for item in sorted(_res, key=lambda x: x.Line):
-            varop = item.VarOp
-            name = item.VarNameComplete
-            if item.Flag:
+            if isinstance(item, Unset):
+                if item.Flag:
+                    continue
+                if item.VarName in _exp:
+                    del _exp[item.VarName]
                 continue
+            if item.Flag or not item.IsImmediateModify():
+                continue
+            varop = item.VarOp
+            name = item.VarName
             if name not in _exp.keys():
                 _exp[name] = None
             if varop in [" = ", " := "]:
-                if not item.IsAppend() and "remove" not in item.SubItems:
-                    _exp[name] = item.VarValueStripped
+                _exp[name] = item.VarValueStripped
             elif varop == " ?= " and _exp[name] is None:
                 _exp[name] = item.VarValueStripped
             elif varop == " ??= " and _exp[name] is None:
@@ -399,10 +406,14 @@ class Stash():
                 if _exp[name] is None:
                     _exp[name] = ""
                 _exp[name] = item.VarValueStripped + _exp[name]
-        # and now for a second run with special
+        # and now for a second run with special append
         for item in sorted(_res, key=lambda x: x.Line):
+            if isinstance(item, Unset):
+                continue
+            if item.IsImmediateModify():
+                continue
             varop = item.VarOp
-            name = item.VarNameComplete
+            name = item.VarName
             if item.Flag:
                 continue
             if name not in _exp.keys():
@@ -420,8 +431,12 @@ class Stash():
                 _exp[name] = item.VarValueStripped + _exp[name]
         # and now for the run with remove
         for item in sorted(_res, key=lambda x: x.Line):
+            if isinstance(item, Unset):
+                continue
+            if item.IsImmediateModify():
+                continue
             varop = item.VarOp
-            name = item.VarNameComplete
+            name = item.VarName
             if item.Flag:
                 continue
             if name not in _exp.keys():
@@ -433,7 +448,7 @@ class Stash():
         # final run and explode the settings
         _finalexp = {}
         for k, v in _exp.items():
-            _newkey = self.ExpandTerm(self, filename, k)
+            _newkey = self.ExpandTerm(filename, k)
             if _newkey not in _finalexp:
                 _finalexp[_newkey] = []
             _finalexp[_newkey] += Item.safe_linesplit(
