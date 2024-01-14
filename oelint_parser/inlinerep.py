@@ -88,8 +88,27 @@ def oe_utils_any_distro_features(_in: str) -> str:
     Returns:
         str: True argument of the conditional or None if not applicable
     """
-    m = RegexRpl.match(r"(.*)oe\.utils\.any_distro_features\(.*?,\s*.*?,\s*(?P<trueval>.*?)\)", _in)
+    m = RegexRpl.match(r"(.*)oe\.utils\.any_distro_features\(.*?,\s*.*?(,\s*(?P<trueval>.*?))*\)", _in)
     if m:
+        if 'trueval' not in m.groups():
+            return 'True'
+        return m.group('trueval').strip("\"'")
+    return None
+
+
+def oe_utils_all_distro_features(_in: str) -> str:
+    """oe.utils.all_distro_features emulation
+
+    Args:
+        _in (str): Input string
+
+    Returns:
+        str: True argument of the conditional or None if not applicable
+    """
+    m = RegexRpl.match(r"(.*)oe\.utils\.all_distro_features\(.*?,\s*.*?(,\s*(?P<trueval>.*?))*\)", _in)
+    if m:
+        if 'trueval' not in m.groups():
+            return 'True'
         return m.group('trueval').strip("\"'")
     return None
 
@@ -111,6 +130,7 @@ def inlinerep(_in: str) -> str:
         oe_utils_conditional(_clean_in),
         oe_utils_ifelse(_clean_in),
         oe_utils_any_distro_features(_clean_in),
+        oe_utils_all_distro_features(_clean_in),
     ]:
         if x:
             return x
