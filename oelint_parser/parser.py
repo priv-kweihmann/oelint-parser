@@ -17,6 +17,7 @@ from oelint_parser.cls_item import (
     PythonBlock,
     TaskAdd,
     TaskDel,
+    Unset,
     Variable,
 )
 from oelint_parser.inlinerep import inlinerep
@@ -174,6 +175,7 @@ def get_items(stash: object,
     __regex_flagass = r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
     __regex_export_func = r"^EXPORT_FUNCTIONS\s+(?P<func>.*)"
     __regex_addpylib = r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)"
+    __regex_unset = r"^(\s+|\t+)*unset(\s+|\t+)+(?P<varname>.+?)(\[*(?P<flag>.+)\])*"
 
     _order = collections.OrderedDict([
         ("comment", __regex_comments),
@@ -185,6 +187,7 @@ def get_items(stash: object,
         ("include", __regex_include),
         ("addtask", __regex_addtask),
         ("deltask", __regex_deltask),
+        ("unset", __regex_unset),
         ("flagassign", __regex_flagass),
         ("exportfunc", __regex_export_func),
         ("addpylib", __regex_addpylib),
@@ -252,6 +255,20 @@ def get_items(stash: object,
                             line["realraw"],
                             m.group("py"),
                             m.group("fr"),
+                            new_style_override_syntax=override_syntax_new,
+                        ))
+                    good = True
+                    break
+                elif k == "unset":
+                    res.append(
+                        Unset(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("varname"),
+                            line["realraw"],
+                            flag=(m.groupdict().get("flag", "") or "").strip('[]'),
                             new_style_override_syntax=override_syntax_new,
                         ))
                     good = True
