@@ -80,7 +80,12 @@ class Stash():
                    attribute: Union[Iterable[str], str] = None,
                    attributeValue: Union[Iterable[str], str] = None,
                    nolink: bool = False) -> 'Stash.StashList':
-            """Filters the list
+            """Filters the list.
+
+            NOTE: This is a destructive operation.
+            If you want to have a copy returned use
+
+            Stash.Reduce(<this object>,...) instead.
 
             Args:
                 filename (str, optional): Full path to file. Defaults to None.

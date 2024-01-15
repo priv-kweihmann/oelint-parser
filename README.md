@@ -94,6 +94,24 @@ for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue=["PV", "
     print(x.VarValueStripped)
 ```
 
+but if you need copies from a wider list to smaller lists use
+
+```python
+from oelint_parser.cls_item import Variable
+
+_all = _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue=["PV", "BPV"])
+_pv = _stash.Reduce(_all, attribute=Variable.ATTR_VAR, attributeValue="PV")
+_bpv = _stash.Reduce(_all, attribute=Variable.ATTR_VAR, attributeValue="BPV")
+
+for x in _pv:
+    # variable name
+    print(x.VarName)
+    # raw unexpanded variable -> "1.0"
+    print(x.VarValue)
+    # raw unexpanded variable without quotes -> 1.0
+    print(x.VarValueStripped)
+```
+
 ### Expanding a Variable
 
 To get the effective value of a Variable after parsing you can use

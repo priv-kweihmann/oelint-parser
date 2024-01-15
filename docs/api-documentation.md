@@ -232,7 +232,7 @@ The Stash object is the central storage for extracting the bitbake information.
 ## StashList Objects
 
 ```python
-class StashList(UserList)
+class StashList(UserList[Item])
 ```
 
 Extended list of Items.
@@ -321,7 +321,12 @@ def reduce(filename: str = None,
            nolink: bool = False) -> 'Stash.StashList'
 ```
 
-Filters the list
+Filters the list.
+
+NOTE: This is a destructive operation.
+If you want to have a copy returned use
+
+Stash.Reduce(<this object>,...) instead.
 
 **Arguments**:
 
