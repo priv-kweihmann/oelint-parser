@@ -389,6 +389,15 @@ class Variable(Item):
         return self.OverrideDelimiter.join([self.VarName] + self.SubItems)
 
     @property
+    def VarNameCompleteNoModifiers(self) -> str:
+        """Complete variable name included overrides but without modifiers like append, prepend and remove
+
+        Returns:
+            str: complete variable name
+        """
+        return self.OverrideDelimiter.join([self.VarName] + [x for x in self.SubItems if x not in ['prepend', 'append', 'remove']])
+
+    @property
     def RawVarName(self) -> str:
         """Variable name and flags combined
 

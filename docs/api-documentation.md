@@ -63,6 +63,7 @@
     * [Flag](#oelint_parser.cls_item.Variable.Flag)
     * [VarOp](#oelint_parser.cls_item.Variable.VarOp)
     * [VarNameComplete](#oelint_parser.cls_item.Variable.VarNameComplete)
+    * [VarNameCompleteNoModifiers](#oelint_parser.cls_item.Variable.VarNameCompleteNoModifiers)
     * [RawVarName](#oelint_parser.cls_item.Variable.RawVarName)
     * [VarValueStripped](#oelint_parser.cls_item.Variable.VarValueStripped)
     * [IsAppend](#oelint_parser.cls_item.Variable.IsAppend)
@@ -1365,6 +1366,21 @@ def VarNameComplete() -> str
 ```
 
 Complete variable name included overrides and flags
+
+**Returns**:
+
+- `str` - complete variable name
+
+<a id="oelint_parser.cls_item.Variable.VarNameCompleteNoModifiers"></a>
+
+#### VarNameCompleteNoModifiers
+
+```python
+@property
+def VarNameCompleteNoModifiers() -> str
+```
+
+Complete variable name included overrides but without modifiers like append, prepend and remove
 
 **Returns**:
 

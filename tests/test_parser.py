@@ -286,6 +286,17 @@ class OelintParserTest(unittest.TestCase):
                                                      x.VarValueStripped), "source/SOMEMORE")
             self.assertNotEqual(x.VarValueStripped, "source/SOMEMORE")
 
+    def test_expand_var(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Variable
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        res = self.__stash.ExpandVar(OelintParserTest.RECIPE, attribute=Variable.ATTR_VAR, attributeValue='RDEPENDS')
+
+        self.assertIn('RDEPENDS_test-recipe-test', res)
+
     def test_inlinecodeblock(self):
         from oelint_parser.cls_item import Variable
         from oelint_parser.cls_stash import Stash
@@ -546,6 +557,7 @@ class OelintParserTest(unittest.TestCase):
         for x in _stash:
             self.assertEqual(x.VarName, "A")
             self.assertEqual(x.Flag, "my-flag")
+
 
 if __name__ == "__main__":
     unittest.main()
