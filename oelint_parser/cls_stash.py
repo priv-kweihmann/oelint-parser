@@ -381,7 +381,7 @@ class Stash():
             if item.Flag or not item.IsImmediateModify():
                 continue
             varop = item.VarOp
-            name = item.VarName
+            name = item.VarNameCompleteNoModifiers
             if name not in _exp.keys():
                 _exp[name] = None
             if varop in [" = ", " := "]:
@@ -413,7 +413,7 @@ class Stash():
             if item.IsImmediateModify():
                 continue
             varop = item.VarOp
-            name = item.VarName
+            name = item.VarNameCompleteNoModifiers
             if item.Flag:
                 continue
             if name not in _exp.keys():
@@ -436,7 +436,7 @@ class Stash():
             if item.IsImmediateModify():
                 continue
             varop = item.VarOp
-            name = item.VarName
+            name = item.VarNameCompleteNoModifiers
             if item.Flag:
                 continue
             if name not in _exp.keys():
