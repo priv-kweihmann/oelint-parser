@@ -964,7 +964,7 @@ class FlagAssignment(Item):
         """Get items
 
         Returns:
-            list -- function name, flag, modification value
+            list -- variable name, flag, variable operation, modification value
         """
         return [self.VarName, self.Flag, self.VarOp, self.ValueStripped]
 
@@ -1373,7 +1373,7 @@ class Inherit(Item):
         """Get items
 
         Returns:
-            list -- include name, include statement
+            list -- parsed Class items
         """
         return self.safe_linesplit(self.__Class)
 

@@ -2197,7 +2197,7 @@ Get items
 
 **Returns**:
 
-- `list` - function name, flag, modification value
+- `list` - variable name, flag, variable operation, modification value
 
 <a id="oelint_parser.cls_item.FunctionExports"></a>
 
@@ -2770,7 +2770,7 @@ Get items
 
 **Returns**:
 
-- `list` - include name, include statement
+- `list` - parsed Class items
 
 <a id="oelint_parser.cls_item.Unset"></a>
 
