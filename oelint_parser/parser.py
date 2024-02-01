@@ -287,6 +287,7 @@ def get_items(stash: object,
                     break
                 elif k == "inherit":
                     inhname = stash.ExpandTerm(_file, m.group("inhname"))
+                    _found_paths = set()
                     for inh_item in [x for x in inhname.split(' ') if x]:
                         if not inh_item.endswith(".bbclass"):
                             inh_item += ".bbclass"
@@ -298,6 +299,7 @@ def get_items(stash: object,
                             if _path:
                                 break
                         if _path:
+                            _found_paths.add(_path)
                             tmp = stash.AddFile(
                                 _path, lineOffset=line["line"], forcedLink=_file)
                             if any(tmp):
@@ -312,6 +314,7 @@ def get_items(stash: object,
                             m.group("inhname"),
                             line["realraw"],
                             new_style_override_syntax=override_syntax_new,
+                            inherit_file_paths=_found_paths,
                         ))
                     good = True
                     break
