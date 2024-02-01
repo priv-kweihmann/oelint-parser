@@ -1,6 +1,6 @@
 import os
 import textwrap
-from typing import List, Tuple
+from typing import List, Set, Tuple
 
 from deprecated import deprecated
 
@@ -1332,7 +1332,9 @@ class Inherit(Item):
                  statement: str,
                  classes: str,
                  realraw: str,
-                 new_style_override_syntax: bool = False) -> None:
+                 new_style_override_syntax: bool = False,
+                 inherit_file_paths: Set[str] = None,
+                 ) -> None:
         """constructor
 
         Arguments:
@@ -1346,10 +1348,12 @@ class Inherit(Item):
 
         Keyword Arguments:
             new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
+            inherit_file_paths {Set[str]} -- Paths of the identified inherited classes
         """
         super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__Class = classes
         self.__Statement = statement
+        self.__FilePaths = inherit_file_paths or {}
 
     @property
     def Class(self) -> str:
@@ -1368,6 +1372,19 @@ class Inherit(Item):
             str: inherit or inherit_defer
         """
         return self.__Statement
+
+    @property
+    def FilePaths(self) -> Set[str]:
+        """File paths to identified bbclasses
+
+        As some classes might not be resolvable in the current context
+        the order doesn't necessarily reflect the order of the
+        inherit statements
+
+        Returns:
+            Set[str]: File paths to identified bbclasses
+        """
+        return self.__FilePaths
 
     def get_items(self) -> List[str]:
         """Get items

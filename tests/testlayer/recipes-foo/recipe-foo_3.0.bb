@@ -1,0 +1,1 @@
+inherit recipe-foo foo

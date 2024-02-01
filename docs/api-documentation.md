@@ -147,6 +147,7 @@
     * [\_\_init\_\_](#oelint_parser.cls_item.Inherit.__init__)
     * [Class](#oelint_parser.cls_item.Inherit.Class)
     * [Statement](#oelint_parser.cls_item.Inherit.Statement)
+    * [FilePaths](#oelint_parser.cls_item.Inherit.FilePaths)
     * [get\_items](#oelint_parser.cls_item.Inherit.get_items)
   * [Unset](#oelint_parser.cls_item.Unset)
     * [\_\_init\_\_](#oelint_parser.cls_item.Unset.__init__)
@@ -232,7 +233,7 @@ The Stash object is the central storage for extracting the bitbake information.
 ## StashList Objects
 
 ```python
-class StashList(UserList[Item])
+class StashList(UserList)
 ```
 
 Extended list of Items.
@@ -2713,7 +2714,8 @@ def __init__(origin: str,
              statement: str,
              classes: str,
              realraw: str,
-             new_style_override_syntax: bool = False) -> None
+             new_style_override_syntax: bool = False,
+             inherit_file_paths: Set[str] = None) -> None
 ```
 
 constructor
@@ -2732,6 +2734,7 @@ constructor
 **Arguments**:
 
 - `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
+- `inherit_file_paths` _Set[str]_ - Paths of the identified inherited classes
 
 <a id="oelint_parser.cls_item.Inherit.Class"></a>
 
@@ -2762,6 +2765,25 @@ inherit statement
 **Returns**:
 
 - `str` - inherit or inherit_defer
+
+<a id="oelint_parser.cls_item.Inherit.FilePaths"></a>
+
+#### FilePaths
+
+```python
+@property
+def FilePaths() -> Set[str]
+```
+
+File paths to identified bbclasses
+
+As some classes might not be resolvable in the current context
+the order doesn't necessarily reflect the order of the
+inherit statements
+
+**Returns**:
+
+- `Set[str]` - File paths to identified bbclasses
 
 <a id="oelint_parser.cls_item.Inherit.get_items"></a>
 
