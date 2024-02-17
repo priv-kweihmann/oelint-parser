@@ -178,6 +178,19 @@ class OelintParserTestNew(unittest.TestCase):
             self.assertEqual(x.IsNewStyleOverrideSyntax, True)
             self.assertEqual(x.OverrideDelimiter, ':')
 
+    def test_srcrev_parsing(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Variable
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue='SRCREV')
+        self.assertTrue(_stash, msg="Stash has items")
+        for x in _stash:
+            self.assertEqual(x.SubItems, ['foo'])
+            self.assertEqual(x.OverrideDelimiter, '_')
+
 
 if __name__ == "__main__":
     unittest.main()
