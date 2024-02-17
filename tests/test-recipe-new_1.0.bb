@@ -12,3 +12,5 @@ do_example:prepend:qemux86-64:poky() {
 RDEPENDS:${PN}-test += "foo"
 
 Y = "${P}"
+
+SRCREV_foo = "abcd"

@@ -232,12 +232,12 @@ class OelintParserTest(unittest.TestCase):
         _stash = self.__stash.GetItemsFor(classifier=Function.CLASSIFIER)
         self.assertTrue(_stash, msg="Stash has no items")
 
-        _filteredStash = [x for x in _stash if x.FuncName in ["", "anonymous"]]
+        _filteredStash = [x for x in _stash if x.FuncName in ["", "__anonymous"]]
         self.assertEqual(len(_filteredStash), 3)
 
         for item in _filteredStash:
             self.assertEqual(item.IsPython, True)
-            self.assertIn(item.FuncName, ["", "anonymous"])
+            self.assertIn(item.FuncName, ["", "__anonymous"])
 
     def test_varflag(self):
         from oelint_parser.cls_item import FlagAssignment
