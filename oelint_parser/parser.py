@@ -197,6 +197,9 @@ def get_items(stash: object,
     includeOffset = 0
     override_syntax_new = new_style_override_syntax
 
+    if not os.path.isabs(_file):
+        _file = os.path.abspath(_file)
+
     for line in prepare_lines(_file, lineOffset):
         good = False
         for k, v in _order.items():
