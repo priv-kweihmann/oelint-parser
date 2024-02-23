@@ -143,13 +143,13 @@ class Stash():
                         new_style_override_syntax=self.__new_style_override_syntax)
         if forcedLink:
             for r in res:
+                r.Links += [forcedLink]
                 r.IncludedFrom = forcedLink
-            if _file not in self.__map:
-                self.__map[_file] = []
-            self.__map[_file].append(forcedLink)
             if forcedLink not in self.__map:
                 self.__map[forcedLink] = []
             self.__map[forcedLink].append(_file)
+            if _file not in self.__map:
+                self.__map[_file] = []
         # Match bbappends to bbs
         if _file.endswith(".bbappend"):
             bn_this = os.path.basename(_file).replace(
