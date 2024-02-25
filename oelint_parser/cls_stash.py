@@ -150,6 +150,7 @@ class Stash():
             self.__map[forcedLink].append(_file)
             if _file not in self.__map:
                 self.__map[_file] = []
+            self.__map[_file].append(forcedLink)
         # Match bbappends to bbs
         if _file.endswith(".bbappend"):
             bn_this = os.path.basename(_file).replace(
