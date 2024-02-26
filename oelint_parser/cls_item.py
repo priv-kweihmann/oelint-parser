@@ -37,7 +37,6 @@ class Item():
         """
         self.__Line = line
         self.__Raw = rawtext
-        self.__Links = []
         self.__Origin = origin
         self.__InFileLine = infileline
         self.__IncludedFrom = []
@@ -71,19 +70,6 @@ class Item():
         self.__Raw = value
 
     @property
-    def Links(self) -> List[str]:
-        """Linked files
-
-        Returns:
-            list: list of full path of linked files
-        """
-        return self.__Links
-
-    @Links.setter
-    def Links(self, value: List[str]) -> None:
-        self.__Links = value
-
-    @property
     def Origin(self) -> str:
         """origin of item
 
@@ -102,17 +88,14 @@ class Item():
         return self.__InFileLine
 
     @property
-    def IncludedFrom(self) -> List[str]:
-        """Files include this item
+    @deprecated(reason='Should not be used', version='3.4.0')
+    def IncludedFrom(self) -> Set[str]:
+        return {}
 
-        Returns:
-            list: list of files including this item
-        """
-        return self.__IncludedFrom
-
-    @IncludedFrom.setter
-    def IncludedFrom(self, value: List[str]) -> None:
-        self.__IncludedFrom = value
+    @property
+    @deprecated(reason='Should not be used', version='3.4.0')
+    def Links(self) -> Set[str]:
+        return {}
 
     @property
     def RealRaw(self) -> str:
@@ -245,15 +228,6 @@ class Item():
             bool -- True if coming from a bbappend
         """
         return self.Origin.endswith(".bbappend")
-
-    def AddLink(self, _file: str) -> None:
-        """Links files to each other in stash
-
-        Arguments:
-            _file {str} -- Full path of file to link against
-        """
-        self.Links.append(_file)
-        self.Links = list(set(self.Links))
 
     def GetAttributes(self) -> dict:
         """Get all public attributes of this class
