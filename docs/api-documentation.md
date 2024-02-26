@@ -39,10 +39,8 @@
     * [\_\_init\_\_](#oelint_parser.cls_item.Item.__init__)
     * [Line](#oelint_parser.cls_item.Item.Line)
     * [Raw](#oelint_parser.cls_item.Item.Raw)
-    * [Links](#oelint_parser.cls_item.Item.Links)
     * [Origin](#oelint_parser.cls_item.Item.Origin)
     * [InFileLine](#oelint_parser.cls_item.Item.InFileLine)
-    * [IncludedFrom](#oelint_parser.cls_item.Item.IncludedFrom)
     * [RealRaw](#oelint_parser.cls_item.Item.RealRaw)
     * [IsFromClass](#oelint_parser.cls_item.Item.IsFromClass)
     * [OverrideDelimiter](#oelint_parser.cls_item.Item.OverrideDelimiter)
@@ -52,7 +50,6 @@
     * [extract\_sub](#oelint_parser.cls_item.Item.extract_sub)
     * [extract\_sub\_func](#oelint_parser.cls_item.Item.extract_sub_func)
     * [IsFromAppend](#oelint_parser.cls_item.Item.IsFromAppend)
-    * [AddLink](#oelint_parser.cls_item.Item.AddLink)
     * [GetAttributes](#oelint_parser.cls_item.Item.GetAttributes)
   * [Variable](#oelint_parser.cls_item.Variable)
     * [\_\_init\_\_](#oelint_parser.cls_item.Variable.__init__)
@@ -456,7 +453,7 @@ Get bb files in stash
 #### GetLoneAppends
 
 ```python
-def GetLoneAppends() -> None
+def GetLoneAppends() -> List[str]
 ```
 
 Get bbappend without a matching bb
@@ -990,21 +987,6 @@ Raw string (without inline code blocks)
 
 - `str` - raw string of item
 
-<a id="oelint_parser.cls_item.Item.Links"></a>
-
-#### Links
-
-```python
-@property
-def Links() -> List[str]
-```
-
-Linked files
-
-**Returns**:
-
-- `list` - list of full path of linked files
-
 <a id="oelint_parser.cls_item.Item.Origin"></a>
 
 #### Origin
@@ -1034,21 +1016,6 @@ Line count in file
 **Returns**:
 
 - `int` - [description]
-
-<a id="oelint_parser.cls_item.Item.IncludedFrom"></a>
-
-#### IncludedFrom
-
-```python
-@property
-def IncludedFrom() -> List[str]
-```
-
-Files include this item
-
-**Returns**:
-
-- `list` - list of files including this item
 
 <a id="oelint_parser.cls_item.Item.RealRaw"></a>
 
@@ -1195,20 +1162,6 @@ Item originates from a bbappend
 **Returns**:
 
 - `bool` - True if coming from a bbappend
-
-<a id="oelint_parser.cls_item.Item.AddLink"></a>
-
-#### AddLink
-
-```python
-def AddLink(_file: str) -> None
-```
-
-Links files to each other in stash
-
-**Arguments**:
-
-- `_file` _str_ - Full path of file to link against
 
 <a id="oelint_parser.cls_item.Item.GetAttributes"></a>
 
