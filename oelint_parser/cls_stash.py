@@ -141,34 +141,26 @@ class Stash():
                         _file,
                         lineOffset=lineOffset,
                         new_style_override_syntax=self.__new_style_override_syntax)
+        if _file not in self.__map:
+            self.__map[_file] = []
         if forcedLink:
-            for r in res:
-                r.Links += [forcedLink]
-                r.IncludedFrom = forcedLink
             if forcedLink not in self.__map:
                 self.__map[forcedLink] = []
             self.__map[forcedLink].append(_file)
-            if _file not in self.__map:
-                self.__map[_file] = []
+
         # Match bbappends to bbs
         if _file.endswith(".bbappend"):
             bn_this = os.path.basename(_file).replace(
                 ".bbappend", "").replace("%", ".*")
             for item in self.__list:
                 if RegexRpl.match(bn_this, os.path.basename(item.Origin)):
-                    if _file not in self.__map:
-                        self.__map[_file] = []
-                    self.__map[_file].append(item.Origin)
                     if item.Origin not in self.__map:
                         self.__map[item.Origin] = []
                     self.__map[item.Origin].append(_file)
-                    # find maximum line number of the origin
-                    _maxline = max(
-                        x.Line for x in self.__list if x.Origin == item.Origin)
+                    _maxline = max(x.Line for x in self.__list if x.Origin == item.Origin)
                     for r in res:
                         # pretend that we are adding the file to the end of the original
                         r.Line += _maxline
-                    break
         self.AddDistroMachineFromLayer(_file)
         self.__list += res
         return res
@@ -217,13 +209,9 @@ class Stash():
         """
         # cross link all the files
         for k in self.__map.keys():
-            for item in self.__map[k]:
-                self.__map[k] += [x for x in self.__map[item] if x != k]
-                self.__map[k] = list(set(self.__map[k]))
-        for k, v in self.__map.items():
-            for item in [x for x in self.__list if x.Origin == k]:
-                for link in v:
-                    item.AddLink(link)
+            for item in self.__map[k][:]:
+                self.__map[k] += self.__map[item]
+            self.__map[k] = list(set(self.__map[k]))
 
     def GetRecipes(self) -> None:
         """Get bb files in stash
@@ -233,23 +221,21 @@ class Stash():
         """
         return sorted({x.Origin for x in self.__list if x.Origin.endswith(".bb")})
 
-    def GetLoneAppends(self) -> None:
+    def GetLoneAppends(self) -> List[str]:
         """Get bbappend without a matching bb
 
         Returns:
             list -- list of bbappend without a matching bb
         """
-        __linked_appends = []
-        __appends = []
-        for x in self.__list:
-            if x.Origin.endswith(".bbappend"):
-                __appends.append(x.Origin)
-            elif x.Origin.endswith(".bb"):
-                __linked_appends += x.Links
+        __linked_appends = set()
+        __appends = {x.Origin for x in self.__list if x.Origin.endswith('.bbappend')}
+        for k, v in self.__map.items():
+            if k.endswith('.bb'):
+                __linked_appends.update(x for x in v if x.endswith('.bbappend'))
         return sorted({x for x in __appends if x not in __linked_appends})
 
     def __is_linked_to(self, item: Item, filename: str, nolink: bool = False) -> bool:
-        return (filename in item.Links and not nolink) or filename == item.Origin
+        return (item.Origin in self.__map.get(filename, {}) and not nolink) or filename == item.Origin
 
     def __get_items_by_file(self, items: Iterable[Item], filename: str, nolink: bool = False) -> List[Item]:
         if not filename:
