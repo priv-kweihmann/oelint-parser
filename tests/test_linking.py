@@ -19,17 +19,16 @@ class OelintLinking(unittest.TestCase):
         self.__stash.AddFile(OelintLinking.RECIPE_2)
         self.__stash.Finalize()
 
-        _stash = self.__stash.GetItemsFor(filename=OelintLinking.RECIPE_1, nolink=True)
+        _stash = self.__stash.GetItemsFor(filename=OelintLinking.RECIPE_1)
         self.assertTrue(_stash, msg="Stash has items")
-        for x in _stash:
-            _links = sorted(os.path.basename(y) for y in x.Links)
-            self.assertEqual(_links, ['global-foo.bbclass', 'recipe-foo.bbclass', 'test.inc', 'test2.inc'])
+        _links = sorted({os.path.basename(y.Origin) for y in _stash})
+        self.assertEqual(_links, ['global-foo.bbclass', 'recipe-foo.bbclass', 'test.inc', 'test2.inc', 'test_1.bb'])
 
-        _stash = self.__stash.GetItemsFor(filename=OelintLinking.RECIPE_2, nolink=True)
+        _stash = self.__stash.GetItemsFor(filename=OelintLinking.RECIPE_2)
         self.assertTrue(_stash, msg="Stash has items")
-        for x in _stash:
-            _links = sorted(os.path.basename(y) for y in x.Links)
-            self.assertEqual(_links, ['global-foo.bbclass', 'recipe-foo.bbclass', 'test.inc', 'test2.inc', 'test3.inc'])
+        _links = sorted({os.path.basename(y.Origin) for y in _stash})
+        self.assertEqual(_links, ['global-foo.bbclass', 'recipe-foo.bbclass',
+                         'test.inc', 'test2.inc', 'test3.inc', 'test_2.bb'])
 
 
 if __name__ == "__main__":
