@@ -28,4 +28,7 @@ jobs:
     - name: Test
       run: pytest
     - name: Doc gen
+      # something is wrong with pydoc-markdown on 3.8 and 3.9 - complaining about some missing
+      # packages, but they are available. The same code works on 3.10 and up
+      if: ${{ (matrix.python-version != 3.8) && (matrix.python-version != 3.9) }}
       run: ./gendoc.sh
