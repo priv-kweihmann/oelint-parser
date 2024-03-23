@@ -43,6 +43,7 @@ class OelintParserImageTest(unittest.TestCase):
         assert ("do_fetch" in _const.FunctionsOrder)
         _const.RemoveConstants(_remkeys)
         assert ("do_fetch" not in _const.FunctionsOrder)
+        assert (len(_const.FunctionsOrder) > 1)
 
     def test_add(self):
         from oelint_parser.constants import Constants
@@ -56,6 +57,7 @@ class OelintParserImageTest(unittest.TestCase):
         assert ("do_foo" not in _const.FunctionsOrder)
         _const.AddConstants(_addkeys)
         assert ("do_foo" in _const.FunctionsOrder)
+        assert (len(_const.FunctionsOrder) > 1)
 
     def test_override(self):
         from oelint_parser.constants import Constants
@@ -69,6 +71,19 @@ class OelintParserImageTest(unittest.TestCase):
         assert (len(_const.FunctionsOrder) > 1)
         _const.OverrideConstants(_keys)
         assert (["do_foo"] == list(_const.FunctionsOrder))
+
+    def test_add_custom(self):
+        from oelint_parser.constants import Constants
+
+        _addkeys = {
+            "custom": {
+                "mykey": ["1"]
+            }
+        }
+        _const = Constants()
+        _const.AddConstants(_addkeys)
+        assert ("1" in _const.GetByPath('custom/mykey'))
+        assert (len(_const.FunctionsOrder) > 1)
 
 
 if __name__ == "__main__":
