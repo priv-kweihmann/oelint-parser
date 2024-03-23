@@ -174,6 +174,7 @@
     * [finditer](#oelint_parser.rpl_regex.RegexRpl.finditer)
 * [oelint\_parser.constants](#oelint_parser.constants)
   * [Constants](#oelint_parser.constants.Constants)
+    * [GetByPath](#oelint_parser.constants.Constants.GetByPath)
     * [AddConstants](#oelint_parser.constants.Constants.AddConstants)
     * [RemoveConstants](#oelint_parser.constants.Constants.RemoveConstants)
     * [OverrideConstants](#oelint_parser.constants.Constants.OverrideConstants)
@@ -3257,6 +3258,25 @@ class Constants()
 ```
 
 Interface for constants
+
+<a id="oelint_parser.constants.Constants.GetByPath"></a>
+
+#### GetByPath
+
+```python
+def GetByPath(path: str) -> Union[Dict, List]
+```
+
+Get constant from path
+
+**Arguments**:
+
+- `path` _str_ - / joined path in the constant structure
+  
+
+**Returns**:
+
+  Union[Dict, List]: Item in structure or empty dictionary
 
 <a id="oelint_parser.constants.Constants.AddConstants"></a>
 

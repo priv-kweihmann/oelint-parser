@@ -129,7 +129,7 @@ For this library a few basic sets of constant information, such as basic package
 needed.
 Those can be easily modified, in case you have additional information to add/remove/modify.
 
-The actual database is not accessible by the user, but a few methods in the `oelint_parse.constants.CONSTANT` class do exist.
+The actual database is not directly accessible by the user, but a few methods in the `oelint_parse.constants.CONSTANT` class do exist.
 Each of the method accepts a dictionary with the same key mapping as listed below (multilevel paths are displayed a JSON pointer)
 
 | key                        | type | description                                           | getter for information                                     |
@@ -148,6 +148,16 @@ Each of the method accepts a dictionary with the same key mapping as listed belo
 | variables/protected-append | list | variables not to be used in bbappends                 | `oelint_parse.constants.CONSTANT.VariablesProtectedAppend` |
 | variables/suggested        | list | suggested variable in a recipe                        | `oelint_parse.constants.CONSTANT.VariablesSuggested`       |
 | sets/base                  | dict | base set of variables always used for value expansion | `oelint_parse.constants.CONSTANT.SetsBase`                 |
+
+For additional constants
+
+```python
+from oelint_parser.constants import CONSTANTS
+
+CONSTANTS.GetByPath('/-joined path')
+```
+
+will offer access
 
 ## Contributing
 

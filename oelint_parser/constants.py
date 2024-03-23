@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-from typing import Dict, List
+from typing import Dict, List, Union
 
 DEFAULT_DB = os.path.join(os.path.dirname(
     __file__), 'data', 'const-default.json')
@@ -21,7 +21,15 @@ class Constants():
             sys.stderr.write('Cannot load constant database\n')
             return {}
 
-    def __get_from_path(self, path: str) -> str:
+    def GetByPath(self, path: str) -> Union[Dict, List]:
+        """Get constant from path
+
+        Args:
+            path (str): / joined path in the constant structure
+
+        Returns:
+            Union[Dict, List]: Item in structure or empty dictionary
+        """
         paths = path.rstrip('/').split('/')
         data = self.__db
         for _, value in enumerate(paths):
@@ -36,10 +44,10 @@ class Constants():
         """
         def dict_merge(a: dict, b: dict) -> dict:
             for k, v in b.items():
-                if isinstance(b[k], dict):
-                    dict_merge(a[k], b[k])
-                elif k not in a:
+                if k not in a:
                     a[k] = v
+                elif isinstance(b[k], dict):
+                    dict_merge(a[k], b[k])
                 else:
                     a[k] += v
             return a
@@ -53,10 +61,10 @@ class Constants():
         """
         def dict_merge(a: dict, b: dict) -> dict:
             for k, v in b.items():
-                if isinstance(b[k], dict):
-                    dict_merge(a[k], b[k])
-                elif k not in a:
+                if k not in a:
                     pass
+                elif isinstance(b[k], dict):
+                    dict_merge(a[k], b[k])
                 else:
                     a[k] = [x for x in a[k] if x not in v]
             return a
@@ -70,7 +78,9 @@ class Constants():
         """
         def dict_merge(a: dict, b: dict) -> dict:
             for k, v in b.items():
-                if isinstance(b[k], dict):
+                if k not in a:
+                    a[k] = v
+                elif isinstance(b[k], dict):
                     dict_merge(a[k], b[k])
                 else:
                     a[k] = v
@@ -84,7 +94,7 @@ class Constants():
         Returns:
             list: list of known functions
         """
-        return self.__get_from_path('functions/known')
+        return self.GetByPath('functions/known')
 
     @property
     def FunctionsOrder(self) -> List[str]:
@@ -93,7 +103,7 @@ class Constants():
         Returns:
             list: List of functions to order in their designated order
         """
-        return self.__get_from_path('functions/order')
+        return self.GetByPath('functions/order')
 
     @property
     def VariablesMandatory(self) -> List[str]:
@@ -102,7 +112,7 @@ class Constants():
         Returns:
             list: List of mandatory variables
         """
-        return self.__get_from_path('variables/mandatory')
+        return self.GetByPath('variables/mandatory')
 
     @property
     def VariablesSuggested(self) -> List[str]:
@@ -111,7 +121,7 @@ class Constants():
         Returns:
             list: List of suggested variables
         """
-        return self.__get_from_path('variables/suggested')
+        return self.GetByPath('variables/suggested')
 
     @property
     def MirrorsKnown(self) -> Dict[str, str]:
@@ -120,7 +130,7 @@ class Constants():
         Returns:
             dict: Dict of known mirrors and their replacements
         """
-        return self.__get_from_path('replacements/mirrors')
+        return self.GetByPath('replacements/mirrors')
 
     @property
     def VariablesProtected(self) -> List[str]:
@@ -129,7 +139,7 @@ class Constants():
         Returns:
             list: List of protected variables
         """
-        return self.__get_from_path('variables/protected')
+        return self.GetByPath('variables/protected')
 
     @property
     def VariablesProtectedAppend(self) -> List[str]:
@@ -138,7 +148,7 @@ class Constants():
         Returns:
             list: List of protected variables in bbappend files
         """
-        return self.__get_from_path('variables/protected-append')
+        return self.GetByPath('variables/protected-append')
 
     @property
     def VariablesOrder(self) -> List[str]:
@@ -147,7 +157,7 @@ class Constants():
         Returns:
             list: List of variables to order in their designated order
         """
-        return self.__get_from_path('variables/order')
+        return self.GetByPath('variables/order')
 
     @property
     def VariablesKnown(self) -> List[str]:
@@ -156,7 +166,7 @@ class Constants():
         Returns:
             list: List of known variables
         """
-        return self.__get_from_path('variables/known')
+        return self.GetByPath('variables/known')
 
     @property
     def DistrosKnown(self) -> List[str]:
@@ -165,7 +175,7 @@ class Constants():
         Returns:
             list: List of known distros
         """
-        return self.__get_from_path('replacements/distros')
+        return self.GetByPath('replacements/distros')
 
     @property
     def MachinesKnown(self) -> List[str]:
@@ -174,7 +184,7 @@ class Constants():
         Returns:
             list: List of known machines
         """
-        return self.__get_from_path('replacements/machines')
+        return self.GetByPath('replacements/machines')
 
     @property
     def ImagesClasses(self) -> List[str]:
@@ -183,7 +193,7 @@ class Constants():
         Returns:
             list: Classes that are used in images
         """
-        return self.__get_from_path('images/known-classes')
+        return self.GetByPath('images/known-classes')
 
     @property
     def ImagesVariables(self) -> List[str]:
@@ -192,7 +202,7 @@ class Constants():
         Returns:
             list: Variables that are used in images
         """
-        return self.__get_from_path('images/known-variables')
+        return self.GetByPath('images/known-variables')
 
     @property
     def SetsBase(self) -> Dict[str, str]:
@@ -201,7 +211,7 @@ class Constants():
         Returns:
             dict: dictionary with base variable set
         """
-        return self.__get_from_path('sets/base')
+        return self.GetByPath('sets/base')
 
 
 CONSTANTS = getattr(sys.modules[__name__], 'CONSTANTS', Constants())
