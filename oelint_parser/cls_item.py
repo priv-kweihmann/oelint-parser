@@ -399,7 +399,7 @@ class Variable(Item):
         Returns:
             bool -- True is variable is appended
         """
-        return self.VarOp in [" += ", " =+ ", " =. ", " .= "] or "append" in self.SubItems or "prepend" in self.SubItems
+        return self.VarOp.strip() in ["+=", "=+", "=.", ".="] or "append" in self.SubItems or "prepend" in self.SubItems
 
     def AppendOperation(self) -> List[str]:
         """Get variable modifiers
@@ -408,7 +408,7 @@ class Variable(Item):
             list -- list could contain any combination of 'append', ' += ', 'prepend' and 'remove'
         """
         res = []
-        if self.VarOp in [" += ", " .= ", " =+ ", " =. "]:
+        if self.VarOp.strip() in ["+=", ".=", "=+", "=."]:
             res.append(self.VarOp)
         if "append" in self.SubItems:
             res.append("append")
