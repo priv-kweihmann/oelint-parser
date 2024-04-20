@@ -14,3 +14,5 @@ RDEPENDS:${PN}-test += "foo"
 Y = "${P}"
 
 SRCREV_foo = "abcd"
+
+C  += "1"

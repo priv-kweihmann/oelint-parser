@@ -191,6 +191,21 @@ class OelintParserTestNew(unittest.TestCase):
             self.assertEqual(x.SubItems, ['foo'])
             self.assertEqual(x.OverrideDelimiter, '_')
 
+    def test_var_isappend(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
+                                          attributeValue="C")
+        self.assertTrue(_stash, msg="Stash has items")
+        for x in _stash:
+            self.assertEqual(x.IsAppend(), True)
+            self.assertIn('  += ', x.AppendOperation())
+
 
 if __name__ == "__main__":
     unittest.main()
