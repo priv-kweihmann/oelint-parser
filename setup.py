@@ -11,7 +11,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name='oelint_parser',
-    version='3.4.1',
+    version='3.5.0',
     author='Konrad Weihmann',
     author_email='kweihmann@outlook.com',
     description='Alternative parser for bitbake recipes',
