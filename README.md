@@ -161,11 +161,13 @@ will offer access
 
 ## Contributing
 
-Before any contribution please run the following (preferably in an virtual environment)
+Before any contribution please run the following
 
 ```shell
-pip install -r requirements.txt
-flake8
+python3 -m venv --clear .env
+. .env/bin/activate
+pip install -r requirements.txt -r requirements-dev.txt
+flake8 oelint_parser/ tests/
 pytest
 ./gendoc.sh
 ```
