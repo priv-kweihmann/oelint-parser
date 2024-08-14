@@ -509,12 +509,13 @@ class OelintParserTest(unittest.TestCase):
 
         _stash = self.__stash.GetItemsFor(classifier=Inherit.CLASSIFIER)
         self.assertTrue(_stash, msg="Stash has no items")
-        self.assertEqual(len(_stash), 3, msg="Only one item is found")
+        self.assertEqual(len(_stash), 4, msg="Only 4 items are found")
         for x in _stash:
-            self.assertIn(x.Class, ['someclass', '${CLASS_TO_INHERIT}'])
+            self.assertIn(x.Class, ['someclass', '${CLASS_TO_INHERIT}', 'foo bar'])
 
         self.assertTrue(any('inherit_defer' in x.Statement for x in _stash), msg='inherit_defer found')
         self.assertTrue(any('inherit' in x.Statement for x in _stash), msg='inherit found')
+        self.assertTrue(any('INHERIT' in x.Statement for x in _stash), msg='INHERIT found')
 
     def test_multi_filter(self):
         from oelint_parser.cls_item import Variable, Function

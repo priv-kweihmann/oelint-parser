@@ -79,3 +79,5 @@ deltask do_baz2
 
 unset Z
 unset A[my-flag]
+
+INHERIT += "foo bar"

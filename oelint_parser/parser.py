@@ -165,6 +165,7 @@ def get_items(stash: object,
     __regex_var = r"^(?P<varname>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
     __regex_func = r"^((?P<py>python)\s*|(?P<fr>fakeroot\s*))*(?P<func>[\w\.\-\+\{\}:\$]+)?\s*\(\s*\)\s*\{(?P<funcbody>.*)\s*\}"
     __regex_inherit = r"^(\s|\t)*(?P<statement>inherit(_defer)*)(\s+|\t+)(?P<inhname>.+)"
+    __regex_inherit_glob = r"^INHERIT(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)('|\")(?P<inhname>.*)('|\")"
     __regex_export_wval = r"^\s*?export(\s+|\t+)(?P<name>.+)\s*=\s*\"(?P<value>.*)\""
     __regex_export_woval = r"^\s*?export(\s+|\t+)(?P<name>.+)\s*$"
     __regex_comments = r"^(\s|\t)*#+\s*(?P<body>.*)"
@@ -181,6 +182,7 @@ def get_items(stash: object,
         ("comment", __regex_comments),
         ("func", __regex_func),
         ("inherit", __regex_inherit),
+        ("inherit_glob", __regex_inherit_glob),
         ("export", __regex_export_wval),
         ("export_noval", __regex_export_woval),
         ("python", __regex_python),
@@ -314,6 +316,39 @@ def get_items(stash: object,
                             line["line"] - lineOffset,
                             line["raw"],
                             m.group("statement"),
+                            m.group("inhname"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                            inherit_file_paths=_found_paths,
+                        ))
+                    good = True
+                    break
+                elif k == "inherit_glob":
+                    inhname = stash.ExpandTerm(_file, m.group("inhname"))
+                    _found_paths = set()
+                    for inh_item in [x for x in inhname.split(' ') if x]:
+                        if not inh_item.endswith(".bbclass"):
+                            inh_item += ".bbclass"
+                        _path = None
+                        for location in ["classes", "classes-global"]:
+                            _path = stash.FindLocalOrLayer(
+                                os.path.join(location, inh_item),
+                                os.path.dirname(_file))
+                            if _path:
+                                break
+                        if _path:
+                            _found_paths.add(_path)
+                            tmp = stash.AddFile(
+                                _path, lineOffset=line["line"], forcedLink=_file)
+                            if any(tmp):
+                                includeOffset += max([x.InFileLine for x in tmp])
+                    res.append(
+                        Inherit(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            "INHERIT",
                             m.group("inhname"),
                             line["realraw"],
                             new_style_override_syntax=override_syntax_new,
