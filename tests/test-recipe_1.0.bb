@@ -43,7 +43,7 @@ python __anonymous() {
 def example_function():
     pass
 
-addtask do_example after do_foo before do_bar
+addtask do_example after do_foo before do_bar # comment
 
 require another_file.inc
 
@@ -74,7 +74,8 @@ python do_bar() {
 
 RDEPENDS_${PN}-test += "foo"
 
-deltask do_baz
+deltask do_baz # comment
+deltask do_baz2
 
 unset Z
 unset A[my-flag]
