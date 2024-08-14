@@ -1010,6 +1010,7 @@ class TaskAdd(Item):
     ATTR_FUNCNAME = "FuncName"
     ATTR_BEFORE = "Before"
     ATTR_AFTER = "After"
+    ATTR_COMMENT = "Comment"
     CLASSIFIER = "TaskAdd"
 
     def __init__(self,
@@ -1021,6 +1022,7 @@ class TaskAdd(Item):
                  realraw: str,
                  before: str = "",
                  after: str = "",
+                 comment: str = "",
                  new_style_override_syntax: bool = False) -> None:
         """constructor
 
@@ -1035,12 +1037,14 @@ class TaskAdd(Item):
         Keyword Arguments:
             before {str} -- before statement (default: {""})
             after {str} -- after statement (default: {""})
+            comment {str} -- optional comment (default: {""})
             new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
         super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__FuncName = name
         self.__Before = [x for x in (before or "").split(" ") if x]
         self.__After = [x for x in (after or "").split(" ") if x]
+        self.__Comment = comment or ''
 
     @property
     def FuncName(self) -> str:
@@ -1069,6 +1073,15 @@ class TaskAdd(Item):
         """
         return self.__After
 
+    @property
+    def Comment(self) -> str:
+        """Comment
+
+        Returns:
+            str: comment if any
+        """
+        return self.__Comment
+
     def get_items(self) -> List[str]:
         """get items
 
@@ -1082,6 +1095,7 @@ class TaskDel(Item):
     """Items representing deltask statements in bitbake."""
 
     ATTR_FUNCNAME = "FuncName"
+    ATTR_COMMENT = "Comment"
     CLASSIFIER = "TaskDel"
 
     def __init__(self,
@@ -1090,6 +1104,7 @@ class TaskDel(Item):
                  infileline: int,
                  rawtext: str,
                  name: str,
+                 comment: str,
                  realraw: str,
                  new_style_override_syntax: bool = False) -> None:
         """constructor
@@ -1101,12 +1116,14 @@ class TaskDel(Item):
             rawtext {str} -- Raw input string (except inline code blocks)
             realraw {str} -- Unprocessed input
             name {str} -- name of task to be executed
+            comment {str} -- optional comment
 
         Keyword Arguments:
             new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
         """
         super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__FuncName = name
+        self.__Comment = comment or ''
 
     @property
     def FuncName(self) -> str:
@@ -1116,6 +1133,15 @@ class TaskDel(Item):
             str: name of function
         """
         return self.__FuncName
+
+    @property
+    def Comment(self) -> str:
+        """Comment
+
+        Returns:
+            str: comment if any
+        """
+        return self.__Comment
 
     def get_items(self) -> List[str]:
         """get items

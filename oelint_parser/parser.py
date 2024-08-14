@@ -170,8 +170,8 @@ def get_items(stash: object,
     __regex_comments = r"^(\s|\t)*#+\s*(?P<body>.*)"
     __regex_python = r"^(\s*|\t*)def(\s+|\t+)(?P<funcname>[a-z0-9_\-]+)(\s*|\t*)\(.*\)\:"
     __regex_include = r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)"
-    __regex_addtask = r"^(\s*|\t*)addtask\s+(?P<func>[\w\-]+)\s*((before\s*(?P<before>((.*(?=after))|(.*))))|(after\s*(?P<after>((.*(?=before))|(.*)))))*"
-    __regex_deltask = r"^(\s*|\t*)deltask\s+(?P<func>[\w\-]+)"
+    __regex_addtask = r"^(\s*|\t*)addtask\s+(?P<func>[\w\-]+)\s*((before\s*(?P<before>(([^#\n]*(?=after))|([^#\n]*))))|(after\s*(?P<after>(([^#\n]*(?=before))|([^#\n]*)))))*(?P<comment>#.*|.*?)"
+    __regex_deltask = r"^(\s*|\t*)deltask\s+(?P<func>[\w\-]+)\s*(?P<comment>#.*)*"
     __regex_flagass = r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
     __regex_export_func = r"^EXPORT_FUNCTIONS\s+(?P<func>.*)"
     __regex_addpylib = r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)"
@@ -378,6 +378,7 @@ def get_items(stash: object,
                         _a = _g["after"]
                     else:
                         _a = ""
+                    _comment = _g.get('comment', '')
                     res.append(
                         TaskAdd(
                             _file,
@@ -388,6 +389,7 @@ def get_items(stash: object,
                             line["realraw"],
                             _b,
                             _a,
+                            _comment,
                             new_style_override_syntax=override_syntax_new,
                         ))
                     break
@@ -399,6 +401,7 @@ def get_items(stash: object,
                             line["line"] - lineOffset,
                             line["raw"],
                             m.group("func"),
+                            m.groupdict().get('comment', ''),
                             line["realraw"],
                             new_style_override_syntax=override_syntax_new,
                         ))

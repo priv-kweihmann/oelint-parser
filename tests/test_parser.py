@@ -173,6 +173,7 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.FuncName, "do_example")
             self.assertEqual(x.After, ["do_foo"])
             self.assertEqual(x.Before, ["do_bar"])
+            self.assertEqual(x.Comment, "# comment")
 
     def test_taskdel(self):
         from oelint_parser.cls_item import TaskDel
@@ -185,7 +186,11 @@ class OelintParserTest(unittest.TestCase):
 
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
-            self.assertEqual(x.FuncName, "do_baz")
+            self.assertIn(x.FuncName, ["do_baz", "do_baz2"])
+            if x.FuncName == "do_baz":
+                self.assertEqual(x.Comment, "# comment")
+            elif x.FuncName == "do_baz2":
+                self.assertEqual(x.Comment, "")
 
     def test_function(self):
         from oelint_parser.cls_item import Function
