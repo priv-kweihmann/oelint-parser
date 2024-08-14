@@ -1348,7 +1348,7 @@ class Inherit(Item):
             rawtext {str} -- Raw input string (except inline code blocks)
             realraw {str} -- Unprocessed input
             class {str} -- class code to inherit
-            statement {str} -- inherit statement
+            statement {str} -- inherit statement (INHERIT, inherit or inherit_defer)
 
         Keyword Arguments:
             new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
@@ -1364,7 +1364,7 @@ class Inherit(Item):
         """Class(es) to inherit
 
         Returns:
-            str: slass(es) to inherit
+            str: class(es) to inherit
         """
         return self.__Class
 

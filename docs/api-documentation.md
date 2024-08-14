@@ -3543,7 +3543,7 @@ constructor
 - `rawtext` _str_ - Raw input string (except inline code blocks)
 - `realraw` _str_ - Unprocessed input
 - `class` _str_ - class code to inherit
-- `statement` _str_ - inherit statement
+- `statement` _str_ - inherit statement (INHERIT, inherit or inherit_defer)
   
 
 **Arguments**:
@@ -3564,7 +3564,7 @@ Class(es) to inherit
 
 **Returns**:
 
-- `str` - slass(es) to inherit
+- `str` - class(es) to inherit
 
 <a id="oelint_parser.cls_item.Inherit.Statement"></a>
 
