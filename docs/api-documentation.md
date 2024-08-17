@@ -12,6 +12,7 @@
     * [Finalize](#oelint_parser.cls_stash.Stash.Finalize)
     * [GetRecipes](#oelint_parser.cls_stash.Stash.GetRecipes)
     * [GetLoneAppends](#oelint_parser.cls_stash.Stash.GetLoneAppends)
+    * [GetConfFiles](#oelint_parser.cls_stash.Stash.GetConfFiles)
     * [GetLinksForFile](#oelint_parser.cls_stash.Stash.GetLinksForFile)
     * [Reduce](#oelint_parser.cls_stash.Stash.Reduce)
     * [GetItemsFor](#oelint_parser.cls_stash.Stash.GetItemsFor)
@@ -464,6 +465,20 @@ Get bbappend without a matching bb
 **Returns**:
 
 - `list` - list of bbappend without a matching bb
+
+<a id="oelint_parser.cls_stash.Stash.GetConfFiles"></a>
+
+#### GetConfFiles
+
+```python
+def GetConfFiles() -> List[str]
+```
+
+Get configurations files
+
+**Returns**:
+
+- `List[str]` - List of configuration files
 
 <a id="oelint_parser.cls_stash.Stash.GetLinksForFile"></a>
 
