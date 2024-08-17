@@ -132,7 +132,7 @@ class Stash():
             list -- List of {oelint_parser.cls_item.Item}
         """
         _, _ext = os.path.splitext(_file)
-        if _file in self.__seen_files and _ext not in [".inc", ".bb"]:
+        if _file in self.__seen_files and _ext not in [".inc", ".bb", ".conf"]:
             return []
         if not self.__quiet:
             print("Parsing {file}".format(file=_file))
@@ -233,6 +233,14 @@ class Stash():
             if k.endswith('.bb'):
                 __linked_appends.update(x for x in v if x.endswith('.bbappend'))
         return sorted({x for x in __appends if x not in __linked_appends})
+
+    def GetConfFiles(self) -> List[str]:
+        """Get configurations files
+
+        Returns:
+            List[str]: List of configuration files
+        """
+        return list({x.Origin for x in self.__list if x.Origin.endswith(".conf")})
 
     def __is_linked_to(self, item: Item, filename: str, nolink: bool = False) -> bool:
         return (item.Origin in self.__map.get(filename, {}) and not nolink) or filename == item.Origin
