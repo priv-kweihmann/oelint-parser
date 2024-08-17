@@ -1770,7 +1770,6 @@
             "FILE",
             "FILESDIR",
             "FILESPATH",
-            "INHERIT",
             "LAYERDEPENDS",
             "LAYERDIR",
             "LAYERVERSION",
