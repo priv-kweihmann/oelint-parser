@@ -118,6 +118,10 @@ class Stash():
         self.__quiet = quiet
         self.__new_style_override_syntax = new_style_override_syntax
 
+        self.__getconffiles_cached_values = None
+        self.__getrecipes_cached_values = None
+        self.__getloneappends_cached_values = None
+
     def AddFile(self, _file: str, lineOffset: int = 0, forcedLink: str = None) -> List[Item]:
         """Adds a file to the stash
 
@@ -163,6 +167,12 @@ class Stash():
                         r.Line += _maxline
         self.AddDistroMachineFromLayer(_file)
         self.__list += res
+
+        # Reset caches
+        self.__getconffiles_cached_values = None
+        self.__getrecipes_cached_values = None
+        self.__getloneappends_cached_values = None
+
         return res
 
     def Append(self, item: Union[Item, Iterable[Item]]) -> None:
@@ -219,7 +229,9 @@ class Stash():
         Returns:
             list -- List of bb files in stash
         """
-        return sorted({x.Origin for x in self.__list if x.Origin.endswith(".bb")})
+        if self.__getrecipes_cached_values is None:
+            self.__getrecipes_cached_values = sorted({x.Origin for x in self.__list if x.Origin.endswith(".bb")})
+        return self.__getrecipes_cached_values
 
     def GetLoneAppends(self) -> List[str]:
         """Get bbappend without a matching bb
@@ -227,12 +239,14 @@ class Stash():
         Returns:
             list -- list of bbappend without a matching bb
         """
-        __linked_appends = set()
-        __appends = {x.Origin for x in self.__list if x.Origin.endswith('.bbappend')}
-        for k, v in self.__map.items():
-            if k.endswith('.bb'):
-                __linked_appends.update(x for x in v if x.endswith('.bbappend'))
-        return sorted({x for x in __appends if x not in __linked_appends})
+        if self.__getloneappends_cached_values is None:
+            __linked_appends = set()
+            __appends = {x.Origin for x in self.__list if x.Origin.endswith('.bbappend')}
+            for k, v in self.__map.items():
+                if k.endswith('.bb'):
+                    __linked_appends.update(x for x in v if x.endswith('.bbappend'))
+            self.__getloneappends_cached_values = sorted({x for x in __appends if x not in __linked_appends})
+        return self.__getloneappends_cached_values
 
     def GetConfFiles(self) -> List[str]:
         """Get configurations files
@@ -240,7 +254,9 @@ class Stash():
         Returns:
             List[str]: List of configuration files
         """
-        return list({x.Origin for x in self.__list if x.Origin.endswith(".conf")})
+        if self.__getconffiles_cached_values is None:
+            self.__getconffiles_cached_values = list({x.Origin for x in self.__list if x.Origin.endswith(".conf")})
+        return self.__getconffiles_cached_values
 
     def __is_linked_to(self, item: Item, filename: str, nolink: bool = False) -> bool:
         return (item.Origin in self.__map.get(filename, {}) and not nolink) or filename == item.Origin
