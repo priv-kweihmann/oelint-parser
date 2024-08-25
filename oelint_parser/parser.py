@@ -427,6 +427,7 @@ def get_items(stash: object,
                             _comment,
                             new_style_override_syntax=override_syntax_new,
                         ))
+                    good = True
                     break
                 elif k == "deltask":
                     res.append(
@@ -440,6 +441,7 @@ def get_items(stash: object,
                             line["realraw"],
                             new_style_override_syntax=override_syntax_new,
                         ))
+                    good = True
                     break
                 elif k == "include":
                     _path = stash.FindLocalOrLayer(
