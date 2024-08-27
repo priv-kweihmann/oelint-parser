@@ -105,18 +105,20 @@ class Stash():
                                            nolink=nolink)
             return self
 
-    def __init__(self, quiet: bool = False, new_style_override_syntax: bool = False) -> None:
+    def __init__(self, quiet: bool = False, new_style_override_syntax: bool = False, negative_inline: bool = False) -> None:
         """Stash object
 
         Args:
             quiet (bool, optional): No progress printing. Defaults to False.
             new_style_override_syntax (bool, optional): Enforce new override syntax. Defaults to False.
+            negative_inline (bool, optional): Negative branch inline expansion. Defaults to False.
         """
         self.__list = []
         self.__seen_files = set()
         self.__map = {}
         self.__quiet = quiet
         self.__new_style_override_syntax = new_style_override_syntax
+        self.__negative_inline = negative_inline
 
         self.__getconffiles_cached_values = None
         self.__getrecipes_cached_values = None
@@ -144,7 +146,8 @@ class Stash():
         res = get_items(self,
                         _file,
                         lineOffset=lineOffset,
-                        new_style_override_syntax=self.__new_style_override_syntax)
+                        new_style_override_syntax=self.__new_style_override_syntax,
+                        negative=self.__negative_inline)
         if _file not in self.__map:
             self.__map[_file] = []
         if forcedLink:

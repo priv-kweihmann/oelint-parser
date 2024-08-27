@@ -51,7 +51,7 @@ def get_full_scope(_string: str, offset: int, _sstart: int, _send: int) -> str:
     return _string[:pos + offset]
 
 
-def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: int, raw_line: str = None) -> List[str]:
+def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: int, raw_line: str = None, negative: bool = False) -> List[str]:
     """preprocess raw input
 
     Args:
@@ -60,6 +60,7 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
         num (int): internal line counter
         line (int): input string
         raw_line (string, optional): internal line representation. Defaults to None.
+        negative (bool): Negative branch inline expansion. Defaults to False
 
     Returns:
         list: list of preproccessed chunks
@@ -101,12 +102,12 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
             if RegexRpl.match("^[A-Za-z0-9#]+", line) or stopiter:
                 if not stopiter:
                     res += prepare_lines_subparser(_iter,
-                                                   lineOffset, num, line)
+                                                   lineOffset, num, line, negative=negative)
                 break
             if line.startswith("def "):
                 raw_line = line
                 res += prepare_lines_subparser(_iter,
-                                               lineOffset, num, line, raw_line=raw_line)
+                                               lineOffset, num, line, raw_line=raw_line, negative=negative)
                 break
             raw_line += line
 
@@ -114,7 +115,7 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
     while raw_line.find("${@") != -1:
         _inline_block = raw_line.find("${@")
         repl = get_full_scope(raw_line[_inline_block:], len("${@"), "{", "}")
-        _repl = inlinerep(repl)
+        _repl = inlinerep(repl, negative)
         if _repl is None:
             _repl = INLINE_BLOCK
         raw_line = raw_line.replace(repl, _repl)
@@ -124,12 +125,13 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
     return res
 
 
-def prepare_lines(_file: str, lineOffset: int = 0) -> List[str]:
+def prepare_lines(_file: str, lineOffset: int = 0, negative: bool = False) -> List[str]:
     """break raw file input into preprocessed chunks
 
     Args:
         _file (string): Full path to file
         lineOffset (int, optional): line offset counter. Defaults to 0.
+        negative (bool): Negative branch inline expansion. Defaults to False
 
     Returns:
         list: preprocessed list of chunks
@@ -140,7 +142,7 @@ def prepare_lines(_file: str, lineOffset: int = 0) -> List[str]:
             _iter = enumerate(i.readlines())
             for num, line in _iter:
                 prep_lines += prepare_lines_subparser(
-                    _iter, lineOffset, num, line)
+                    _iter, lineOffset, num, line, negative=negative)
     except FileNotFoundError:
         pass
     return prep_lines
@@ -149,7 +151,8 @@ def prepare_lines(_file: str, lineOffset: int = 0) -> List[str]:
 def get_items(stash: object,
               _file: str,
               lineOffset: int = 0,
-              new_style_override_syntax: bool = False) -> List[Item]:
+              new_style_override_syntax: bool = False,
+              negative: bool = False) -> List[Item]:
     """parses file
 
     Args:
@@ -157,6 +160,7 @@ def get_items(stash: object,
         _file (string): Full path to file
         lineOffset (int, optional): line offset counter. Defaults to 0.
         new_style_override_syntax (bool, optional): default to new override syntax (default: False)
+        negative (bool, optional): Negative branch inline expansion (default: False)
 
     Returns:
         list: List of oelint_parser.cls_item.* representations
@@ -202,7 +206,7 @@ def get_items(stash: object,
     if not os.path.isabs(_file):
         _file = os.path.abspath(_file)
 
-    for line in prepare_lines(_file, lineOffset):
+    for line in prepare_lines(_file, lineOffset, negative=negative):
         good = False
         for k, v in _order.items():
             m = RegexRpl.match(v, line["cnt"], regex.regex.MULTILINE)
