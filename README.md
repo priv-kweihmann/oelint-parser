@@ -123,6 +123,55 @@ result_set = _stash.ExpandVar(attribute=Variable.ATTR_VAR, attributeValue=["PV"]
 print(result_set.get('PV'))
 ```
 
+### Inline branch expansion
+
+By default the parser will expand parsable and known inline blocks (``${@oe.utils.something(...)}``) to the branch
+value that would match if the programmed condition is ``true``.
+
+You can invert this selection by setting ``negative_inline`` to ``True`` in the ``Stash`` object.
+
+E.g.
+
+with ``some/file`` being
+
+```text
+VAR_1 = "${@bb.utils.contains('BUILDHISTORY_FEATURES', 'image', 'foo', 'bar', d)}"
+```
+
+and
+
+```python
+from oelint_parser.cls_stash import Stash
+
+# create an stash object
+_stash = Stash()
+
+# add any bitbake like file
+_stash.AddFile("/some/file")
+
+# Resolves proper cross file dependencies
+_stash.Finalize()
+```
+
+the ``VAR_1``'s  ``VarValue`` value would be ``foo``.
+
+With
+
+```python
+from oelint_parser.cls_stash import Stash
+
+# create an stash object
+_stash = Stash(negative_inline=True)
+
+# add any bitbake like file
+_stash.AddFile("/some/file")
+
+# Resolves proper cross file dependencies
+_stash.Finalize()
+```
+
+the ``VAR_1``'s ``VarValue`` value would be ``bar``.
+
 ## Working with constants
 
 For this library a few basic sets of constant information, such as basic package definitions, known machines and functions are

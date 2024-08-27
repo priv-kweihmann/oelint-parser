@@ -349,7 +349,8 @@ Stash.Reduce(<this object>,...) instead.
 
 ```python
 def __init__(quiet: bool = False,
-             new_style_override_syntax: bool = False) -> None
+             new_style_override_syntax: bool = False,
+             negative_inline: bool = False) -> None
 ```
 
 Stash object
@@ -358,6 +359,7 @@ Stash object
 
 - `quiet` _bool, optional_ - No progress printing. Defaults to False.
 - `new_style_override_syntax` _bool, optional_ - Enforce new override syntax. Defaults to False.
+- `negative_inline` _bool, optional_ - Negative branch inline expansion. Defaults to False.
 
 <a id="oelint_parser.cls_stash.Stash.AddFile"></a>
 
@@ -996,7 +998,7 @@ replacement for re.finditer
 #### bb\_utils\_filter
 
 ```python
-def bb_utils_filter(_in: str) -> str
+def bb_utils_filter(_in: str, negative_clause: bool = False) -> str
 ```
 
 bb.utils.filter emulation
@@ -1004,6 +1006,7 @@ bb.utils.filter emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1015,7 +1018,7 @@ bb.utils.filter emulation
 #### bb\_utils\_contains
 
 ```python
-def bb_utils_contains(_in: str) -> str
+def bb_utils_contains(_in: str, negative_clause: bool = False) -> str
 ```
 
 bb.utils.contains emulation
@@ -1023,6 +1026,7 @@ bb.utils.contains emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1034,7 +1038,7 @@ bb.utils.contains emulation
 #### bb\_utils\_contains\_any
 
 ```python
-def bb_utils_contains_any(_in: str) -> str
+def bb_utils_contains_any(_in: str, negative_clause: bool = False) -> str
 ```
 
 bb.utils.contains_any emulation
@@ -1042,6 +1046,7 @@ bb.utils.contains_any emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1053,7 +1058,7 @@ bb.utils.contains_any emulation
 #### oe\_utils\_conditional
 
 ```python
-def oe_utils_conditional(_in: str) -> str
+def oe_utils_conditional(_in: str, negative_clause: bool = False) -> str
 ```
 
 oe.utils.conditional emulation
@@ -1061,6 +1066,7 @@ oe.utils.conditional emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1072,7 +1078,7 @@ oe.utils.conditional emulation
 #### oe\_utils\_ifelse
 
 ```python
-def oe_utils_ifelse(_in: str) -> str
+def oe_utils_ifelse(_in: str, negative_clause: bool = False) -> str
 ```
 
 oe.utils.ifelse emulation
@@ -1080,6 +1086,7 @@ oe.utils.ifelse emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1091,7 +1098,8 @@ oe.utils.ifelse emulation
 #### oe\_utils\_any\_distro\_features
 
 ```python
-def oe_utils_any_distro_features(_in: str) -> str
+def oe_utils_any_distro_features(_in: str,
+                                 negative_clause: bool = False) -> str
 ```
 
 oe.utils.any_distro_features emulation
@@ -1099,6 +1107,7 @@ oe.utils.any_distro_features emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1110,7 +1119,8 @@ oe.utils.any_distro_features emulation
 #### oe\_utils\_all\_distro\_features
 
 ```python
-def oe_utils_all_distro_features(_in: str) -> str
+def oe_utils_all_distro_features(_in: str,
+                                 negative_clause: bool = False) -> str
 ```
 
 oe.utils.all_distro_features emulation
@@ -1118,6 +1128,7 @@ oe.utils.all_distro_features emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1129,7 +1140,7 @@ oe.utils.all_distro_features emulation
 #### oe\_utils\_vartrue
 
 ```python
-def oe_utils_vartrue(_in: str) -> str
+def oe_utils_vartrue(_in: str, negative_clause: bool = False) -> str
 ```
 
 oe.utils.vartrue emulation
@@ -1137,6 +1148,7 @@ oe.utils.vartrue emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1148,7 +1160,7 @@ oe.utils.vartrue emulation
 #### oe\_utils\_less\_or\_equal
 
 ```python
-def oe_utils_less_or_equal(_in: str) -> str
+def oe_utils_less_or_equal(_in: str, negative_clause: bool = False) -> str
 ```
 
 oe.utils.less_or_equal emulation
@@ -1156,6 +1168,7 @@ oe.utils.less_or_equal emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1167,7 +1180,8 @@ oe.utils.less_or_equal emulation
 #### oe\_utils\_version\_less\_or\_equal
 
 ```python
-def oe_utils_version_less_or_equal(_in: str) -> str
+def oe_utils_version_less_or_equal(_in: str,
+                                   negative_clause: bool = False) -> str
 ```
 
 oe.utils.version_less_or_equal emulation
@@ -1175,6 +1189,7 @@ oe.utils.version_less_or_equal emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1186,7 +1201,7 @@ oe.utils.version_less_or_equal emulation
 #### oe\_utils\_both\_contain
 
 ```python
-def oe_utils_both_contain(_in: str) -> str
+def oe_utils_both_contain(_in: str, negative_clause: bool = False) -> str
 ```
 
 oe.utils.both_contain emulation
@@ -1194,6 +1209,7 @@ oe.utils.both_contain emulation
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -1205,7 +1221,7 @@ oe.utils.both_contain emulation
 #### inlinerep
 
 ```python
-def inlinerep(_in: str) -> str
+def inlinerep(_in: str, negative_clause: bool = False) -> str
 ```
 
 Replaces inline code expressions
@@ -1213,6 +1229,7 @@ Replaces inline code expressions
 **Arguments**:
 
 - `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
@@ -3750,7 +3767,8 @@ def prepare_lines_subparser(_iter: Iterable,
                             lineOffset: int,
                             num: int,
                             line: int,
-                            raw_line: str = None) -> List[str]
+                            raw_line: str = None,
+                            negative: bool = False) -> List[str]
 ```
 
 preprocess raw input
@@ -3762,6 +3780,7 @@ preprocess raw input
 - `num` _int_ - internal line counter
 - `line` _int_ - input string
 - `raw_line` _string, optional_ - internal line representation. Defaults to None.
+- `negative` _bool_ - Negative branch inline expansion. Defaults to False
   
 
 **Returns**:
@@ -3773,7 +3792,9 @@ preprocess raw input
 #### prepare\_lines
 
 ```python
-def prepare_lines(_file: str, lineOffset: int = 0) -> List[str]
+def prepare_lines(_file: str,
+                  lineOffset: int = 0,
+                  negative: bool = False) -> List[str]
 ```
 
 break raw file input into preprocessed chunks
@@ -3782,6 +3803,7 @@ break raw file input into preprocessed chunks
 
 - `_file` _string_ - Full path to file
 - `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
+- `negative` _bool_ - Negative branch inline expansion. Defaults to False
   
 
 **Returns**:
@@ -3796,7 +3818,8 @@ break raw file input into preprocessed chunks
 def get_items(stash: object,
               _file: str,
               lineOffset: int = 0,
-              new_style_override_syntax: bool = False) -> List[Item]
+              new_style_override_syntax: bool = False,
+              negative: bool = False) -> List[Item]
 ```
 
 parses file
@@ -3807,6 +3830,7 @@ parses file
 - `_file` _string_ - Full path to file
 - `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
 - `new_style_override_syntax` _bool, optional_ - default to new override syntax (default: False)
+- `negative` _bool, optional_ - Negative branch inline expansion (default: False)
   
 
 **Returns**:
