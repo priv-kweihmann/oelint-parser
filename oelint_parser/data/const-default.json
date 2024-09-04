@@ -942,6 +942,7 @@
             "KERNEL_IMAGETYPE",
             "KERNEL_IMAGETYPES",
             "KERNEL_IMAGETYPE_FOR_MAKE",
+            "KERNEL_IMAGETYPE_SYMLINK",
             "KERNEL_IMAGE_LINK_NAME",
             "KERNEL_IMAGE_NAME",
             "KERNEL_LD",
