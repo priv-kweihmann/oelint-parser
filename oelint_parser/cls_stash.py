@@ -1,3 +1,4 @@
+import functools
 import glob
 import os
 from collections import UserList
@@ -120,9 +121,23 @@ class Stash():
         self.__new_style_override_syntax = new_style_override_syntax
         self.__negative_inline = negative_inline
 
-        self.__getconffiles_cached_values = None
-        self.__getrecipes_cached_values = None
-        self.__getloneappends_cached_values = None
+        self._clear_cached()
+
+    def _clear_cached(self):
+        """Clear cached values"""
+        self.GetConfFiles.cache_clear()
+        self.GetFiles.cache_clear()
+        self.GetLinksForFile.cache_clear()
+        self.GetLoneAppends.cache_clear()
+        self.GetRecipes.cache_clear()
+        self.GetValidNamedResources.cache_clear()
+        self.GetValidPackageNames.cache_clear()
+        self.IsImage.cache_clear()
+        self.IsPackageGroup.cache_clear()
+        self.__get_items_by_attribute.cache_clear()
+        self.__get_items_by_classifier.cache_clear()
+        self.__get_items_by_file.cache_clear()
+        self.__is_linked_to.cache_clear()
 
     def AddFile(self, _file: str, lineOffset: int = 0, forcedLink: str = None) -> List[Item]:
         """Adds a file to the stash
@@ -173,9 +188,7 @@ class Stash():
         self.__list += res
 
         # Reset caches
-        self.__getconffiles_cached_values = None
-        self.__getrecipes_cached_values = None
-        self.__getloneappends_cached_values = None
+        self._clear_cached()
 
         return res
 
@@ -191,6 +204,9 @@ class Stash():
         else:
             self.__list.append(item)
 
+        # Reset caches
+        self._clear_cached()
+
     def Remove(self, item: Union[Item, Iterable[Item]]) -> None:
         """removes one or more items from the stash
 
@@ -202,6 +218,9 @@ class Stash():
                 self.__list.remove(_item)
         else:
             self.__list.remove(item)
+
+        # Reset caches
+        self._clear_cached()
 
     def AddDistroMachineFromLayer(self, path: str) -> None:
         """adds machine and distro configuration from the layer of the provided file
@@ -226,55 +245,58 @@ class Stash():
             for item in self.__map[k][:]:
                 self.__map[k] += self.__map[item]
             self.__map[k] = list(set(self.__map[k]))
+        # Reset caches
+        self._clear_cached()
 
+    @functools.cache  # noqa: B019
     def GetRecipes(self) -> None:
         """Get bb files in stash
 
         Returns:
             list -- List of bb files in stash
         """
-        if self.__getrecipes_cached_values is None:
-            self.__getrecipes_cached_values = sorted({x.Origin for x in self.__list if x.Origin.endswith(".bb")})
-        return self.__getrecipes_cached_values
+        return sorted({x.Origin for x in self.__list if x.Origin.endswith(".bb")})
 
+    @functools.cache  # noqa: B019
     def GetLoneAppends(self) -> List[str]:
         """Get bbappend without a matching bb
 
         Returns:
             list -- list of bbappend without a matching bb
         """
-        if self.__getloneappends_cached_values is None:
-            __linked_appends = set()
-            __appends = {x.Origin for x in self.__list if x.Origin.endswith('.bbappend')}
-            for k, v in self.__map.items():
-                if k.endswith('.bb'):
-                    __linked_appends.update(x for x in v if x.endswith('.bbappend'))
-            self.__getloneappends_cached_values = sorted({x for x in __appends if x not in __linked_appends})
-        return self.__getloneappends_cached_values
+        __linked_appends = set()
+        __appends = {x.Origin for x in self.__list if x.Origin.endswith('.bbappend')}
+        for k, v in self.__map.items():
+            if k.endswith('.bb'):
+                __linked_appends.update(x for x in v if x.endswith('.bbappend'))
+        return sorted({x for x in __appends if x not in __linked_appends})
 
+    @functools.cache  # noqa: B019
     def GetConfFiles(self) -> List[str]:
         """Get configurations files
 
         Returns:
             List[str]: List of configuration files
         """
-        if self.__getconffiles_cached_values is None:
-            self.__getconffiles_cached_values = list({x.Origin for x in self.__list if x.Origin.endswith(".conf")})
-        return self.__getconffiles_cached_values
+        return list({x.Origin for x in self.__list if x.Origin.endswith(".conf")})
 
+    @functools.cache  # noqa: B019
     def __is_linked_to(self, item: Item, filename: str, nolink: bool = False) -> bool:
         return (item.Origin in self.__map.get(filename, {}) and not nolink) or filename == item.Origin
 
+    @functools.cache  # noqa: B019
     def __get_items_by_file(self, items: Iterable[Item], filename: str, nolink: bool = False) -> List[Item]:
         if not filename:
             return items
         return [x for x in items if self.__is_linked_to(x, filename, nolink=nolink)]
 
+    @functools.cache  # noqa: B019
     def __get_items_by_classifier(self, items: Iterable[Item], classifier: Iterable[str]) -> List[Item]:
         if not classifier:
             return items
         return [x for x in items if x.CLASSIFIER in classifier]
 
+    @functools.cache  # noqa: B019
     def __get_items_by_attribute(self, items: Iterable[Item], attname: Iterable[str], attvalue: Iterable[str]) -> List[Item]:
         if not attname:
             return items
@@ -288,6 +310,7 @@ class Stash():
 
         return [x for x in items if _filter(x, attname, attvalue)]
 
+    @functools.cache  # noqa: B019
     def GetLinksForFile(self, filename: str) -> List[str]:
         """Get file which this file is linked against
 
@@ -302,7 +325,7 @@ class Stash():
         return [x.Origin for x in self.__get_items_by_file(self.__list, filename) if x.Origin != filename]
 
     def Reduce(self,
-               in_list: List[Item],
+               in_list: Iterable[Item],
                filename: str = None,
                classifier: Union[Iterable[str], str] = None,
                attribute: Union[Iterable[str], str] = None,
@@ -328,11 +351,11 @@ class Stash():
         if not isinstance(attributeValue, (list, set, tuple)):
             attributeValue = [attributeValue] if attributeValue else []
         if filename:
-            in_list = self.__get_items_by_file(in_list, filename, nolink=nolink)
+            in_list = self.__get_items_by_file(tuple(in_list), filename, nolink=nolink)
         if classifier:
-            in_list = self.__get_items_by_classifier(in_list, classifier)
+            in_list = self.__get_items_by_classifier(tuple(in_list), tuple(classifier))
         if attribute:
-            in_list = self.__get_items_by_attribute(in_list, attribute, attributeValue)
+            in_list = self.__get_items_by_attribute(tuple(in_list), tuple(attribute), tuple(attributeValue))
         return sorted(set(in_list), key=lambda x: x.Line)
 
     def GetItemsFor(self,
@@ -353,12 +376,12 @@ class Stash():
         Returns:
             Stash.StashList: Returns a list of items fitting the set filters
         """
-        res = Stash.StashList(self, self.__list)
-        res.reduce(filename=filename,
-                   classifier=classifier,
-                   attribute=attribute,
-                   attributeValue=attributeValue,
-                   nolink=nolink)
+        res = Stash.StashList(self, self.Reduce(self.__list,
+                                                filename=filename,
+                                                classifier=classifier,
+                                                attribute=attribute,
+                                                attributeValue=attributeValue,
+                                                nolink=nolink))
         return res
 
     def ExpandVar(self,
@@ -474,6 +497,7 @@ class Stash():
                 self.ExpandTerm(filename, v or ""))
         return _finalexp
 
+    @functools.cache  # noqa: B019
     def GetFiles(self, _file: str, pattern: str) -> List[str]:
         """Get files matching SRC_URI entries
 
@@ -496,6 +520,7 @@ class Stash():
             res.update(glob.glob(item))
         return sorted(res)
 
+    @functools.cache  # noqa: B019
     def GetLayerRoot(self, name: str) -> str:
         """Find the path to the layer root of a file
 
@@ -514,6 +539,7 @@ class Stash():
                 return _curdir
         return ""
 
+    @functools.cache  # noqa: B019
     def FindLocalOrLayer(self, name: str, localdir: str) -> str:
         """Find file in local dir or in layer
 
@@ -546,6 +572,7 @@ class Stash():
             _in = _in.replace(k, v)
         return _in
 
+    @functools.cache  # noqa: B019
     def GetScrComponents(self, string: str) -> dict:
         """Return SRC_URI components
 
@@ -567,6 +594,7 @@ class Stash():
                        for x in _options if "=" in x}
         return {"scheme": _scheme, "src": _path, "options": _parsed_opt}
 
+    @functools.cache  # noqa: B019
     def SafeLineSplit(self, string: str) -> List[str]:
         """Split line in a safe manner
 
@@ -578,6 +606,7 @@ class Stash():
         """
         return RegexRpl.split(r"\s|\t|\x1b", string)
 
+    @functools.cache  # noqa: B019
     def GuessRecipeName(self, _file: str) -> str:
         """Get the recipe name from filename
 
@@ -590,6 +619,7 @@ class Stash():
         _name, _ = os.path.splitext(os.path.basename(_file))
         return _name.split("_")[0]
 
+    @functools.cache  # noqa: B019
     def GuessBaseRecipeName(self, _file: str) -> str:
         """Get the base recipe name from filename (aka BPN)
 
@@ -604,6 +634,7 @@ class Stash():
         tmp_ = RegexRpl.sub(r"^(.+)(-cross)$", r"\1", tmp_)
         return tmp_
 
+    @functools.cache  # noqa: B019
     def GuessRecipeVersion(self, _file: str) -> str:
         """Get recipe version from filename
 
@@ -667,6 +698,7 @@ class Stash():
                 continue
         return res
 
+    @functools.cache  # noqa: B019
     def GetValidPackageNames(self, _file: str, strippn: bool = False) -> List[str]:
         """Get known valid names for packages
 
@@ -696,6 +728,7 @@ class Stash():
                     res.add(_pkg)
         return res
 
+    @functools.cache  # noqa: B019
     def GetValidNamedResources(self, _file: str) -> List[str]:
         """Get list of valid SRCREV resource names
 
@@ -717,6 +750,7 @@ class Stash():
                     res.add(_url["options"]["name"].replace("${PN}", _recipe_name))
         return res
 
+    @functools.cache  # noqa: B019
     def IsImage(self, _file: str) -> bool:
         """returns if the file is likely an image recipe or not
 
@@ -738,6 +772,7 @@ class Stash():
 
         return res
 
+    @functools.cache  # noqa: B019
     def IsPackageGroup(self, _file: str) -> bool:
         """returns if the file is likely a packagegroup recipe or not
 
