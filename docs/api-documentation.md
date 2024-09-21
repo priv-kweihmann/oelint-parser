@@ -445,6 +445,7 @@ finalize the dependencies within the stash
 #### GetRecipes
 
 ```python
+@functools.cache
 def GetRecipes() -> None
 ```
 
@@ -459,6 +460,7 @@ Get bb files in stash
 #### GetLoneAppends
 
 ```python
+@functools.cache
 def GetLoneAppends() -> List[str]
 ```
 
@@ -473,6 +475,7 @@ Get bbappend without a matching bb
 #### GetConfFiles
 
 ```python
+@functools.cache
 def GetConfFiles() -> List[str]
 ```
 
@@ -487,6 +490,7 @@ Get configurations files
 #### GetLinksForFile
 
 ```python
+@functools.cache
 def GetLinksForFile(filename: str) -> List[str]
 ```
 
@@ -506,7 +510,7 @@ Get file which this file is linked against
 #### Reduce
 
 ```python
-def Reduce(in_list: List[Item],
+def Reduce(in_list: Iterable[Item],
            filename: str = None,
            classifier: Union[Iterable[str], str] = None,
            attribute: Union[Iterable[str], str] = None,
@@ -587,6 +591,7 @@ Expand variable to dictionary
 #### GetFiles
 
 ```python
+@functools.cache
 def GetFiles(_file: str, pattern: str) -> List[str]
 ```
 
@@ -607,6 +612,7 @@ Get files matching SRC_URI entries
 #### GetLayerRoot
 
 ```python
+@functools.cache
 def GetLayerRoot(name: str) -> str
 ```
 
@@ -626,6 +632,7 @@ Find the path to the layer root of a file
 #### FindLocalOrLayer
 
 ```python
+@functools.cache
 def FindLocalOrLayer(name: str, localdir: str) -> str
 ```
 
@@ -646,6 +653,7 @@ Find file in local dir or in layer
 #### GetScrComponents
 
 ```python
+@functools.cache
 def GetScrComponents(string: str) -> dict
 ```
 
@@ -665,6 +673,7 @@ Return SRC_URI components
 #### SafeLineSplit
 
 ```python
+@functools.cache
 def SafeLineSplit(string: str) -> List[str]
 ```
 
@@ -684,6 +693,7 @@ Split line in a safe manner
 #### GuessRecipeName
 
 ```python
+@functools.cache
 def GuessRecipeName(_file: str) -> str
 ```
 
@@ -703,6 +713,7 @@ Get the recipe name from filename
 #### GuessBaseRecipeName
 
 ```python
+@functools.cache
 def GuessBaseRecipeName(_file: str) -> str
 ```
 
@@ -722,6 +733,7 @@ Get the base recipe name from filename (aka BPN)
 #### GuessRecipeVersion
 
 ```python
+@functools.cache
 def GuessRecipeVersion(_file: str) -> str
 ```
 
@@ -766,6 +778,7 @@ Expand a variable (replacing all variables by known content)
 #### GetValidPackageNames
 
 ```python
+@functools.cache
 def GetValidPackageNames(_file: str, strippn: bool = False) -> List[str]
 ```
 
@@ -786,6 +799,7 @@ Get known valid names for packages
 #### GetValidNamedResources
 
 ```python
+@functools.cache
 def GetValidNamedResources(_file: str) -> List[str]
 ```
 
@@ -805,6 +819,7 @@ Get list of valid SRCREV resource names
 #### IsImage
 
 ```python
+@functools.cache
 def IsImage(_file: str) -> bool
 ```
 
@@ -824,6 +839,7 @@ returns if the file is likely an image recipe or not
 #### IsPackageGroup
 
 ```python
+@functools.cache
 def IsPackageGroup(_file: str) -> bool
 ```
 
