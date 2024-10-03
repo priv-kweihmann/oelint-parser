@@ -1,4 +1,5 @@
 import functools
+import hashlib
 import glob
 import os
 from collections import UserList
@@ -120,6 +121,7 @@ class Stash():
         self.__quiet = quiet
         self.__new_style_override_syntax = new_style_override_syntax
         self.__negative_inline = negative_inline
+        self.__fingerprint = hashlib.sha1(f'{self.__new_style_override_syntax}:{self.__negative_inline}'.encode())  # noqa: DUO130, S324
 
         self._clear_cached()
 
@@ -190,7 +192,20 @@ class Stash():
         # Reset caches
         self._clear_cached()
 
+        # update fingerprint
+        for item in res:
+            self.__fingerprint.update(str(item).encode())
+
         return res
+
+    @property
+    def FingerPrint(self) -> str:
+        """Get the SHA1 fingerprint of the current Stash
+
+        Returns:
+            str: hexdigest checksum
+        """
+        return self.__fingerprint.hexdigest()
 
     def Append(self, item: Union[Item, Iterable[Item]]) -> None:
         """appends one or mote items to the stash
