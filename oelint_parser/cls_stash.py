@@ -443,7 +443,7 @@ class Stash():
                 if item.VarName in _exp:
                     del _exp[item.VarName]
                 continue
-            if item.Flag or not item.IsImmediateModify():
+            if not item.IsImmediateModify():
                 continue
             varop = item.VarOp
             name = item.VarNameCompleteNoModifiers
@@ -479,8 +479,6 @@ class Stash():
                 continue
             varop = item.VarOp
             name = item.VarNameCompleteNoModifiers
-            if item.Flag:
-                continue
             if name not in _exp.keys():
                 _exp[name] = None
                 if _exp[name] is None:
@@ -502,8 +500,6 @@ class Stash():
                 continue
             varop = item.VarOp
             name = item.VarNameCompleteNoModifiers
-            if item.Flag:
-                continue
             if name not in _exp.keys():
                 _exp[name] = None
             if "remove" in item.SubItems:

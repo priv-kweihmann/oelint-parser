@@ -37,6 +37,7 @@
   * [prepare\_lines](#oelint_parser.parser.prepare_lines)
   * [get\_items](#oelint_parser.parser.get_items)
 * [oelint\_parser.cls\_item](#oelint_parser.cls_item)
+  * [\_\_id\_regex\_\_](#oelint_parser.cls_item.__id_regex__)
   * [Item](#oelint_parser.cls_item.Item)
     * [\_\_init\_\_](#oelint_parser.cls_item.Item.__init__)
     * [Line](#oelint_parser.cls_item.Item.Line)
@@ -59,7 +60,6 @@
     * [SubItem](#oelint_parser.cls_item.Variable.SubItem)
     * [SubItems](#oelint_parser.cls_item.Variable.SubItems)
     * [VarValue](#oelint_parser.cls_item.Variable.VarValue)
-    * [Flag](#oelint_parser.cls_item.Variable.Flag)
     * [VarOp](#oelint_parser.cls_item.Variable.VarOp)
     * [VarNameComplete](#oelint_parser.cls_item.Variable.VarNameComplete)
     * [VarNameCompleteNoModifiers](#oelint_parser.cls_item.Variable.VarNameCompleteNoModifiers)
@@ -134,11 +134,6 @@
     * [\_\_init\_\_](#oelint_parser.cls_item.MissingFile.__init__)
     * [Filename](#oelint_parser.cls_item.MissingFile.Filename)
     * [Statement](#oelint_parser.cls_item.MissingFile.Statement)
-  * [TaskAssignment](#oelint_parser.cls_item.TaskAssignment)
-    * [FuncName](#oelint_parser.cls_item.TaskAssignment.FuncName)
-    * [VarValue](#oelint_parser.cls_item.TaskAssignment.VarValue)
-    * [VarName](#oelint_parser.cls_item.TaskAssignment.VarName)
-    * [get\_items](#oelint_parser.cls_item.TaskAssignment.get_items)
   * [AddPylib](#oelint_parser.cls_item.AddPylib)
     * [\_\_init\_\_](#oelint_parser.cls_item.AddPylib.__init__)
     * [Path](#oelint_parser.cls_item.AddPylib.Path)
@@ -155,20 +150,6 @@
     * [VarName](#oelint_parser.cls_item.Unset.VarName)
     * [Flag](#oelint_parser.cls_item.Unset.Flag)
     * [get\_items](#oelint_parser.cls_item.Unset.get_items)
-* [oelint\_parser.helper\_files](#oelint_parser.helper_files)
-  * [get\_files](#oelint_parser.helper_files.get_files)
-  * [get\_layer\_root](#oelint_parser.helper_files.get_layer_root)
-  * [find\_local\_or\_in\_layer](#oelint_parser.helper_files.find_local_or_in_layer)
-  * [get\_scr\_components](#oelint_parser.helper_files.get_scr_components)
-  * [safe\_linesplit](#oelint_parser.helper_files.safe_linesplit)
-  * [guess\_recipe\_name](#oelint_parser.helper_files.guess_recipe_name)
-  * [guess\_base\_recipe\_name](#oelint_parser.helper_files.guess_base_recipe_name)
-  * [guess\_recipe\_version](#oelint_parser.helper_files.guess_recipe_version)
-  * [expand\_term](#oelint_parser.helper_files.expand_term)
-  * [get\_valid\_package\_names](#oelint_parser.helper_files.get_valid_package_names)
-  * [get\_valid\_named\_resources](#oelint_parser.helper_files.get_valid_named_resources)
-  * [is\_image](#oelint_parser.helper_files.is_image)
-  * [is\_packagegroup](#oelint_parser.helper_files.is_packagegroup)
 * [oelint\_parser.rpl\_regex](#oelint_parser.rpl_regex)
   * [RegexRpl](#oelint_parser.rpl_regex.RegexRpl)
     * [search](#oelint_parser.rpl_regex.RegexRpl.search)
@@ -979,6 +960,12 @@ parses file
 
 # oelint\_parser.cls\_item
 
+<a id="oelint_parser.cls_item.__id_regex__"></a>
+
+#### \_\_id\_regex\_\_
+
+noqa: P103
+
 <a id="oelint_parser.cls_item.Item"></a>
 
 ## Item Objects
@@ -1339,25 +1326,6 @@ variable value
 **Returns**:
 
 - `str` - unstripped variable value
-
-<a id="oelint_parser.cls_item.Variable.Flag"></a>
-
-#### Flag
-
-```python
-@property
-@deprecated(version='3.0.0',
-            reason='Flag values are now part of FlagAssignment class')
-def Flag() -> str
-```
-
-Flag value (deprecated)
-
-Use FlagAssignment class instead.
-
-**Returns**:
-
-- `str` - Empty string.
 
 <a id="oelint_parser.cls_item.Variable.VarOp"></a>
 
@@ -2574,84 +2542,6 @@ statement either include or require
 
 - `str` - include or require
 
-<a id="oelint_parser.cls_item.TaskAssignment"></a>
-
-## TaskAssignment Objects
-
-```python
-@deprecated(version='3.0.0', reason='TaskAssignment is now part of FlagAssignment class')
-class TaskAssignment(Item)
-```
-
-Deprecated. Use FlagAssignment class instead.
-
-<a id="oelint_parser.cls_item.TaskAssignment.FuncName"></a>
-
-#### FuncName
-
-```python
-@property
-def FuncName() -> str
-```
-
-Deprecated.
-
-Use FlagAssignment class instead
-
-**Returns**:
-
-- `str` - Empty string
-
-<a id="oelint_parser.cls_item.TaskAssignment.VarValue"></a>
-
-#### VarValue
-
-```python
-@property
-def VarValue() -> str
-```
-
-Deprecated.
-
-Use FlagAssignment class instead
-
-**Returns**:
-
-- `str` - Empty string
-
-<a id="oelint_parser.cls_item.TaskAssignment.VarName"></a>
-
-#### VarName
-
-```python
-@property
-def VarName() -> str
-```
-
-Deprecated.
-
-Use FlagAssignment class instead
-
-**Returns**:
-
-- `str` - Empty string
-
-<a id="oelint_parser.cls_item.TaskAssignment.get_items"></a>
-
-#### get\_items
-
-```python
-def get_items() -> List
-```
-
-Deprecated.
-
-Use FlagAssignment class instead
-
-**Returns**:
-
-- `list` - Empty list
-
 <a id="oelint_parser.cls_item.AddPylib"></a>
 
 ## AddPylib Objects
@@ -2930,261 +2820,6 @@ get items
 **Returns**:
 
 - `list` - variable name, variable flag
-
-<a id="oelint_parser.helper_files"></a>
-
-# oelint\_parser.helper\_files
-
-<a id="oelint_parser.helper_files.get_files"></a>
-
-#### get\_files
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.GetFiles instead')
-def get_files(stash: Stash, *args, **kwargs)
-```
-
-Legacy interface get_files.
-
-Use Stash.GetFiles instead.
-
-**Arguments**:
-
-- `stash` _Stash_ - Stash object
-  
-
-**Returns**:
-
-- `Stash.GetFiles` - .
-
-<a id="oelint_parser.helper_files.get_layer_root"></a>
-
-#### get\_layer\_root
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.GetLayerRoot instead')
-def get_layer_root(*args, **kwargs)
-```
-
-Legacy interface get_layer_root
-
-Use Stash.GetLayerRoot instead.
-
-**Returns**:
-
-- `Stash.GetLayerRoot` - .
-
-<a id="oelint_parser.helper_files.find_local_or_in_layer"></a>
-
-#### find\_local\_or\_in\_layer
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.FindLocalOrLayer instead')
-def find_local_or_in_layer(*args, **kwargs)
-```
-
-Legacy interface find_local_or_in_layer
-
-Use Stash.FindLocalOrLayer instead.
-
-**Returns**:
-
-- `Stash.FindLocalOrLayer` - .
-
-<a id="oelint_parser.helper_files.get_scr_components"></a>
-
-#### get\_scr\_components
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.GetScrComponents instead')
-def get_scr_components(*args, **kwargs)
-```
-
-Legacy interface get_scr_components
-
-Use Stash.GetScrComponents instead
-
-**Returns**:
-
-- `Stash.GetScrComponents` - .
-
-<a id="oelint_parser.helper_files.safe_linesplit"></a>
-
-#### safe\_linesplit
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.SafeLineSplit instead')
-def safe_linesplit(*args, **kwargs)
-```
-
-Legacy interface safe_linesplit
-
-Use Stash.SafeLineSplit instead
-
-**Returns**:
-
-- `Stash.SafeLineSplit` - .
-
-<a id="oelint_parser.helper_files.guess_recipe_name"></a>
-
-#### guess\_recipe\_name
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.GuessRecipeName instead')
-def guess_recipe_name(*args, **kwargs)
-```
-
-Legacy interface guess_recipe_name
-
-Use Stash.GuessRecipeName instead
-
-**Returns**:
-
-- `Stash.GuessBaseRecipeName` - .
-
-<a id="oelint_parser.helper_files.guess_base_recipe_name"></a>
-
-#### guess\_base\_recipe\_name
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.GuessBaseRecipeName instead')
-def guess_base_recipe_name(*args, **kwargs)
-```
-
-Legacy interface guess_base_recipe_name
-
-Use Stash.GuessBaseRecipeName instead
-
-**Returns**:
-
-- `Stash.GuessBaseRecipeName` - .
-
-<a id="oelint_parser.helper_files.guess_recipe_version"></a>
-
-#### guess\_recipe\_version
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.GuessRecipeVersion instead')
-def guess_recipe_version(*args, **kwargs)
-```
-
-Legacy interface guess_recipe_version
-
-Use Stash.GuessRecipeVersion instead
-
-**Returns**:
-
-- `Stash.GuessRecipeVersion` - .
-
-<a id="oelint_parser.helper_files.expand_term"></a>
-
-#### expand\_term
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.ExpandTerm instead')
-def expand_term(stash: Stash, *args, **kwargs)
-```
-
-Legacy interface expand_term
-
-Use Stash.ExpandTerm instead
-
-**Arguments**:
-
-- `stash` _Stash_ - Stash object
-  
-
-**Returns**:
-
-- `Stash.ExpandTerm` - .
-
-<a id="oelint_parser.helper_files.get_valid_package_names"></a>
-
-#### get\_valid\_package\_names
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.GetValidPackageNames instead')
-def get_valid_package_names(stash: Stash, *args, **kwargs)
-```
-
-Legacy interface get_valid_package_names
-
-Use Stash.GetValidPackageNames instead
-
-**Arguments**:
-
-- `stash` _Stash_ - Stash object
-  
-
-**Returns**:
-
-- `Stash.GetValidPackageNames` - .
-
-<a id="oelint_parser.helper_files.get_valid_named_resources"></a>
-
-#### get\_valid\_named\_resources
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.GetValidNamedResources instead')
-def get_valid_named_resources(stash: Stash, *args, **kwargs)
-```
-
-Legacy interface get_valid_named_resources
-
-Use Stash.GetValidNamedResources instead
-
-**Arguments**:
-
-- `stash` _Stash_ - Stash object
-  
-
-**Returns**:
-
-- `Stash.GetValidNamedResources` - .
-
-<a id="oelint_parser.helper_files.is_image"></a>
-
-#### is\_image
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.IsImage instead')
-def is_image(stash: Stash, *args, **kwargs)
-```
-
-Legacy interface is_image
-
-Use Stash.IsImage instead
-
-**Arguments**:
-
-- `stash` _Stash_ - Stash object
-  
-
-**Returns**:
-
-- `Stash.IsImage` - .
-
-<a id="oelint_parser.helper_files.is_packagegroup"></a>
-
-#### is\_packagegroup
-
-```python
-@deprecated(version='3.0.0', reason='Use Stash.IsPackageGroup instead')
-def is_packagegroup(stash: Stash, *args, **kwargs)
-```
-
-Legacy interface is_packagegroup
-
-Use Stash.IsPackageGroup instead
-
-**Arguments**:
-
-- `stash` _Stash_ - Stash object
-  
-
-**Returns**:
-
-- `Stash.IsPackageGroup` - .
 
 <a id="oelint_parser.rpl_regex"></a>
 
