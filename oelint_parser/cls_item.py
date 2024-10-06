@@ -242,14 +242,12 @@ class Item():
         """
         T = type(self)
         res = {}
-        for _ in dir(self):
-            try:
-                attr = getattr(T, _)
-            except AttributeError:
-                continue  # Skip dunder attributes, i.e. private attributes
-            else:
-                if isinstance(attr, property):
-                    res[_] = getattr(self, _)
+        for _ in self.__dir__():
+            if _.startswith('_'):
+                continue
+            attr = getattr(T, _)
+            if isinstance(attr, property):
+                res[_] = getattr(self, _)
 
         return res
 
