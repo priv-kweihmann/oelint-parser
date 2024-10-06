@@ -1,15 +1,23 @@
 import functools
-import hashlib
 import glob
+import hashlib
 import os
 from collections import UserList
 from typing import Iterable, List, Union
 from urllib.parse import urlparse
 
+import regex
+
 from oelint_parser.cls_item import Inherit, Item, Unset, Variable
 from oelint_parser.constants import CONSTANTS
 from oelint_parser.parser import get_items
 from oelint_parser.rpl_regex import RegexRpl
+
+__safeline_split_regex__ = regex.compile(r"\s|\t|\x1b")
+__class_id_regex__ = regex.compile(r"^(nativesdk-)*(.+)(-native)*(-cross)*")
+__class_id_native_regex__ = regex.compile(r"^(.+)(-native)$")
+__class_id_cross_regex__ = regex.compile(r"^(.+)(-cross)$")
+__variable_pattern_regex__ = regex.compile(r"\$\{(.+?)\}")
 
 
 class Stash():
@@ -619,7 +627,7 @@ class Stash():
         Returns:
             list -- safely split input
         """
-        return RegexRpl.split(r"\s|\t|\x1b", string)
+        return RegexRpl.split(__safeline_split_regex__, string)
 
     @functools.cache  # noqa: B019
     def GuessRecipeName(self, _file: str) -> str:
@@ -644,9 +652,9 @@ class Stash():
         Returns:
             str -- recipe name
         """
-        tmp_ = RegexRpl.sub(r"^(nativesdk-)*(.+)(-native)*(-cross)*", r"\2", self.GuessRecipeName(_file))
-        tmp_ = RegexRpl.sub(r"^(.+)(-native)$", r"\1", tmp_)
-        tmp_ = RegexRpl.sub(r"^(.+)(-cross)$", r"\1", tmp_)
+        tmp_ = RegexRpl.sub(__class_id_regex__, r"\2", self.GuessRecipeName(_file))
+        tmp_ = RegexRpl.sub(__class_id_native_regex__, r"\1", tmp_)
+        tmp_ = RegexRpl.sub(__class_id_cross_regex__, r"\1", tmp_)
         return tmp_
 
     @functools.cache  # noqa: B019
@@ -675,11 +683,10 @@ class Stash():
             str -- expanded value
         """
         baseset = CONSTANTS.SetsBase
-        pattern = r"\$\{(.+?)\}"
         seen = seen or {}
         spare = spare or []
         res = str(value)
-        for m in RegexRpl.finditer(pattern, value):
+        for m in RegexRpl.finditer(__variable_pattern_regex__, value):
             if m.group(1) in spare:
                 continue
             _comp = [x for x in self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,

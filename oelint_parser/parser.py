@@ -25,6 +25,29 @@ from oelint_parser.rpl_regex import RegexRpl
 
 INLINE_BLOCK = "!!!inlineblock!!!"
 
+__regex_var = regex.compile(
+    r"^(?P<varname>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)")
+__regex_func = regex.compile(
+    r"^((?P<py>python)\s*|(?P<fr>fakeroot\s*))*(?P<func>[\w\.\-\+\{\}:\$]+)?\s*\(\s*\)\s*\{(?P<funcbody>.*)\s*\}")
+__regex_inherit = regex.compile(r"^(\s|\t)*(?P<statement>inherit(_defer)*)(\s+|\t+)(?P<inhname>.+)")
+__regex_inherit_glob = regex.compile(r"^INHERIT(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)('|\")(?P<inhname>.*)('|\")")
+__regex_export_wval = regex.compile(r"^\s*?export(\s+|\t+)(?P<name>.+)\s*=\s*\"(?P<value>.*)\"")
+__regex_export_woval = regex.compile(r"^\s*?export(\s+|\t+)(?P<name>.+)\s*$")
+__regex_comments = regex.compile(r"^(\s|\t)*#+\s*(?P<body>.*)")
+__regex_python = regex.compile(r"^(\s*|\t*)def(\s+|\t+)(?P<funcname>[a-z0-9_\-]+)(\s*|\t*)\(.*\)\:")
+__regex_include = regex.compile(r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)")
+__regex_addtask = regex.compile(
+    r"^(\s*|\t*)addtask\s+(?P<func>[\w\-]+)\s*((before\s*(?P<before>(([^#\n]*(?=after))|([^#\n]*))))|(after\s*(?P<after>(([^#\n]*(?=before))|([^#\n]*)))))*(?P<comment>#.*|.*?)")
+__regex_deltask = regex.compile(r"^(\s*|\t*)deltask\s+(?P<func>[\w\-]+)\s*(?P<comment>#.*)*")
+__regex_flagass = regex.compile(
+    r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)")
+__regex_export_func = regex.compile(r"^EXPORT_FUNCTIONS\s+(?P<func>.*)")
+__regex_addpylib = regex.compile(r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)")
+__regex_unset = regex.compile(r"^(\s+|\t+)*unset(\s+|\t+)+(?P<varname>.+?)(\[*(?P<flag>.+)\])*")
+__func_start_regexp__ = regex.compile(r".*(((?P<py>python)|(?P<fr>fakeroot))\s*)*(?P<func>[\w\.\-\+\{\}\$]+)?\s*\(\s*\)\s*\{")
+__next_line_regex__ = regex.compile(r"\\\s*\n")
+__valid_func_name_regex__ = regex.compile(r"^[A-Za-z0-9#]+")
+
 
 def get_full_scope(_string: str, offset: int, _sstart: int, _send: int) -> str:
     """get full block of an inline statement
@@ -65,12 +88,12 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
     Returns:
         list: list of preproccessed chunks
     """
-    __func_start_regexp__ = r".*(((?P<py>python)|(?P<fr>fakeroot))\s*)*(?P<func>[\w\.\-\+\{\}\$]+)?\s*\(\s*\)\s*\{"
+
     res = []
     raw_line = raw_line or line
-    if RegexRpl.search(r"\\\s*\n", raw_line):
+    if RegexRpl.search(__next_line_regex__, raw_line):
         _, line = _iter.__next__()
-        while RegexRpl.search(r"\\\s*\n", line):
+        while RegexRpl.search(__next_line_regex__, line):
             raw_line += line
             _, line = _iter.__next__()
         raw_line += line
@@ -99,7 +122,7 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
                 _, line = _iter.__next__()
             except StopIteration:
                 stopiter = True
-            if RegexRpl.match("^[A-Za-z0-9#]+", line) or stopiter:
+            if RegexRpl.match(__valid_func_name_regex__, line) or stopiter:
                 if not stopiter:
                     res += prepare_lines_subparser(_iter,
                                                    lineOffset, num, line, negative=negative)
@@ -166,21 +189,6 @@ def get_items(stash: object,
         list: List of oelint_parser.cls_item.* representations
     """
     res = []
-    __regex_var = r"^(?P<varname>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
-    __regex_func = r"^((?P<py>python)\s*|(?P<fr>fakeroot\s*))*(?P<func>[\w\.\-\+\{\}:\$]+)?\s*\(\s*\)\s*\{(?P<funcbody>.*)\s*\}"
-    __regex_inherit = r"^(\s|\t)*(?P<statement>inherit(_defer)*)(\s+|\t+)(?P<inhname>.+)"
-    __regex_inherit_glob = r"^INHERIT(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)('|\")(?P<inhname>.*)('|\")"
-    __regex_export_wval = r"^\s*?export(\s+|\t+)(?P<name>.+)\s*=\s*\"(?P<value>.*)\""
-    __regex_export_woval = r"^\s*?export(\s+|\t+)(?P<name>.+)\s*$"
-    __regex_comments = r"^(\s|\t)*#+\s*(?P<body>.*)"
-    __regex_python = r"^(\s*|\t*)def(\s+|\t+)(?P<funcname>[a-z0-9_\-]+)(\s*|\t*)\(.*\)\:"
-    __regex_include = r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)"
-    __regex_addtask = r"^(\s*|\t*)addtask\s+(?P<func>[\w\-]+)\s*((before\s*(?P<before>(([^#\n]*(?=after))|([^#\n]*))))|(after\s*(?P<after>(([^#\n]*(?=before))|([^#\n]*)))))*(?P<comment>#.*|.*?)"
-    __regex_deltask = r"^(\s*|\t*)deltask\s+(?P<func>[\w\-]+)\s*(?P<comment>#.*)*"
-    __regex_flagass = r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)"
-    __regex_export_func = r"^EXPORT_FUNCTIONS\s+(?P<func>.*)"
-    __regex_addpylib = r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)"
-    __regex_unset = r"^(\s+|\t+)*unset(\s+|\t+)+(?P<varname>.+?)(\[*(?P<flag>.+)\])*"
 
     _order = collections.OrderedDict([
         ("comment", __regex_comments),
