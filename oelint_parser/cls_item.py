@@ -3,7 +3,6 @@ import textwrap
 from typing import List, Set, Tuple
 
 import regex
-from deprecated import deprecated
 
 from oelint_parser.constants import CONSTANTS
 from oelint_parser.rpl_regex import RegexRpl
@@ -91,16 +90,6 @@ class Item():
             int: [description]
         """
         return self.__InFileLine
-
-    @property
-    @deprecated(reason='Should not be used', version='3.4.0')
-    def IncludedFrom(self) -> Set[str]:
-        return {}
-
-    @property
-    @deprecated(reason='Should not be used', version='3.4.0')
-    def Links(self) -> Set[str]:
-        return {}
 
     @property
     def RealRaw(self) -> str:
@@ -338,18 +327,6 @@ class Variable(Item):
     @VarValue.setter
     def VarValue(self, value: str) -> None:
         self.__VarValue = value
-
-    @property
-    @deprecated(version='3.0.0', reason='Flag values are now part of FlagAssignment class')
-    def Flag(self) -> str:
-        """Flag value (deprecated)
-
-        Use FlagAssignment class instead.
-
-        Returns:
-            str: Empty string.
-        """
-        return ''
 
     @property
     def VarOp(self) -> str:
@@ -1205,62 +1182,6 @@ class MissingFile(Item):
 
     def get_items(self) -> Tuple[str, str]:
         return [self.Filename, self.Statement]
-
-
-@deprecated(version='3.0.0', reason='TaskAssignment is now part of FlagAssignment class')
-class TaskAssignment(Item):
-    """Deprecated. Use FlagAssignment class instead."""
-
-    ATTR_FUNCNAME = "FuncName"
-    ATTR_VAR = "VarName"
-    ATTR_VARVAL = "VarValue"
-    CLASSIFIER = "TaskAssignment"
-
-    def __init__(self, *args, **kwargs):
-        pass
-
-    @property
-    def FuncName(self) -> str:
-        """Deprecated.
-
-        Use FlagAssignment class instead
-
-        Returns:
-            str: Empty string
-        """
-        return ''
-
-    @property
-    def VarValue(self) -> str:
-        """Deprecated.
-
-        Use FlagAssignment class instead
-
-        Returns:
-            str: Empty string
-        """
-        return ''
-
-    @property
-    def VarName(self) -> str:
-        """Deprecated.
-
-        Use FlagAssignment class instead
-
-        Returns:
-            str: Empty string
-        """
-        return ''
-
-    def get_items(self) -> List:
-        """Deprecated.
-
-        Use FlagAssignment class instead
-
-        Returns:
-            list: Empty list
-        """
-        return []
 
 
 class AddPylib(Item):
