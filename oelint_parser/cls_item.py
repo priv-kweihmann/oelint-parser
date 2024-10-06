@@ -2,10 +2,15 @@ import os
 import textwrap
 from typing import List, Set, Tuple
 
+import regex
 from deprecated import deprecated
 
 from oelint_parser.constants import CONSTANTS
 from oelint_parser.rpl_regex import RegexRpl
+
+__safeline_split_regex__ = regex.compile(r"\s|\t|\x1b")
+__id_regex__ = regex.compile(r"[a-z0-9{}$]+")  # noqa: P103
+__versioned_regex__ = regex.compile(r"\s*\(.*?\)")
 
 
 class Item():
@@ -150,7 +155,7 @@ class Item():
         return Item(None, None, None, None, None)._safe_linesplit(string)
 
     def _safe_linesplit(self, string: str) -> List[str]:
-        return [x for x in RegexRpl.split(r"\s|\t|\x1b", string) if x]
+        return [x for x in RegexRpl.split(__safeline_split_regex__, string) if x]
 
     def get_items(self) -> List[str]:
         """Return single items
@@ -183,7 +188,7 @@ class Item():
                 # that addresses things like FILES_${PN}-dev
                 tmp = "-" + "-".join(i.split("-")[1:])
                 i = i.split("-")[0]
-            if RegexRpl.match("[a-z0-9{}$]+", i) and _var[0] != "pkg":  # noqa: P103
+            if RegexRpl.match(__id_regex__, i) and _var[0] != "pkg":  # noqa: P103
                 _suffix.append(i + tmp)
             elif i in ["${PN}"]:
                 _suffix.append(i + tmp)
@@ -430,7 +435,7 @@ class Variable(Item):
         """
         _x = override.strip('"') or self.VarValue.strip('"')
         if versioned:
-            _x = RegexRpl.sub(r"\s*\(.*?\)", "", _x)
+            _x = RegexRpl.sub(__versioned_regex__, "", _x)
         return self._safe_linesplit(_x)
 
     def IsMultiLine(self) -> bool:
