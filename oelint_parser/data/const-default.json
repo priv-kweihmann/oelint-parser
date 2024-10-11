@@ -863,6 +863,7 @@
             "IMAGE_ROOTFS",
             "IMAGE_ROOTFS_ALIGNMENT",
             "IMAGE_ROOTFS_EXTRA_SPACE",
+            "IMAGE_ROOTFS_MAXSIZE",
             "IMAGE_ROOTFS_SIZE",
             "IMAGE_TYPEDEP",
             "IMAGE_TYPES",
