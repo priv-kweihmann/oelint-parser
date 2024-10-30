@@ -564,6 +564,41 @@ class OelintParserTest(unittest.TestCase):
             self.assertEqual(x.VarName, "A")
             self.assertEqual(x.Flag, "my-flag")
 
+    def test_varvaluestripped_non_volatile(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
+                                          attributeValue="LICENSE")
+        self.assertTrue(_stash, msg="Stash has no items")
+
+        first = _stash[0].VarValueStripped
+        # now change
+        _stash[0].VarValue = 'abc'
+
+        self.assertNotEqual(_stash[0].VarValueStripped, first)
+
+    def test_function_stripped_non_volatile(self):
+        from oelint_parser.cls_item import Function
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=Function.CLASSIFIER)
+
+        self.assertTrue(_stash, msg="Stash has no items")
+
+        first = _stash[0].FuncBodyStripped
+        # now change
+        _stash[0].FuncBody = 'abc'
+
+        self.assertNotEqual(_stash[0].FuncBodyStripped, first)
+
 
 if __name__ == "__main__":
     unittest.main()
