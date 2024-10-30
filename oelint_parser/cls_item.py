@@ -286,7 +286,6 @@ class Variable(Item):
         self.__VarValue = value
         self.__VarOp = operator
         self.__RawVarName = self.VarName
-        self.__VarValueStripped = self.VarValue.strip().lstrip('"').rstrip('"')
 
     @property
     def VarName(self) -> str:
@@ -371,7 +370,7 @@ class Variable(Item):
         Returns:
             str: stripped version of variable value
         """
-        return self.__VarValueStripped
+        return self.VarValue.strip().lstrip('"').rstrip('"')
 
     def IsAppend(self) -> bool:
         """Check if operation is an append
@@ -659,8 +658,6 @@ class Function(Item):
         self.__SubItems = [x for x in self.SubItem.split(
             self.OverrideDelimiter) if x]
         self.__FuncBody = body
-        self.__FuncBodyStripped = body.replace(
-            "{", "").replace("}", "").replace("\n", "").strip()
         self.__FuncBodyRaw = textwrap.dedent(
             rawtext[rawtext.find("{") + 1:].rstrip().rstrip("}"))
 
@@ -727,6 +724,10 @@ class Function(Item):
         """
         return self.__FuncBody
 
+    @FuncBody.setter
+    def FuncBody(self, value: str) -> None:
+        self.__FuncBody = value
+
     @property
     def FuncBodyStripped(self) -> str:
         """Stripped function body
@@ -734,7 +735,8 @@ class Function(Item):
         Returns:
             str: stripped function body text
         """
-        return self.__FuncBodyStripped
+        return self.__FuncBody.replace(
+            "{", "").replace("}", "").replace("\n", "").strip()
 
     @property
     def FuncBodyRaw(self) -> str:
