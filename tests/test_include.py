@@ -36,6 +36,26 @@ class OelintIncludeBbFiles(unittest.TestCase):
         values = sorted({y.VarValueStripped for y in _stash})
         self.assertEqual(values, ["1"])
 
+    def test_include_filename(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Include
+
+        self.__stash = Stash()
+        self.__stash.AddFile(self.RECIPE)
+        self.__stash.Finalize()
+
+        _stash = self.__stash.GetItemsFor(filename=self.RECIPE,
+                                          classifier=Include.CLASSIFIER)
+        self.assertTrue(_stash, msg="Stash has items")
+        values = sorted({y.FileIncluded for y in _stash})
+        expected = [
+            os.path.join(os.path.dirname(self.RECIPE), 'test.inc'),
+            os.path.join(os.path.dirname(self.RECIPE), 'test2.inc'),
+            os.path.join(os.path.dirname(self.RECIPE), 'test3.inc'),
+        ]
+
+        assert values == expected
+
 
 if __name__ == "__main__":
     unittest.main()

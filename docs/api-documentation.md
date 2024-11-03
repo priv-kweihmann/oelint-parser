@@ -115,6 +115,7 @@
     * [\_\_init\_\_](#oelint_parser.cls_item.Include.__init__)
     * [IncName](#oelint_parser.cls_item.Include.IncName)
     * [Statement](#oelint_parser.cls_item.Include.Statement)
+    * [FileIncluded](#oelint_parser.cls_item.Include.FileIncluded)
     * [get\_items](#oelint_parser.cls_item.Include.get_items)
   * [Export](#oelint_parser.cls_item.Export)
     * [\_\_init\_\_](#oelint_parser.cls_item.Export.__init__)
@@ -2170,6 +2171,7 @@ def __init__(origin: str,
              infileline: int,
              rawtext: str,
              incname: str,
+             fileincluded: str,
              statement: str,
              realraw: str,
              new_style_override_syntax: bool = False) -> None
@@ -2185,6 +2187,7 @@ constructor
 - `rawtext` _str_ - Raw input string (except inline code blocks)
 - `realraw` _str_ - Unprocessed input
 - `incname` _str_ - raw name of the include file
+- `fileincluded` _str_ - path of the file included
 - `statement` _str_ - either include or require
   
 
@@ -2221,6 +2224,21 @@ statement either include or require
 **Returns**:
 
 - `str` - include or require
+
+<a id="oelint_parser.cls_item.Include.FileIncluded"></a>
+
+#### FileIncluded
+
+```python
+@property
+def FileIncluded() -> str
+```
+
+The file included
+
+**Returns**:
+
+- `str` - path to file
 
 <a id="oelint_parser.cls_item.Include.get_items"></a>
 
