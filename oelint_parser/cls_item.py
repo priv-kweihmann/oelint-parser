@@ -500,6 +500,7 @@ class Include(Item):
     CLASSIFIER = "Include"
     ATTR_INCNAME = "IncName"
     ATTR_STATEMENT = "Statement"
+    ATTR_FILEINCLUDED = "FileIncluded"
 
     def __init__(self,
                  origin: str,
@@ -507,6 +508,7 @@ class Include(Item):
                  infileline: int,
                  rawtext: str,
                  incname: str,
+                 fileincluded: str,
                  statement: str,
                  realraw: str,
                  new_style_override_syntax: bool = False) -> None:
@@ -519,6 +521,7 @@ class Include(Item):
             rawtext {str} -- Raw input string (except inline code blocks)
             realraw {str} -- Unprocessed input
             incname {str} -- raw name of the include file
+            fileincluded {str} -- path of the file included
             statement {str} -- either include or require
 
         Keyword Arguments:
@@ -527,6 +530,7 @@ class Include(Item):
         super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
         self.__IncName = incname
         self.__Statement = statement
+        self.__FileIncluded = fileincluded
 
     @property
     def IncName(self) -> str:
@@ -545,6 +549,15 @@ class Include(Item):
             str: include or require
         """
         return self.__Statement
+
+    @property
+    def FileIncluded(self) -> str:
+        """The file included
+
+        Returns:
+            str: path to file
+        """
+        return self.__FileIncluded
 
     def get_items(self) -> Tuple[str, str]:
         """Get items
