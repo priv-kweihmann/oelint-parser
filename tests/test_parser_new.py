@@ -206,6 +206,48 @@ class OelintParserTestNew(unittest.TestCase):
             self.assertEqual(x.IsAppend(), True)
             self.assertIn('  += ', x.AppendOperation())
 
+    def test_var_flag_slash(self):
+        from oelint_parser.cls_item import FlagAssignment
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=FlagAssignment.CLASSIFIER,
+                                          attribute=FlagAssignment.ATTR_NAME,
+                                          attributeValue="VAR_FLAG_WITH_SLASH")
+        self.assertTrue(_stash, msg="Stash has items")
+        for x in _stash:
+            self.assertEqual(x.Flag, 'abc/def')
+
+    def test_var_flag_at(self):
+        from oelint_parser.cls_item import FlagAssignment
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=FlagAssignment.CLASSIFIER,
+                                          attribute=FlagAssignment.ATTR_NAME,
+                                          attributeValue="VAR_FLAG_WITH_AT")
+        self.assertTrue(_stash, msg="Stash has items")
+        for x in _stash:
+            self.assertEqual(x.Flag, 'abc@def')
+
+    def test_var_flag_underline(self):
+        from oelint_parser.cls_item import FlagAssignment
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTestNew.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=FlagAssignment.CLASSIFIER,
+                                          attribute=FlagAssignment.ATTR_NAME,
+                                          attributeValue="VAR_FLAG_WITH_UNDERLINE")
+        self.assertTrue(_stash, msg="Stash has items")
+        for x in _stash:
+            self.assertEqual(x.Flag, 'abc_def')
+
 
 if __name__ == "__main__":
     unittest.main()
