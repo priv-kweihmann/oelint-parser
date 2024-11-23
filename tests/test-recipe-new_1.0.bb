@@ -16,3 +16,7 @@ Y = "${P}"
 SRCREV_foo = "abcd"
 
 C  += "1"
+
+VAR_FLAG_WITH_SLASH[abc/def] = "abcd"
+VAR_FLAG_WITH_AT[abc@def] = "abcd"
+VAR_FLAG_WITH_UNDERLINE[abc_def] = "abcd"

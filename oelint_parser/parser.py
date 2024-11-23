@@ -40,7 +40,7 @@ __regex_addtask = regex.compile(
     r"^(\s*|\t*)addtask\s+(?P<func>[\w\-]+)\s*((before\s*(?P<before>(([^#\n]*(?=after))|([^#\n]*))))|(after\s*(?P<after>(([^#\n]*(?=before))|([^#\n]*)))))*(?P<comment>#.*|.*?)")
 __regex_deltask = regex.compile(r"^(\s*|\t*)deltask\s+(?P<func>[\w\-]+)\s*(?P<comment>#.*)*")
 __regex_flagass = regex.compile(
-    r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)")
+    r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.|/|@|_)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)")
 __regex_export_func = regex.compile(r"^EXPORT_FUNCTIONS\s+(?P<func>.*)")
 __regex_addpylib = regex.compile(r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)")
 __regex_unset = regex.compile(r"^(\s+|\t+)*unset(\s+|\t+)+(?P<varname>.+?)(\[*(?P<flag>.+)\])*")
