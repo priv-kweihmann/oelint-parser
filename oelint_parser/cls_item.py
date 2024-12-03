@@ -8,7 +8,7 @@ from oelint_parser.constants import CONSTANTS
 from oelint_parser.rpl_regex import RegexRpl
 
 __safeline_split_regex__ = regex.compile(r"\s|\t|\x1b")
-__id_regex__ = regex.compile(r"[a-z0-9{}$]+")  # noqa: P103
+__id_regex__ = regex.compile(r"[a-zA-Z0-9{}$]+")  # noqa: P103
 __versioned_regex__ = regex.compile(r"\s*\(.*?\)")
 
 
