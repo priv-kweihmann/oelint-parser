@@ -5,6 +5,7 @@ from typing import Iterable, List
 import regex
 
 from oelint_parser.cls_item import (
+    AddFragements,
     AddPylib,
     Comment,
     Export,
@@ -44,6 +45,7 @@ __regex_flagass = regex.compile(
 __regex_export_func = regex.compile(r"^EXPORT_FUNCTIONS\s+(?P<func>.*)")
 __regex_addpylib = regex.compile(r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)")
 __regex_unset = regex.compile(r"^(\s+|\t+)*unset(\s+|\t+)+(?P<varname>.+?)(\[*(?P<flag>.+)\])*")
+__regex_addfragments = regex.compile(r"addfragments\s+(?P<path>.+)\s+(?P<variable>.+)\s+(?P<flagged>.+)")
 __func_start_regexp__ = regex.compile(r".*(((?P<py>python)|(?P<fr>fakeroot))\s*)*(?P<func>[\w\.\-\+\{\}\$]+)?\s*\(\s*\)\s*\{")
 __next_line_regex__ = regex.compile(r"\\\s*\n")
 __valid_func_name_regex__ = regex.compile(r"^[A-Za-z0-9#]+")
@@ -205,6 +207,7 @@ def get_items(stash: object,
         ("flagassign", __regex_flagass),
         ("exportfunc", __regex_export_func),
         ("addpylib", __regex_addpylib),
+        ("addfragments", __regex_addfragments),
         ("vars", __regex_var),
     ])
 
@@ -486,6 +489,21 @@ def get_items(stash: object,
                             line["raw"],
                             m.group("path"),
                             m.group("namespace"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
+                    good = True
+                    break
+                elif k == "addfragments":
+                    res.append(
+                        AddFragements(
+                            _file,
+                            line["line"] + includeOffset,
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group("path"),
+                            m.group("variable"),
+                            m.group("flagged"),
                             line["realraw"],
                             new_style_override_syntax=override_syntax_new,
                         ))

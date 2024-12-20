@@ -25,3 +25,20 @@ class OelintParserConf(unittest.TestCase):
         for item in _stash:
             self.assertEqual(item.Path, '${LAYERDIR}/path/to/somewhere')
             self.assertEqual(item.Namespace, 'foo')
+
+    def test_addfragments(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import AddFragements
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserConf.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(classifier=AddFragements.CLASSIFIER)
+
+        print(_stash)
+
+        self.assertEqual(len(_stash), 1, msg="Stash has items")
+
+        for item in _stash:
+            self.assertEqual(item.Path, 'when/I/grow/up/I/going/to/be/a/full/path')
+            self.assertEqual(item.Variable, 'FOO')
+            self.assertEqual(item.Flagged, 'BAR')

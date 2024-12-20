@@ -1260,6 +1260,80 @@ class AddPylib(Item):
         return [self.Path, self.Namespace]
 
 
+class AddFragements(Item):
+    """Items representing addfragment statements in bitbake."""
+
+    CLASSIFIER = "AddFragements"
+    ATTR_PATH = "Path"
+    ATTR_VARIABLE = "Variable"
+    ATTR_FLAGGED = "Flagged"
+
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 path: str,
+                 variable: str,
+                 flagged: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
+        """constructor
+
+        Arguments:
+            origin {str} -- Full path to file of origin
+            line {int} -- Overall line counter
+            infileline {int} -- Line counter in the particular file
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
+            path {str} -- path to the namespace
+            variable {str} -- variable name
+            flagged {str} -- flagged variable name(s)
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
+        """
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
+        self.__Path = path
+        self.__Variable = variable
+        self.__Flagged = flagged
+
+    @property
+    def Path(self) -> str:
+        """Path of the fragment
+
+        Returns:
+            str: path of the fragment
+        """
+        return self.__Path
+
+    @property
+    def Variable(self) -> str:
+        """Variable of the fragment
+
+        Returns:
+            str: Variable of the fragment
+        """
+        return self.__Variable
+
+    @property
+    def Flagged(self) -> str:
+        """Flagged variables of the fragment
+
+        Returns:
+            str: Flagged variables of the fragment
+        """
+        return self.__Flagged
+
+    def get_items(self) -> Tuple[str, str]:
+        """Get items
+
+        Returns:
+            list -- library path, variable, flagged
+        """
+        return [self.Path, self.Variable, self.Flagged]
+
+
 class Inherit(Item):
     """Items that representing inherit(_defer) statements."""
 
