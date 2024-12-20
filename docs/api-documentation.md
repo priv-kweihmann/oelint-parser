@@ -146,6 +146,10 @@
     * [Variable](#oelint_parser.cls_item.AddFragements.Variable)
     * [Flagged](#oelint_parser.cls_item.AddFragements.Flagged)
     * [get\_items](#oelint_parser.cls_item.AddFragements.get_items)
+  * [IncludeAll](#oelint_parser.cls_item.IncludeAll)
+    * [\_\_init\_\_](#oelint_parser.cls_item.IncludeAll.__init__)
+    * [File](#oelint_parser.cls_item.IncludeAll.File)
+    * [get\_items](#oelint_parser.cls_item.IncludeAll.get_items)
   * [Inherit](#oelint_parser.cls_item.Inherit)
     * [\_\_init\_\_](#oelint_parser.cls_item.Inherit.__init__)
     * [Class](#oelint_parser.cls_item.Inherit.Class)
@@ -2754,6 +2758,75 @@ Get items
 **Returns**:
 
 - `list` - library path, variable, flagged
+
+<a id="oelint_parser.cls_item.IncludeAll"></a>
+
+## IncludeAll Objects
+
+```python
+class IncludeAll(Item)
+```
+
+Items representing include_all statements in bitbake.
+
+<a id="oelint_parser.cls_item.IncludeAll.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(origin: str,
+             line: int,
+             infileline: int,
+             rawtext: str,
+             file: str,
+             realraw: str,
+             new_style_override_syntax: bool = False) -> None
+```
+
+constructor
+
+**Arguments**:
+
+- `origin` _str_ - Full path to file of origin
+- `line` _int_ - Overall line counter
+- `infileline` _int_ - Line counter in the particular file
+- `rawtext` _str_ - Raw input string (except inline code blocks)
+- `realraw` _str_ - Unprocessed input
+- `file` _str_ - path to the file
+  
+
+**Arguments**:
+
+- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
+
+<a id="oelint_parser.cls_item.IncludeAll.File"></a>
+
+#### File
+
+```python
+@property
+def File() -> str
+```
+
+Path to include
+
+**Returns**:
+
+- `str` - Path to include
+
+<a id="oelint_parser.cls_item.IncludeAll.get_items"></a>
+
+#### get\_items
+
+```python
+def get_items() -> Tuple[str, str]
+```
+
+Get items
+
+**Returns**:
+
+- `list` - file
 
 <a id="oelint_parser.cls_item.Inherit"></a>
 

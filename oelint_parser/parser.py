@@ -13,6 +13,7 @@ from oelint_parser.cls_item import (
     Function,
     FunctionExports,
     Include,
+    IncludeAll,
     Inherit,
     Item,
     PythonBlock,
@@ -46,6 +47,7 @@ __regex_export_func = regex.compile(r"^EXPORT_FUNCTIONS\s+(?P<func>.*)")
 __regex_addpylib = regex.compile(r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)")
 __regex_unset = regex.compile(r"^(\s+|\t+)*unset(\s+|\t+)+(?P<varname>.+?)(\[*(?P<flag>.+)\])*")
 __regex_addfragments = regex.compile(r"addfragments\s+(?P<path>.+)\s+(?P<variable>.+)\s+(?P<flagged>.+)")
+__regex_includeall = regex.compile(r"include_all\s+(?P<file>.+)")
 __func_start_regexp__ = regex.compile(r".*(((?P<py>python)|(?P<fr>fakeroot))\s*)*(?P<func>[\w\.\-\+\{\}\$]+)?\s*\(\s*\)\s*\{")
 __next_line_regex__ = regex.compile(r"\\\s*\n")
 __valid_func_name_regex__ = regex.compile(r"^[A-Za-z0-9#]+")
@@ -201,6 +203,7 @@ def get_items(stash: object,
         ("export_noval", __regex_export_woval),
         ("python", __regex_python),
         ("include", __regex_include),
+        ("include_all", __regex_includeall),
         ("addtask", __regex_addtask),
         ("deltask", __regex_deltask),
         ("unset", __regex_unset),
@@ -475,6 +478,19 @@ def get_items(stash: object,
                             m.group("incname"),
                             _path or '',
                             m.group("statement"),
+                            line["realraw"],
+                            new_style_override_syntax=override_syntax_new,
+                        ))
+                    good = True
+                    break
+                elif k == "include_all":
+                    res.append(
+                        IncludeAll(
+                            _file,
+                            line["line"],
+                            line["line"] - lineOffset,
+                            line["raw"],
+                            m.group('file'),
                             line["realraw"],
                             new_style_override_syntax=override_syntax_new,
                         ))
