@@ -1274,7 +1274,7 @@ class AddFragements(Item):
                  infileline: int,
                  rawtext: str,
                  path: str,
-                 variable: str,
+                 variable: str,  # noqa: VNE002
                  flagged: str,
                  realraw: str,
                  new_style_override_syntax: bool = False) -> None:
@@ -1345,7 +1345,7 @@ class IncludeAll(Item):
                  line: int,
                  infileline: int,
                  rawtext: str,
-                 file: str,
+                 file: str,  # noqa: VNE002
                  realraw: str,
                  new_style_override_syntax: bool = False) -> None:
         """constructor
