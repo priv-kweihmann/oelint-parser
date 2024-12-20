@@ -1334,6 +1334,54 @@ class AddFragements(Item):
         return [self.Path, self.Variable, self.Flagged]
 
 
+class IncludeAll(Item):
+    """Items representing include_all statements in bitbake."""
+
+    CLASSIFIER = "IncludeAll"
+    ATTR_FILE = "File"
+
+    def __init__(self,
+                 origin: str,
+                 line: int,
+                 infileline: int,
+                 rawtext: str,
+                 file: str,
+                 realraw: str,
+                 new_style_override_syntax: bool = False) -> None:
+        """constructor
+
+        Arguments:
+            origin {str} -- Full path to file of origin
+            line {int} -- Overall line counter
+            infileline {int} -- Line counter in the particular file
+            rawtext {str} -- Raw input string (except inline code blocks)
+            realraw {str} -- Unprocessed input
+            file {str} -- path to the file
+
+        Keyword Arguments:
+            new_style_override_syntax {bool} -- Use ':' a override delimiter (default: {False})
+        """
+        super().__init__(origin, line, infileline, rawtext, realraw, new_style_override_syntax)
+        self.__File = file
+
+    @property
+    def File(self) -> str:
+        """Path to include
+
+        Returns:
+            str: Path to include
+        """
+        return self.__File
+
+    def get_items(self) -> Tuple[str, str]:
+        """Get items
+
+        Returns:
+            list -- file
+        """
+        return [self.File]
+
+
 class Inherit(Item):
     """Items that representing inherit(_defer) statements."""
 
