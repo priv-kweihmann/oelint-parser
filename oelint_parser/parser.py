@@ -139,6 +139,7 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
             raw_line += line
 
     real_raw = raw_line
+    inline_blocks = []
     while "${@" in raw_line:
         _inline_block = raw_line.find("${@")
         repl = get_full_scope(raw_line[_inline_block:], 3, "{", "}")
@@ -146,8 +147,10 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
         if _repl is None:
             _repl = INLINE_BLOCK
         raw_line = raw_line.replace(repl, _repl)
+        inline_blocks.append((repl, _repl))
     res.append({"line": num + 1 + lineOffset, "raw": raw_line,
                 "realraw": real_raw,
+                "inline_blocks": inline_blocks,
                 "cnt": raw_line.replace("\n", "").replace("\\", chr(0x1b))})
     return res
 
@@ -222,90 +225,51 @@ def get_items(stash: object,
 
     for line in prepare_lines(_file, lineOffset, negative=negative):
         good = False
+        parameter = {
+            'infileline': line['line'] - lineOffset,
+            'inline_blocks': line['inline_blocks'],
+            'line': line['line'] + includeOffset,
+            'new_style_override_syntax': override_syntax_new,
+            'origin': _file,
+            'rawtext': line['raw'],
+            'realraw': line['realraw'],
+        }
         for k, v in _order.items():
             m = RegexRpl.match(v, line["cnt"], regex.regex.MULTILINE)
             if m:
                 if k == "python":
-                    res.append(
-                        PythonBlock(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("funcname"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("funcname")
+                    res.append(PythonBlock(**parameter))
                     good = True
                     break
                 elif k == "exportfunc":
-                    res.append(
-                        FunctionExports(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("func"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("func")
+                    res.append(FunctionExports(**parameter))
                     good = True
                     break
                 elif k == "vars":
-                    res.append(
-                        Variable(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("varname"),
-                            m.group("varval"),
-                            m.group("varop"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("varname")
+                    parameter['value'] = m.group("varval")
+                    parameter['operator'] = m.group("varop")
+                    res.append(Variable(**parameter))
                     good = True
                     break
                 elif k == "func":
-                    res.append(
-                        Function(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("func"),
-                            m.group("funcbody"),
-                            line["realraw"],
-                            m.group("py"),
-                            m.group("fr"),
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("func")
+                    parameter['body'] = m.group("funcbody")
+                    parameter['python'] = m.group("py")
+                    parameter['fakeroot'] = m.group("fr")
+                    res.append(Function(**parameter))
                     good = True
                     break
                 elif k == "unset":
-                    res.append(
-                        Unset(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("varname"),
-                            line["realraw"],
-                            flag=(m.groupdict().get("flag", "") or "").strip('[]'),
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("varname")
+                    parameter['flag'] = (m.groupdict().get("flag", "") or "").strip('[]')
+                    res.append(Unset(**parameter))
                     good = True
                     break
                 elif k == "comment":
-                    res.append(
-                        Comment(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    res.append(Comment(**parameter))
                     good = True
                     break
                 elif k == "inherit":
@@ -327,18 +291,10 @@ def get_items(stash: object,
                                 _path, lineOffset=line["line"], forcedLink=_file)
                             if any(tmp):
                                 includeOffset += max([x.InFileLine for x in tmp])
-                    res.append(
-                        Inherit(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("statement"),
-                            m.group("inhname"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                            inherit_file_paths=_found_paths,
-                        ))
+                    parameter['statement'] = m.group("statement")
+                    parameter['classes'] = m.group("inhname")
+                    parameter['inherit_file_paths'] = _found_paths
+                    res.append(Inherit(**parameter))
                     good = True
                     break
                 elif k == "inherit_glob":
@@ -360,62 +316,30 @@ def get_items(stash: object,
                                 _path, lineOffset=line["line"], forcedLink=_file)
                             if any(tmp):
                                 includeOffset += max([x.InFileLine for x in tmp])
-                    res.append(
-                        Inherit(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            "INHERIT",
-                            m.group("inhname"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                            inherit_file_paths=_found_paths,
-                        ))
+                    parameter['statement'] = 'INHERIT'
+                    parameter['classes'] = m.group("inhname")
+                    parameter['inherit_file_paths'] = _found_paths
+                    res.append(Inherit(**parameter))
                     good = True
                     break
                 elif k == "export":
-                    res.append(
-                        Export(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("name").strip(),
-                            m.group("value"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("name").strip()
+                    parameter['value'] = m.group("value")
+                    res.append(Export(**parameter))
                     good = True
                     break
                 elif k == "export_noval":
-                    res.append(
-                        Export(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("name").strip(),
-                            "",
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("name").strip()
+                    parameter['value'] = ''
+                    res.append(Export(**parameter))
                     good = True
                     break
                 elif k == "flagassign":
-                    res.append(
-                        FlagAssignment(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("name"),
-                            m.group("ident"),
-                            m.group("varval"),
-                            m.group("varop"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("name")
+                    parameter['ident'] = m.group("ident")
+                    parameter['value'] = m.group("varval")
+                    parameter['varop'] = m.group("varop")
+                    res.append(FlagAssignment(**parameter))
                     good = True
                     break
                 elif k == "addtask":
@@ -432,33 +356,17 @@ def get_items(stash: object,
                     else:
                         _a = ""
                     _comment = _g.get('comment', '')
-                    res.append(
-                        TaskAdd(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("func"),
-                            line["realraw"],
-                            _b,
-                            _a,
-                            _comment,
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("func")
+                    parameter['before'] = _b
+                    parameter['after'] = _a
+                    parameter['comment'] = _comment
+                    res.append(TaskAdd(**parameter))
                     good = True
                     break
                 elif k == "deltask":
-                    res.append(
-                        TaskDel(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("func"),
-                            m.groupdict().get('comment', ''),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['name'] = m.group("func")
+                    parameter['comment'] = m.groupdict().get('comment', '')
+                    res.append(TaskDel(**parameter))
                     good = True
                     break
                 elif k == "include":
@@ -469,72 +377,32 @@ def get_items(stash: object,
                             _path, lineOffset=line["line"], forcedLink=_file)
                         if any(tmp):
                             includeOffset += max([x.InFileLine for x in tmp])
-                    res.append(
-                        Include(
-                            _file,
-                            line["line"],
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("incname"),
-                            _path or '',
-                            m.group("statement"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['incname'] = m.group("incname")
+                    parameter['fileincluded'] = _path or ''
+                    parameter['statement'] = m.group("statement")
+                    res.append(Include(**parameter))
                     good = True
                     break
                 elif k == "include_all":
-                    res.append(
-                        IncludeAll(
-                            _file,
-                            line["line"],
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group('file'),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['file'] = m.group('file')
+                    res.append(IncludeAll(**parameter))
                     good = True
                     break
                 elif k == "addpylib":
-                    res.append(
-                        AddPylib(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("path"),
-                            m.group("namespace"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['path'] = m.group("path")
+                    parameter['namespace'] = m.group("namespace")
+                    res.append(AddPylib(**parameter))
                     good = True
                     break
                 elif k == "addfragments":
-                    res.append(
-                        AddFragements(
-                            _file,
-                            line["line"] + includeOffset,
-                            line["line"] - lineOffset,
-                            line["raw"],
-                            m.group("path"),
-                            m.group("variable"),
-                            m.group("flagged"),
-                            line["realraw"],
-                            new_style_override_syntax=override_syntax_new,
-                        ))
+                    parameter['path'] = m.group("path")
+                    parameter['variable'] = m.group("variable")
+                    parameter['flagged'] = m.group("flagged")
+                    res.append(AddFragements(**parameter))
                     good = True
                     break
         if not good:
-            res.append(
-                Item(
-                    _file,
-                    line["line"],
-                    line["line"] - lineOffset,
-                    line["raw"],
-                    line["realraw"],
-                    new_style_override_syntax=override_syntax_new,
-                ))
+            res.append(Item(**parameter))
         override_syntax_new |= res[-1].IsNewStyleOverrideSyntax
 
     return res

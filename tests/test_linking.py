@@ -29,7 +29,3 @@ class OelintLinking(unittest.TestCase):
         _links = sorted({os.path.basename(y.Origin) for y in _stash})
         self.assertEqual(_links, ['global-foo.bbclass', 'recipe-foo.bbclass',
                          'test.inc', 'test2.inc', 'test3.inc', 'test_2.bb'])
-
-
-if __name__ == "__main__":
-    unittest.main()
