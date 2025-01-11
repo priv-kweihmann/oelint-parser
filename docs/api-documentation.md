@@ -764,7 +764,8 @@ Get recipe version from filename
 def ExpandTerm(_file: str,
                value: str,
                spare: List[str] = None,
-               seen: List[str] = None) -> str
+               seen: List[str] = None,
+               objref: Variable = None) -> str
 ```
 
 Expand a variable (replacing all variables by known content)
@@ -775,6 +776,7 @@ Expand a variable (replacing all variables by known content)
 - `value` _str_ - Variable value to expand
 - `spare` _list[str]_ - items to keep unexpanded (default: None)
 - `seen` _list[str]_ - seen items (default: None)
+- `objref` _Variable_ - reference to the calling variable instance (default: None)
   
 
 **Returns**:
@@ -997,6 +999,7 @@ def __init__(origin: str,
              infileline: int,
              rawtext: str,
              realraw: str,
+             inline_blocks: List[Tuple[str, str]],
              new_style_override_syntax: bool = False) -> None
 ```
 
@@ -1249,34 +1252,16 @@ Items representing variables in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             name: str,
-             value: str,
-             operator: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(name: str, value: str, operator: str, *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `name` _str_ - Variable name
 - `value` _str_ - Variable value
 - `operator` _str_ - Operation performed to the variable
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.Variable.VarName"></a>
 
@@ -1546,28 +1531,10 @@ Items representing comments in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(*args, **kwargs) -> None
 ```
 
 constructor
-
-**Arguments**:
-
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.Comment.get_items"></a>
 
@@ -1598,34 +1565,17 @@ Items that representing include/require statements.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             incname: str,
-             fileincluded: str,
-             statement: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(incname: str, fileincluded: str, statement: str, *args,
+             **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `incname` _str_ - raw name of the include file
 - `fileincluded` _str_ - path of the file included
 - `statement` _str_ - either include or require
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.Include.IncName"></a>
 
@@ -1701,25 +1651,13 @@ Items representing export statements in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             name: str,
-             value: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(name: str, value: str, *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `name` _str_ - variable name of the export
 - `value` _str_ - (optional) value of the export
   
@@ -1787,27 +1725,18 @@ Items representing task definitions in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             name: str,
+def __init__(name: str,
              body: str,
-             realraw: str,
              python: bool = False,
              fakeroot: bool = False,
-             new_style_override_syntax: bool = False) -> None
+             *args,
+             **kwargs) -> None
 ```
 
 [summary]
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `name` _str_ - Raw function name
 - `body` _str_ - Function body
   
@@ -1816,7 +1745,6 @@ def __init__(origin: str,
 
 - `python` _bool_ - python function according to parser (default: {False})
 - `fakeroot` _bool_ - uses fakeroot (default: {False})
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.Function.IsPython"></a>
 
@@ -2024,30 +1952,14 @@ Items representing python functions in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             name: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(name: str, *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `name` _str_ - Function name
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.PythonBlock.FuncName"></a>
 
@@ -2093,36 +2005,18 @@ Items representing flag assignments in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             name: str,
-             ident: str,
-             value: str,
-             varop: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(name: str, ident: str, value: str, varop: str, *args,
+             **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `name` _str_ - name of task to be modified
 - `ident` _str_ - task flag
 - `value` _str_ - value of modification
 - `varop` _str_ - variable operation
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.FlagAssignment.VarName"></a>
 
@@ -2228,30 +2122,14 @@ Items representing EXPORT_FUNCTIONS in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             name: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(name: str, *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `name` _str_ - name of function to be exported
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.FunctionExports.FuncNames"></a>
 
@@ -2311,27 +2189,18 @@ Items representing addtask statements in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             name: str,
-             realraw: str,
+def __init__(name: str,
              before: str = "",
              after: str = "",
              comment: str = "",
-             new_style_override_syntax: bool = False) -> None
+             *args,
+             **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `name` _str_ - name of task to be executed
   
 
@@ -2340,7 +2209,6 @@ constructor
 - `before` _str_ - before statement (default: {""})
 - `after` _str_ - after statement (default: {""})
 - `comment` _str_ - optional comment (default: {""})
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.TaskAdd.FuncName"></a>
 
@@ -2431,32 +2299,15 @@ Items representing deltask statements in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             name: str,
-             comment: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(name: str, comment: str, *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `name` _str_ - name of task to be executed
 - `comment` _str_ - optional comment
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.TaskDel.FuncName"></a>
 
@@ -2517,28 +2368,15 @@ Items representing missing files found while parsing.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             filename: str,
-             statement: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(filename: str, statement: str, *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
 - `filename` _str_ - filename of the file that can't be found
 - `statement` _str_ - either include or require
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.MissingFile.Filename"></a>
 
@@ -2585,32 +2423,15 @@ Items representing addpylib statements in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             path: str,
-             namespace: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(path: str, namespace: str, *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `path` _str_ - path to the namespace
 - `namespace` _str_ - namespace name
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.AddPylib.Path"></a>
 
@@ -2671,34 +2492,16 @@ Items representing addfragment statements in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             path: str,
-             variable: str,
-             flagged: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(path: str, variable: str, flagged: str, *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `path` _str_ - path to the namespace
 - `variable` _str_ - variable name
 - `flagged` _str_ - flagged variable name(s)
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.AddFragements.Path"></a>
 
@@ -2774,30 +2577,14 @@ Items representing include_all statements in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             file: str,
-             realraw: str,
-             new_style_override_syntax: bool = False) -> None
+def __init__(file: str, *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `file` _str_ - path to the file
-  
-
-**Arguments**:
-
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.IncludeAll.File"></a>
 
@@ -2843,33 +2630,23 @@ Items that representing inherit(_defer) statements.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             statement: str,
+def __init__(statement: str,
              classes: str,
-             realraw: str,
-             new_style_override_syntax: bool = False,
-             inherit_file_paths: Set[str] = None) -> None
+             inherit_file_paths: Set[str] = None,
+             *args,
+             **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `class` _str_ - class code to inherit
 - `statement` _str_ - inherit statement (INHERIT, inherit or inherit_defer)
   
 
 **Arguments**:
 
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 - `inherit_file_paths` _Set[str]_ - Paths of the identified inherited classes
 
 <a id="oelint_parser.cls_item.Inherit.Class"></a>
@@ -2950,32 +2727,19 @@ Items representing unset statements in bitbake.
 #### \_\_init\_\_
 
 ```python
-def __init__(origin: str,
-             line: int,
-             infileline: int,
-             rawtext: str,
-             name: str,
-             realraw: str,
-             flag: str = "",
-             new_style_override_syntax: bool = False) -> None
+def __init__(name: str, flag: str = "", *args, **kwargs) -> None
 ```
 
 constructor
 
 **Arguments**:
 
-- `origin` _str_ - Full path to file of origin
-- `line` _int_ - Overall line counter
-- `infileline` _int_ - Line counter in the particular file
-- `rawtext` _str_ - Raw input string (except inline code blocks)
-- `realraw` _str_ - Unprocessed input
 - `name` _str_ - name of variable to be unset
   
 
 **Arguments**:
 
 - `flag` _str_ - Flag to unset
-- `new_style_override_syntax` _bool_ - Use ':' a override delimiter (default: {False})
 
 <a id="oelint_parser.cls_item.Unset.VarName"></a>
 

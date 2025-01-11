@@ -10,7 +10,7 @@ import regex
 
 from oelint_parser.cls_item import Inherit, Item, Unset, Variable
 from oelint_parser.constants import CONSTANTS
-from oelint_parser.parser import get_items
+from oelint_parser.parser import INLINE_BLOCK, get_items
 from oelint_parser.rpl_regex import RegexRpl
 
 __safeline_split_regex__ = regex.compile(r"\s|\t|\x1b")
@@ -18,6 +18,7 @@ __class_id_regex__ = regex.compile(r"^(nativesdk-)*(.+)(-native)*(-cross)*")
 __class_id_native_regex__ = regex.compile(r"^(.+)(-native)$")
 __class_id_cross_regex__ = regex.compile(r"^(.+)(-cross)$")
 __variable_pattern_regex__ = regex.compile(r"\$\{(.+?)\}")
+__variable_pattern_regex_2__ = regex.compile(r"d.getVar\(.(.+?).(True|False|,|\s+)*\)")
 
 
 class Stash():
@@ -449,7 +450,9 @@ class Stash():
             name = item.VarNameCompleteNoModifiers
             if name not in _exp.keys():
                 _exp[name] = None
-            if varop in [" = ", " := "]:
+            if INLINE_BLOCK in item.VarValueStripped:
+                _exp[name] = self._ReverseInlineBlock(item)
+            elif varop in [" = ", " := "]:
                 _exp[name] = item.VarValueStripped
             elif varop == " ?= " and _exp[name] is None:
                 _exp[name] = item.VarValueStripped
@@ -666,7 +669,13 @@ class Stash():
         _name, _ = os.path.splitext(os.path.basename(_file))
         return _name.split("_")[-1]
 
-    def ExpandTerm(self, _file: str, value: str, spare: List[str] = None, seen: List[str] = None) -> str:
+    def _ReverseInlineBlock(self, varref: Variable) -> str:
+        res = varref.VarValueStripped
+        for item in varref.InlineBlocks:
+            res = res.replace(*reversed(item), 1)
+        return res
+
+    def ExpandTerm(self, _file: str, value: str, spare: List[str] = None, seen: List[str] = None, objref: Variable = None) -> str:
         """Expand a variable (replacing all variables by known content)
 
         Arguments:
@@ -674,6 +683,7 @@ class Stash():
             value {str} -- Variable value to expand
             spare {list[str]} -- items to keep unexpanded (default: None)
             seen {list[str]} -- seen items (default: None)
+            objref {Variable} -- reference to the calling variable instance (default: None)
 
         Returns:
             str -- expanded value
@@ -681,19 +691,24 @@ class Stash():
         baseset = CONSTANTS.SetsBase
         seen = seen or {}
         spare = spare or []
+        if INLINE_BLOCK in value and objref is not None:
+            value = self._ReverseInlineBlock(objref)
         res = str(value)
-        for m in RegexRpl.finditer(__variable_pattern_regex__, value):
+        for m in list(RegexRpl.finditer(__variable_pattern_regex__, value)) + list(RegexRpl.finditer(__variable_pattern_regex_2__, value)):
             if m.group(1) in spare:
                 continue
             _comp = [x for x in self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                                                  attribute=Variable.ATTR_VAR, attributeValue=m.group(1)) if not x.AppendOperation()]
-
             if any(_comp):
                 if m.group(1) in seen.keys():
                     _rpl = seen[m.group(1)]
                 else:
                     seen[m.group(1)] = ""
-                    _rpl = self.ExpandTerm(_file, _comp[0].VarValueStripped, seen=seen)
+                    if INLINE_BLOCK in _comp[0].VarValueStripped:
+                        cnt = self._ReverseInlineBlock(_comp[0])
+                    else:
+                        cnt = _comp[0].VarValueStripped
+                    _rpl = self.ExpandTerm(_file, cnt, seen=seen)
                     seen[m.group(1)] = _rpl
                 res = res.replace(m.group(0), _rpl)
             elif m.group(1) in baseset:
@@ -712,6 +727,8 @@ class Stash():
                 res = res.replace(m.group(0), self.GuessBaseRecipeName(_file))
             elif m.group(1) in ["PV"]:
                 res = res.replace(m.group(0), self.GuessRecipeVersion(_file))
+            elif m.group(1) in ["FILE"]:
+                res = res.replace(m.group(0), f'"{_file}"')
             elif not any(_comp):
                 continue
         return res

@@ -58,7 +58,7 @@ for x in _stash.GetItemsFor(attribute=Variable.ATTR_VAR, attributeValue="PV"):
     # single items from a list
     print(x.get_items())
     # expanded single items from a list
-    print([_stash.ExpandTerm("/some/file", y) for y in x.get_items()])
+    print([_stash.ExpandTerm("/some/file", y, objref=x) for y in x.get_items()])
 ```
 
 ### Filtering

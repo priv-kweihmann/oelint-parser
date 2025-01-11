@@ -493,7 +493,7 @@ class OelintParserTest(unittest.TestCase):
 
         assert len(_stash) == 2
 
-        new_comment = Comment('foo', 1, 1, '# abc', '# def')
+        new_comment = Comment('foo', 1, 1, '# abc', '# def', [])
         self.__stash.Append(new_comment)
 
         _stash = self.__stash.GetItemsFor(classifier=Comment.CLASSIFIER)
