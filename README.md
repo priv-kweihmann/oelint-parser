@@ -191,11 +191,6 @@ Each of the method accepts a dictionary with the same key mapping as listed belo
 | replacements/machines      | list | known machine overrides                               | `oelint_parse.constants.CONSTANT.MachinesKnown`            |
 | replacements/mirrors       | dict | known mirrors                                         | `oelint_parse.constants.CONSTANT.MirrorsKnown`             |
 | variables/known            | list | known variables                                       | `oelint_parse.constants.CONSTANT.VariablesKnown`           |
-| variables/mandatory        | list | variables mandatory to a recipe                       | `oelint_parse.constants.CONSTANT.VariablesMandatory`       |
-| variables/order            | list | preferred order of variables                          | `oelint_parse.constants.CONSTANT.VariablesOrder`           |
-| variables/protected        | list | variables not to be used in recipes                   | `oelint_parse.constants.CONSTANT.VariablesProtected`       |
-| variables/protected-append | list | variables not to be used in bbappends                 | `oelint_parse.constants.CONSTANT.VariablesProtectedAppend` |
-| variables/suggested        | list | suggested variable in a recipe                        | `oelint_parse.constants.CONSTANT.VariablesSuggested`       |
 | sets/base                  | dict | base set of variables always used for value expansion | `oelint_parse.constants.CONSTANT.SetsBase`                 |
 
 For additional constants
