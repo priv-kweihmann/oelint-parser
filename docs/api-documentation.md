@@ -176,12 +176,7 @@
     * [OverrideConstants](#oelint_parser.constants.Constants.OverrideConstants)
     * [FunctionsKnown](#oelint_parser.constants.Constants.FunctionsKnown)
     * [FunctionsOrder](#oelint_parser.constants.Constants.FunctionsOrder)
-    * [VariablesMandatory](#oelint_parser.constants.Constants.VariablesMandatory)
-    * [VariablesSuggested](#oelint_parser.constants.Constants.VariablesSuggested)
     * [MirrorsKnown](#oelint_parser.constants.Constants.MirrorsKnown)
-    * [VariablesProtected](#oelint_parser.constants.Constants.VariablesProtected)
-    * [VariablesProtectedAppend](#oelint_parser.constants.Constants.VariablesProtectedAppend)
-    * [VariablesOrder](#oelint_parser.constants.Constants.VariablesOrder)
     * [VariablesKnown](#oelint_parser.constants.Constants.VariablesKnown)
     * [DistrosKnown](#oelint_parser.constants.Constants.DistrosKnown)
     * [MachinesKnown](#oelint_parser.constants.Constants.MachinesKnown)
@@ -3041,36 +3036,6 @@ Return function order
 
 - `list` - List of functions to order in their designated order
 
-<a id="oelint_parser.constants.Constants.VariablesMandatory"></a>
-
-#### VariablesMandatory
-
-```python
-@property
-def VariablesMandatory() -> List[str]
-```
-
-Return mandatory variables
-
-**Returns**:
-
-- `list` - List of mandatory variables
-
-<a id="oelint_parser.constants.Constants.VariablesSuggested"></a>
-
-#### VariablesSuggested
-
-```python
-@property
-def VariablesSuggested() -> List[str]
-```
-
-Return suggested variables
-
-**Returns**:
-
-- `list` - List of suggested variables
-
 <a id="oelint_parser.constants.Constants.MirrorsKnown"></a>
 
 #### MirrorsKnown
@@ -3085,51 +3050,6 @@ Return known mirrors and their replacements
 **Returns**:
 
 - `dict` - Dict of known mirrors and their replacements
-
-<a id="oelint_parser.constants.Constants.VariablesProtected"></a>
-
-#### VariablesProtected
-
-```python
-@property
-def VariablesProtected() -> List[str]
-```
-
-Return protected variables
-
-**Returns**:
-
-- `list` - List of protected variables
-
-<a id="oelint_parser.constants.Constants.VariablesProtectedAppend"></a>
-
-#### VariablesProtectedAppend
-
-```python
-@property
-def VariablesProtectedAppend() -> List[str]
-```
-
-Return protected variables in bbappend files
-
-**Returns**:
-
-- `list` - List of protected variables in bbappend files
-
-<a id="oelint_parser.constants.Constants.VariablesOrder"></a>
-
-#### VariablesOrder
-
-```python
-@property
-def VariablesOrder() -> List[str]
-```
-
-Variable order
-
-**Returns**:
-
-- `list` - List of variables to order in their designated order
 
 <a id="oelint_parser.constants.Constants.VariablesKnown"></a>
 

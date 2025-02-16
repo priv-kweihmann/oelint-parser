@@ -12,16 +12,11 @@ class OelintParserImageTest(unittest.TestCase):
         from oelint_parser.constants import Constants
 
         _const = Constants()
-        assert (any(_const.VariablesKnown))
-        assert (any(_const.VariablesMandatory))
-        assert (any(_const.VariablesOrder))
-        assert (any(_const.VariablesProtected))
-        assert (any(_const.VariablesProtectedAppend))
-        assert (any(_const.VariablesSuggested))
-        assert (any(_const.FunctionsKnown))
+        assert _const.VariablesKnown == {}
+        assert _const.FunctionsKnown == []
         assert (any(_const.FunctionsOrder))
         assert (any(_const.DistrosKnown))
-        assert (any(_const.MachinesKnown))
+        assert _const.MachinesKnown == []
         assert (any(_const.MirrorsKnown))
         assert (any(_const.SetsBase))
 

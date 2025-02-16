@@ -106,24 +106,6 @@ class Constants():
         return self.GetByPath('functions/order')
 
     @property
-    def VariablesMandatory(self) -> List[str]:
-        """Return mandatory variables
-
-        Returns:
-            list: List of mandatory variables
-        """
-        return self.GetByPath('variables/mandatory')
-
-    @property
-    def VariablesSuggested(self) -> List[str]:
-        """Return suggested variables
-
-        Returns:
-            list: List of suggested variables
-        """
-        return self.GetByPath('variables/suggested')
-
-    @property
     def MirrorsKnown(self) -> Dict[str, str]:
         """Return known mirrors and their replacements
 
@@ -131,33 +113,6 @@ class Constants():
             dict: Dict of known mirrors and their replacements
         """
         return self.GetByPath('replacements/mirrors')
-
-    @property
-    def VariablesProtected(self) -> List[str]:
-        """Return protected variables
-
-        Returns:
-            list: List of protected variables
-        """
-        return self.GetByPath('variables/protected')
-
-    @property
-    def VariablesProtectedAppend(self) -> List[str]:
-        """Return protected variables in bbappend files
-
-        Returns:
-            list: List of protected variables in bbappend files
-        """
-        return self.GetByPath('variables/protected-append')
-
-    @property
-    def VariablesOrder(self) -> List[str]:
-        """Variable order
-
-        Returns:
-            list: List of variables to order in their designated order
-        """
-        return self.GetByPath('variables/order')
 
     @property
     def VariablesKnown(self) -> List[str]:
