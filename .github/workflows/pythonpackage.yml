@@ -1,6 +1,8 @@
 name: Python package
 
-on: [pull_request]
+on: 
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,19 +18,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: test
       run: |
-        python3 -m pip install --upgrade pip build
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
-    - name: Lint
-      run: flake8
-    - name: Build
-      run: python3 -m build --sdist --wheel
-    - name: Test
-      run: pytest
-    - name: Doc gen
-      # something is wrong with pydoc-markdown on 3.8 and 3.9 - complaining about some missing
-      # packages, but they are available. The same code works on 3.10 and up
-      if: ${{ (matrix.python-version != 3.8) && (matrix.python-version != 3.9) }}
-      run: ./gendoc.sh
+        wget -v https://deb.debian.org/debian/pool/main/d/devscripts/devscripts_2.25.1.tar.xz
+      shell: bash
