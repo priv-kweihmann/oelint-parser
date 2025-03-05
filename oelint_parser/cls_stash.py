@@ -605,7 +605,10 @@ class Stash():
             dict -- scheme: protocol used, src: source URI, options: parsed options
         """
         _raw = self._replace_with_known_mirrors(string)
-        _url = urlparse(self._replace_with_known_mirrors(string))
+        try:
+            _url = urlparse(self._replace_with_known_mirrors(string))
+        except ValueError:
+            return {"scheme": '', "src": '', "options": {}}
         _scheme = _url.scheme
         _tmp = _url.netloc
         if _url.path:
