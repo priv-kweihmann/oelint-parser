@@ -60,3 +60,31 @@ class OelintParserSyntaxIssuesTest(unittest.TestCase):
 
         for x in _stash:
             self.assertEqual(x.FuncName, 'do-bar')
+
+    def test_urlparse(self):
+        from oelint_parser.cls_item import TaskDel
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+
+        res = self.__stash.GetScrComponents('http://foo.bar/baz.git;test1=1;test2=2')
+
+        assert "scheme" in res
+        assert "src" in res
+        assert "options" in res
+
+        assert "http" == res["scheme"]
+        assert "foo.bar/baz.git" == res["src"]
+        assert "test1" in res["options"]
+        assert "test2" in res["options"]
+
+        res = self.__stash.GetScrComponents("file://${@'.'.join(d.getVar('LINUX_VERSION').split('.')[0:2])};test1=1;test2=2")
+
+        assert "scheme" in res
+        assert "src" in res
+        assert "options" in res
+
+        assert not res["scheme"]
+        assert not res["src"]
+        assert "test1" not in res["options"]
+        assert "test2" not in res["options"]
