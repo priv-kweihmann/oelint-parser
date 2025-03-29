@@ -306,6 +306,7 @@ class Stash():
 
     @functools.cache  # noqa: B019
     def __is_linked_to(self, item: Item, filename: str, nolink: bool = False) -> bool:
+        filename = os.path.abspath(filename)
         return (item.Origin in self.__map.get(filename, {}) and not nolink) or filename == item.Origin
 
     @functools.cache  # noqa: B019
