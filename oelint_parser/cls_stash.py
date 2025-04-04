@@ -165,7 +165,7 @@ class Stash():
         """
         _file = os.path.abspath(_file)
         _, _ext = os.path.splitext(_file)
-        if _file in self.__seen_files and _ext not in [".inc", ".bb", ".conf"]:
+        if _file in self.__seen_files and _ext not in [".inc", ".bb", ".conf", ".bbclass"]:
             return []
         if not self.__quiet:
             print("Parsing {file}".format(file=_file))
@@ -305,8 +305,16 @@ class Stash():
         return list({x.Origin for x in self.__list if x.Origin.endswith(".conf")})
 
     @functools.cache  # noqa: B019
+    def GetBBClasses(self) -> List[str]:
+        """Get bbclass files
+
+        Returns:
+            List[str]: List of bbclass files
+        """
+        return sorted({x.Origin for x in self.__list if x.Origin.endswith(".bbclass")})
+
+    @functools.cache  # noqa: B019
     def __is_linked_to(self, item: Item, filename: str, nolink: bool = False) -> bool:
-        filename = os.path.abspath(filename)
         return (item.Origin in self.__map.get(filename, {}) and not nolink) or filename == item.Origin
 
     @functools.cache  # noqa: B019
