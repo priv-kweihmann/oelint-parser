@@ -126,6 +126,7 @@ class Stash():
         """
         self.__list = []
         self.__seen_files = set()
+        self.__seen_classes = set()
         self.__map = {}
         self.__quiet = quiet
         self.__new_style_override_syntax = new_style_override_syntax
@@ -167,9 +168,13 @@ class Stash():
         _, _ext = os.path.splitext(_file)
         if _file in self.__seen_files and _ext not in [".inc", ".bb", ".conf", ".bbclass"]:
             return []
+        if _file in self.__seen_classes:
+            return []
         if not self.__quiet:
             print("Parsing {file}".format(file=_file))
         self.__seen_files.add(_file)
+        if _ext in [".bbclass"]:
+            self.__seen_classes.add(_file)
         res = get_items(self,
                         _file,
                         lineOffset=lineOffset,
