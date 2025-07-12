@@ -117,6 +117,7 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
                     scope_level -= 1
                     if scope_level <= 0:
                         stopiter = True
+                        break
                 try:
                     _, line = _iter.__next__()
                 except StopIteration:
