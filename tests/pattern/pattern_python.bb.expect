@@ -1,0 +1,24 @@
+[
+    {
+        "FuncName": "abc",
+        "Line": 1,
+        "Raw": "def abc():\n    a = 1\n\n    def nested():\n        b = 2\n\n    c = 2\n\n",
+        "InFileLine": 1,
+        "RealRaw": "def abc():\n    a = 1\n\n    def nested():\n        b = 2\n\n    c = 2\n\n",
+        "IsFromClass": false,
+        "OverrideDelimiter": "_",
+        "IsNewStyleOverrideSyntax": false,
+        "InlineBlocks": []
+    },
+    {
+        "FuncName": "def",
+        "Line": 10,
+        "Raw": "def def():\n    d = 2\n\n",
+        "InFileLine": 10,
+        "RealRaw": "def def():\n    d = 2\n\n",
+        "IsFromClass": false,
+        "OverrideDelimiter": "_",
+        "IsNewStyleOverrideSyntax": false,
+        "InlineBlocks": []
+    }
+]
