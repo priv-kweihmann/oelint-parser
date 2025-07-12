@@ -78,7 +78,7 @@ def get_full_scope(_string: str, offset: int, _sstart: int, _send: int) -> str:
     return _string[:pos + offset]
 
 
-def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: int, raw_line: str = None, negative: bool = False) -> List[str]:
+def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: int, raw_line: str = None, negative: bool = False) -> tuple[dict, str]:
     """preprocess raw input
 
     Args:
@@ -90,53 +90,58 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
         negative (bool): Negative branch inline expansion. Defaults to False
 
     Returns:
-        list: list of preproccessed chunks
+        tuple[dict, str]: preproccessed chunk, buffer for next iteration
     """
 
-    res = []
+    res = {}
     raw_line = raw_line or line
-    if RegexRpl.search(__next_line_regex__, raw_line):
-        _, line = _iter.__next__()
-        while RegexRpl.search(__next_line_regex__, line):
-            raw_line += line
+
+    def iterate(_iter: Iterable, buffer: str) -> tuple[str, str]:
+        res = buffer
+        next_ = ''
+        if RegexRpl.search(__next_line_regex__, res):
             _, line = _iter.__next__()
-        raw_line += line
-    elif RegexRpl.match(__func_start_regexp__, raw_line):
-        _, line = _iter.__next__()
-        stopiter = False
-        scope_level = 0
-        while not stopiter:
-            raw_line += line
-            if "{" in line:
-                scope_level += 1
-            if "}" in line:
-                scope_level -= 1
-            try:
+            while RegexRpl.search(__next_line_regex__, line):
+                res += line
                 _, line = _iter.__next__()
-            except StopIteration:
-                stopiter = True
-            if line.strip() == "}" and not scope_level:
-                stopiter = True
-        if line.strip() == "}":
-            raw_line += line
-    elif raw_line.strip().startswith("def "):
-        stopiter = False
-        while not stopiter:
-            try:
-                _, line = _iter.__next__()
-            except StopIteration:
-                stopiter = True
-            if RegexRpl.match(__valid_func_name_regex__, line) or stopiter:
-                if not stopiter:
-                    res += prepare_lines_subparser(_iter,
-                                                   lineOffset, num, line, negative=negative)
-                break
-            if line.startswith("def "):
-                raw_line = line
-                res += prepare_lines_subparser(_iter,
-                                               lineOffset, num, line, raw_line=raw_line, negative=negative)
-                break
-            raw_line += line
+            res += line
+        elif RegexRpl.match(__func_start_regexp__, res):
+            _, line = _iter.__next__()
+            stopiter = False
+            scope_level = 0
+            while not stopiter:
+                res += line
+                if "{" in line:
+                    scope_level += 1
+                if "}" in line:
+                    scope_level -= 1
+                    if scope_level <= 0:
+                        stopiter = True
+                try:
+                    _, line = _iter.__next__()
+                except StopIteration:
+                    stopiter = True
+            if line.strip() == "}":
+                res += line
+        elif res.strip().startswith("def "):
+            stopiter = False
+            while not stopiter:
+                try:
+                    _, line = _iter.__next__()
+                except StopIteration:
+                    stopiter = True
+                if stopiter:
+                    break
+                elif RegexRpl.match(__valid_func_name_regex__, line):
+                    next_ = line
+                    break
+                if line.startswith("def "):
+                    next_ = line
+                    break
+                res += line
+        return (res, next_)
+
+    raw_line, nextbuf = iterate(_iter, raw_line)
 
     real_raw = raw_line
     inline_blocks = []
@@ -148,11 +153,11 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
             _repl = INLINE_BLOCK
         raw_line = raw_line.replace(repl, _repl)
         inline_blocks.append((repl, _repl))
-    res.append({"line": num + 1 + lineOffset, "raw": raw_line,
-                "realraw": real_raw,
-                "inline_blocks": inline_blocks,
-                "cnt": raw_line.replace("\n", "").replace("\\", chr(0x1b))})
-    return res
+    res = {"line": num + 1 + lineOffset, "raw": raw_line,
+           "realraw": real_raw,
+           "inline_blocks": inline_blocks,
+           "cnt": raw_line.replace("\n", "").replace("\\", chr(0x1b))}
+    return (res, nextbuf)
 
 
 def prepare_lines(_file: str, lineOffset: int = 0, negative: bool = False) -> List[str]:
@@ -170,9 +175,11 @@ def prepare_lines(_file: str, lineOffset: int = 0, negative: bool = False) -> Li
         prep_lines = []
         with open(_file) as i:
             _iter = enumerate(i.readlines())
+            nextbuf = ''
             for num, line in _iter:
-                prep_lines += prepare_lines_subparser(
-                    _iter, lineOffset, num, line, negative=negative)
+                line = nextbuf + line
+                item, nextbuf = prepare_lines_subparser(_iter, lineOffset, num, line, negative=negative)
+                prep_lines.append(item)
     except FileNotFoundError:
         pass
     return prep_lines
