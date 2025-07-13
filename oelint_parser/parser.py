@@ -111,19 +111,15 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
             scope_level = 0
             while not stopiter:
                 res += line
-                if "{" in line:
-                    scope_level += 1
-                if "}" in line:
-                    scope_level -= 1
-                    if scope_level <= 0:
-                        stopiter = True
-                        break
+                scope_level += line.count('{')
+                scope_level -= line.count('}')
+                if scope_level < 0:
+                    stopiter = True
+                    break
                 try:
                     _, line = _iter.__next__()
                 except StopIteration:
                     stopiter = True
-            if line.strip() == "}":
-                res += line
         elif res.strip().startswith("def "):
             stopiter = False
             while not stopiter:

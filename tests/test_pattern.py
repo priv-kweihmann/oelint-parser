@@ -7,6 +7,8 @@ import logging
 @pytest.mark.parametrize('file',
                          [
                              'pattern_var.bb',
+                             'pattern_python.bb',
+                             'pattern_function.bb',
                          ],
                          )
 def test_pattern(file):
