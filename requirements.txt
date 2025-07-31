@@ -1,2 +1,2 @@
-regex == 2025.7.33
+regex == 2025.7.34
 Deprecated ~= 1.2
