@@ -30,7 +30,7 @@ pytest-forked == 1.6.0
 pytest-icdiff == 0.9
 pytest-random-order == 1.2.0
 pytest-socket == 0.7.0
-pytest-sugar == 1.1.0
+pytest-sugar == 1.1.1
 pytest-tldr == 0.2.5
 twine == 6.1.0
 wheel ~= 0.45
