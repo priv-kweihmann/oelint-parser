@@ -79,7 +79,7 @@ def get_full_scope(_string: str, offset: int, _sstart: int, _send: int) -> str:
     return _string[:pos + offset]
 
 
-def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: int, raw_line: str = None, negative: bool = False) -> tuple[dict, str]:
+def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: int, raw_line: str = None, negative: bool = False) -> tuple[dict, str, int]:
     """preprocess raw input
 
     Args:
@@ -91,11 +91,12 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
         negative (bool): Negative branch inline expansion. Defaults to False
 
     Returns:
-        tuple[dict, str]: preproccessed chunk, buffer for next iteration
+        tuple[dict, str, int]: preproccessed chunk, buffer for next iteration, number of lines
     """
 
     res = {}
     raw_line = raw_line or line
+    startnum = num
 
     def iterate(_iter: Iterable, buffer: str) -> tuple[str, str]:
         res = buffer
@@ -128,7 +129,7 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
                     _, line = _iter.__next__()
                     if not RegexRpl.search(__regex_comments_pure, line):
                         stopiter = True
-                        next_ = line.strip()
+                        next_ = line
                     else:
                         res += line
                         next_ = ''
@@ -152,9 +153,11 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
                     next_ = line
                     break
                 res += line
-        return (res, next_)
+        elif res == '':
+            res = '\n'
+        return (res, next_, res.count('\n'))
 
-    raw_line, nextbuf = iterate(_iter, raw_line)
+    raw_line, nextbuf, length = iterate(_iter, raw_line)
 
     real_raw = raw_line
     inline_blocks = []
@@ -166,11 +169,11 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
             _repl = INLINE_BLOCK
         raw_line = raw_line.replace(repl, _repl)
         inline_blocks.append((repl, _repl))
-    res = {"line": num + 1 + lineOffset, "raw": raw_line,
+    res = {"line": startnum + lineOffset, "raw": raw_line,
            "realraw": real_raw,
            "inline_blocks": inline_blocks,
            "cnt": raw_line.replace("\n", "").replace("\\", chr(0x1b))}
-    return (res, nextbuf)
+    return (res, nextbuf, length)
 
 
 def prepare_lines(_file: str, lineOffset: int = 0, negative: bool = False) -> List[str]:
@@ -189,10 +192,21 @@ def prepare_lines(_file: str, lineOffset: int = 0, negative: bool = False) -> Li
         with open(_file) as i:
             _iter = enumerate(i.readlines())
             nextbuf = ''
-            for num, line in _iter:
+            num = 1
+            while True:
+                _, line = next(_iter, (0, None))
+                if line is None and not nextbuf:
+                    break
+                elif line is None:
+                    line = ''
                 line = nextbuf + line
-                item, nextbuf = prepare_lines_subparser(_iter, lineOffset, num, line, negative=negative)
+                item, nextbuf, length = prepare_lines_subparser(_iter, lineOffset, num, line, negative=negative)
+                num += length
                 prep_lines.append(item)
+                if nextbuf:
+                    item, nextbuf, length = prepare_lines_subparser(_iter, lineOffset, num, nextbuf, negative=negative)
+                    num += length
+                    prep_lines.append(item)
     except FileNotFoundError:
         pass
     return prep_lines

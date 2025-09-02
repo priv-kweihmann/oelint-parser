@@ -10,3 +10,6 @@ def some_python_code():
 do_example() {
     bbwarn "This is an example warning"
 }
+
+# another one
+TEST_ABC = "1"
