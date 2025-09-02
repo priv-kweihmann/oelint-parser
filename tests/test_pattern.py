@@ -9,6 +9,7 @@ import logging
                              'pattern_var.bb',
                              'pattern_python.bb',
                              'pattern_function.bb',
+                             'pattern_comment_py.bb',
                          ],
                          )
 def test_pattern(file):

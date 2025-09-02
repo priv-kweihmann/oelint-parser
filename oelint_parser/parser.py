@@ -36,6 +36,7 @@ __regex_inherit_glob = regex.compile(r"^INHERIT(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=
 __regex_export_wval = regex.compile(r"^\s*?export(\s+|\t+)(?P<name>.+)\s*=\s*\"(?P<value>.*)\"")
 __regex_export_woval = regex.compile(r"^\s*?export(\s+|\t+)(?P<name>.+)\s*$")
 __regex_comments = regex.compile(r"^(\s|\t)*#+\s*(?P<body>.*)")
+__regex_comments_pure = regex.compile(r"^#+\s*(?P<body>.*)")
 __regex_python = regex.compile(r"^(\s*|\t*)def(\s+|\t+)(?P<funcname>[a-z0-9_\-]+)(\s*|\t*)\(.*\)\:")
 __regex_include = regex.compile(r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)")
 __regex_addtask = regex.compile(
@@ -120,6 +121,20 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
                     _, line = _iter.__next__()
                 except StopIteration:
                     stopiter = True
+        elif RegexRpl.search(__regex_comments_pure, res):
+            stopiter = False
+            while not stopiter:
+                try:
+                    _, line = _iter.__next__()
+                    if not RegexRpl.search(__regex_comments_pure, line):
+                        stopiter = True
+                        next_ = line.strip()
+                    else:
+                        res += line
+                        next_ = ''
+                except StopIteration:
+                    stopiter = True
+                    next_ = ''
         elif res.strip().startswith("def "):
             stopiter = False
             while not stopiter:
@@ -127,6 +142,7 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
                     _, line = _iter.__next__()
                 except StopIteration:
                     stopiter = True
+                    next_ = ''
                 if stopiter:
                     break
                 elif RegexRpl.match(__valid_func_name_regex__, line):

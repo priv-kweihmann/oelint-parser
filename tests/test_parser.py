@@ -491,14 +491,14 @@ class OelintParserTest(unittest.TestCase):
 
         _stash = self.__stash.GetItemsFor(classifier=Comment.CLASSIFIER)
 
-        assert len(_stash) == 2
+        assert len(_stash) == 1
 
         new_comment = Comment('foo', 1, 1, '# abc', '# def', [])
         self.__stash.Append(new_comment)
 
         _stash = self.__stash.GetItemsFor(classifier=Comment.CLASSIFIER)
 
-        assert len(_stash) == 3
+        assert len(_stash) == 2
 
     def test_inherit(self):
         from oelint_parser.cls_item import Inherit

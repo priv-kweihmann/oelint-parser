@@ -1,0 +1,52 @@
+[
+    {
+        "Line": 1,
+        "Raw": "# Some comment\n# with more than a single line\n",
+        "InFileLine": 1,
+        "RealRaw": "# Some comment\n# with more than a single line\n",
+        "IsFromClass": false,
+        "OverrideDelimiter": "_",
+        "IsNewStyleOverrideSyntax": false,
+        "InlineBlocks": []
+    },
+    {
+        "FuncName": "some_python_code",
+        "Line": 4,
+        "Raw": "def some_python_code():    result = ''\n    return result\n\n",
+        "InFileLine": 4,
+        "RealRaw": "def some_python_code():    result = ''\n    return result\n\n",
+        "IsFromClass": false,
+        "OverrideDelimiter": "_",
+        "IsNewStyleOverrideSyntax": false,
+        "InlineBlocks": []
+    },
+    {
+        "Line": 8,
+        "Raw": "# Just a comment\n# across multiple lines\n",
+        "InFileLine": 8,
+        "RealRaw": "# Just a comment\n# across multiple lines\n",
+        "IsFromClass": false,
+        "OverrideDelimiter": "_",
+        "IsNewStyleOverrideSyntax": false,
+        "InlineBlocks": []
+    },
+    {
+        "IsPython": false,
+        "IsFakeroot": false,
+        "FuncName": "do_example",
+        "FuncNameComplete": "do_example",
+        "SubItem": "",
+        "SubItems": [],
+        "FuncBody": "    bbwarn \"This is an example warning\"",
+        "FuncBodyStripped": "bbwarn \"This is an example warning\"",
+        "FuncBodyRaw": "\nbbwarn \"This is an example warning\"\n",
+        "Line": 10,
+        "Raw": "do_example() {\n    bbwarn \"This is an example warning\"\n}\n",
+        "InFileLine": 10,
+        "RealRaw": "do_example() {\n    bbwarn \"This is an example warning\"\n}\n",
+        "IsFromClass": false,
+        "OverrideDelimiter": "_",
+        "IsNewStyleOverrideSyntax": false,
+        "InlineBlocks": []
+    }
+]
