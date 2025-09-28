@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+dynamic.optional-dependencies = {dev = { file = ["requirements-dev.txt"] }}
+include-package-data = false
+package-data.oelint_parser = ["data/*"]
+packages.find.where = ["oelint_parser"] 
+packages.find.exclude = ["docs*", "tests*", ".*tests*", "tests", ".*tests.*"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=oelint_parser --cov-report term-missing --cov-branch --forked --no-header --quiet --random-order --random-order-bucket=global --showlocals -rs"
+
+[tool.flake8]
+no-accept-encodings = true
+max-line-length = 127
+max-complexity = 10
+ignore = [
+    "C901",
+    "CFQ001",
+    "CFQ002",
+    "CFQ004",
+    "D1",
+    "D2",
+    "D4",
+    "DAR",
+    "E261",
+    "E302",
+    "E501",
+    "I001",
+    "I005",
+    "N802",
+    "N803",
+    "N806",
+    "Q000",
+    "T201",
+    "VNE001",
+    "W504"
+]
+exclude = [ "tests/*" ]
+statistics = false
+
+[[tool.pydoc-markdown.loaders]]
+type = "python"
+
+[tool.pydoc-markdown.renderer]
+type = "markdown"
+filename = "docs/api-documentation.md"
+encoding = "utf-8"
+
+[project]
+name = "oelint-parser"
+requires-python = ">= 3.9"
+version = "8.4.3"
+description = "Alternative parser for bitbake recipe"
+readme = "README.md"
+maintainers = [
+  {name = "Konrad Weihmann", email = "kweihmann@outlook.com"}
+]
+license = "BSD-2-Clause"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.9",
+]
+dependencies = [
+  "regex == 2025.9.18",
+  "Deprecated ~= 1.2"
+]
+dynamic = ["optional-dependencies"]
+
+[project.urls]
+homepage = "https://github.com/priv-kweihmann/oelint-parser"
+repository = "https://github.com/priv-kweihmann/oelint-parser.git"
+bugtracker = "https://github.com/priv-kweihmann/oelint-parser/issues"

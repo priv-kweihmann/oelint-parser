@@ -210,7 +210,7 @@ Before any contribution please run the following
 ```shell
 python3 -m venv --clear .env
 . .env/bin/activate
-pip install -r requirements.txt -r requirements-dev.txt
+pip install .[dev]
 flake8 oelint_parser/ tests/
 pytest
 ./gendoc.sh
