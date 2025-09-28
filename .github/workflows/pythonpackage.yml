@@ -25,7 +25,11 @@ jobs:
     - name: Build
       run: python3 -m build --sdist --wheel
     - name: Test
-      run: pytest
+      run: |
+        if [ "${{ matrix.python-version }}" = "3.12" ]; then
+          export COVERAGE_CORE=sysmon
+        fi
+        pytest
     - name: Doc gen
       # something is wrong with pydoc-markdown on 3.8 and 3.9 - complaining about some missing
       # packages, but they are available. The same code works on 3.10 and up
