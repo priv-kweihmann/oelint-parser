@@ -91,7 +91,8 @@ jobs:
       id: version-bump
       run: |
         pip install .[dev]
-        bump2version --list ${{ steps.release-needed.outputs.RELEASE_TYPE }} ${{ env.VERSION_FILE }} >> $GITHUB_OUTPUT
+        bump-my-version bump --verbose ${{ steps.release-needed.outputs.RELEASE_TYPE }}
+        echo "new_version=$(bump-my-version show current_version)" >> $GITHUB_OUTPUT
       
     - name: Build
       if: steps.release-needed.outputs.DO_RELEASE == 'true'
