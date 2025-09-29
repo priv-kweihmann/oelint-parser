@@ -11,7 +11,7 @@ commit = false
 dynamic.optional-dependencies = {dev = { file = ["requirements-dev.txt"] }}
 include-package-data = false
 package-data.oelint_parser = ["data/*"]
-packages.find.where = ["oelint_parser"] 
+packages.find.where = ["."] 
 packages.find.exclude = ["docs*", "tests*", ".*tests*", "tests", ".*tests.*"]
 
 [tool.pytest.ini_options]
