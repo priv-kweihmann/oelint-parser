@@ -168,5 +168,23 @@ class Constants():
         """
         return self.GetByPath('sets/base')
 
+    @property
+    def ClassIgnore(self) -> List[str]:
+        """_summary_
+
+        Returns:
+            List[str]: List of classes to ignore
+        """
+        return self.GetByPath('ignore/classes')
+
+    @property
+    def IncludeIgnore(self) -> List[str]:
+        """Includes to ignore
+
+        Returns:
+            List[str]: List of paths to ignore
+        """
+        return self.GetByPath('ignore/include')
+
 
 CONSTANTS = getattr(sys.modules[__name__], 'CONSTANTS', Constants())

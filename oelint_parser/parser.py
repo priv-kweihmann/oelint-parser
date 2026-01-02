@@ -24,6 +24,7 @@ from oelint_parser.cls_item import (
 )
 from oelint_parser.inlinerep import inlinerep
 from oelint_parser.rpl_regex import RegexRpl
+from oelint_parser.constants import CONSTANTS
 
 INLINE_BLOCK = "!!!inlineblock!!!"
 
@@ -31,25 +32,35 @@ __regex_var = regex.compile(
     r"^(?P<varname>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)")
 __regex_func = regex.compile(
     r"^((?P<py>python)\s*|(?P<fr>fakeroot\s*))*(?P<func>[\w\.\-\+\{\}:\$]+)?\s*\(\s*\)\s*\{(?P<funcbody>.*)\s*\}")
-__regex_inherit = regex.compile(r"^(\s|\t)*(?P<statement>inherit(_defer)*)(\s+|\t+)(?P<inhname>.+)")
-__regex_inherit_glob = regex.compile(r"^INHERIT(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)('|\")(?P<inhname>.*)('|\")")
-__regex_export_wval = regex.compile(r"^\s*?export(\s+|\t+)(?P<name>.+)\s*=\s*\"(?P<value>.*)\"")
+__regex_inherit = regex.compile(
+    r"^(\s|\t)*(?P<statement>inherit(_defer)*)(\s+|\t+)(?P<inhname>.+)")
+__regex_inherit_glob = regex.compile(
+    r"^INHERIT(?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)('|\")(?P<inhname>.*)('|\")")
+__regex_export_wval = regex.compile(
+    r"^\s*?export(\s+|\t+)(?P<name>.+)\s*=\s*\"(?P<value>.*)\"")
 __regex_export_woval = regex.compile(r"^\s*?export(\s+|\t+)(?P<name>.+)\s*$")
 __regex_comments = regex.compile(r"^(\s|\t)*#+\s*(?P<body>.*)")
 __regex_comments_pure = regex.compile(r"^#+\s*(?P<body>.*)")
-__regex_python = regex.compile(r"^(\s*|\t*)def(\s+|\t+)(?P<funcname>[a-z0-9_\-]+)(\s*|\t*)\(.*\)\:")
-__regex_include = regex.compile(r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)")
+__regex_python = regex.compile(
+    r"^(\s*|\t*)def(\s+|\t+)(?P<funcname>[a-z0-9_\-]+)(\s*|\t*)\(.*\)\:")
+__regex_include = regex.compile(
+    r"^(\s*|\t*)(?P<statement>include|require)(\s+|\t+)(?P<incname>[A-za-z0-9\-\./\$\{\}]+)")
 __regex_addtask = regex.compile(
     r"^(\s*|\t*)addtask\s+(?P<func>[\w\-]+)\s*((before\s*(?P<before>(([^#\n]*(?=after))|([^#\n]*))))|(after\s*(?P<after>(([^#\n]*(?=before))|([^#\n]*)))))*(?P<comment>#.*|.*?)")
-__regex_deltask = regex.compile(r"^(\s*|\t*)deltask\s+(?P<func>[\w\-]+)\s*(?P<comment>#.*)*")
+__regex_deltask = regex.compile(
+    r"^(\s*|\t*)deltask\s+(?P<func>[\w\-]+)\s*(?P<comment>#.*)*")
 __regex_flagass = regex.compile(
     r"^(\s*|\t*)(?P<name>([A-Z0-9a-z_.-]|\$|\{|\}|:)+?)\[(?P<ident>(\w|-|\.|/|@|_)+)\](?P<varop>(\s|\t)*(\+|\?|\:|\.)*=(\+|\.)*(\s|\t)*)(?P<varval>.*)")
 __regex_export_func = regex.compile(r"^EXPORT_FUNCTIONS\s+(?P<func>.*)")
-__regex_addpylib = regex.compile(r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)")
-__regex_unset = regex.compile(r"^(\s+|\t+)*unset(\s+|\t+)+(?P<varname>.+?)(\[*(?P<flag>.+)\])*")
-__regex_addfragments = regex.compile(r"addfragments\s+(?P<path>.+)\s+(?P<variable>.+)\s+(?P<flagged>.+)")
+__regex_addpylib = regex.compile(
+    r"^(\s+|\t*)addpylib(\s+|\t+)(?P<path>\$\{LAYERDIR\}/.+)(\s+|\t+)(?P<namespace>.*)")
+__regex_unset = regex.compile(
+    r"^(\s+|\t+)*unset(\s+|\t+)+(?P<varname>.+?)(\[*(?P<flag>.+)\])*")
+__regex_addfragments = regex.compile(
+    r"addfragments\s+(?P<path>.+)\s+(?P<variable>.+)\s+(?P<flagged>.+)")
 __regex_includeall = regex.compile(r"include_all\s+(?P<file>.+)")
-__func_start_regexp__ = regex.compile(r".*(((?P<py>python)|(?P<fr>fakeroot))\s*)*(?P<func>[\w\.\-\+\{\}\$]+)?\s*\(\s*\)\s*\{")
+__func_start_regexp__ = regex.compile(
+    r".*(((?P<py>python)|(?P<fr>fakeroot))\s*)*(?P<func>[\w\.\-\+\{\}\$]+)?\s*\(\s*\)\s*\{")
 __next_line_regex__ = regex.compile(r"\\\s*\n")
 __valid_func_name_regex__ = regex.compile(r"^[A-Za-z0-9#]+")
 
@@ -200,11 +211,13 @@ def prepare_lines(_file: str, lineOffset: int = 0, negative: bool = False) -> Li
                 elif line is None:
                     line = ''
                 line = nextbuf + line
-                item, nextbuf, length = prepare_lines_subparser(_iter, lineOffset, num, line, negative=negative)
+                item, nextbuf, length = prepare_lines_subparser(
+                    _iter, lineOffset, num, line, negative=negative)
                 num += length
                 prep_lines.append(item)
                 if nextbuf:
-                    item, nextbuf, length = prepare_lines_subparser(_iter, lineOffset, num, nextbuf, negative=negative)
+                    item, nextbuf, length = prepare_lines_subparser(
+                        _iter, lineOffset, num, nextbuf, negative=negative)
                     num += length
                     prep_lines.append(item)
     except FileNotFoundError:
@@ -298,7 +311,8 @@ def get_items(stash: object,
                     break
                 elif k == "unset":
                     parameter['name'] = m.group("varname")
-                    parameter['flag'] = (m.groupdict().get("flag", "") or "").strip('[]')
+                    parameter['flag'] = (m.groupdict().get(
+                        "flag", "") or "").strip('[]')
                     res.append(Unset(**parameter))
                     good = True
                     break
@@ -320,6 +334,8 @@ def get_items(stash: object,
                             if _path:
                                 break
                         if _path:
+                            if inhname in CONSTANTS.ClassIgnore:
+                                continue
                             _found_paths.add(_path)
                             tmp = stash.AddFile(
                                 _path, lineOffset=line["line"], forcedLink=_file)
@@ -345,6 +361,8 @@ def get_items(stash: object,
                             if _path:
                                 break
                         if _path:
+                            if inhname in CONSTANTS.ClassIgnore:
+                                continue
                             _found_paths.add(_path)
                             tmp = stash.AddFile(
                                 _path, lineOffset=line["line"], forcedLink=_file)
@@ -404,9 +422,12 @@ def get_items(stash: object,
                     good = True
                     break
                 elif k == "include":
+                    includename = stash.ExpandTerm(_file, m.group("incname"))
                     _path = stash.FindLocalOrLayer(
-                        stash.ExpandTerm(_file, m.group("incname")), os.path.dirname(_file))
+                        includename, os.path.dirname(_file))
                     if _path:
+                        if includename in CONSTANTS.IncludeIgnore:
+                            continue
                         tmp = stash.AddFile(
                             _path, lineOffset=line["line"], forcedLink=_file)
                         if any(tmp):
