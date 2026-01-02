@@ -181,17 +181,19 @@ Those can be easily modified, in case you have additional information to add/rem
 The actual database is not directly accessible by the user, but a few methods in the `oelint_parse.constants.CONSTANT` class do exist.
 Each of the method accepts a dictionary with the same key mapping as listed below (multilevel paths are displayed a JSON pointer)
 
-| key                        | type | description                                           | getter for information                                     |
-| -------------------------- | ---- | ----------------------------------------------------- | ---------------------------------------------------------- |
-| functions/known            | list | known functions                                       | `oelint_parse.constants.CONSTANT.FunctionsKnown`           |
-| functions/order            | list | preferred order of core functions                     | `oelint_parse.constants.CONSTANT.FunctionsOrder`           |
-| images/known-classes       | list | bbclasses to be known to be used in images            | `oelint_parse.constants.CONSTANT.ImagesClasses`            |
-| images/known-variables     | list | variables known to be used in images                  | `oelint_parse.constants.CONSTANT.ImagesVariables`          |
-| replacements/distros       | list | known distro overrides                                | `oelint_parse.constants.CONSTANT.DistrosKnown`             |
-| replacements/machines      | list | known machine overrides                               | `oelint_parse.constants.CONSTANT.MachinesKnown`            |
-| replacements/mirrors       | dict | known mirrors                                         | `oelint_parse.constants.CONSTANT.MirrorsKnown`             |
-| variables/known            | list | known variables                                       | `oelint_parse.constants.CONSTANT.VariablesKnown`           |
-| sets/base                  | dict | base set of variables always used for value expansion | `oelint_parse.constants.CONSTANT.SetsBase`                 |
+| key                    | type | description                                           | getter for information                            |
+| ---------------------- | ---- | ----------------------------------------------------- | ------------------------------------------------- |
+| functions/known        | list | known functions                                       | `oelint_parse.constants.CONSTANT.FunctionsKnown`  |
+| functions/order        | list | preferred order of core functions                     | `oelint_parse.constants.CONSTANT.FunctionsOrder`  |
+| ignore/classes         | list | classes to ignore in parsing                          | `oelint_parse.constants.CONSTANT.ClassIgnore`     |
+| ignore/include         | list | include/require files to ignore in parsing            | `oelint_parse.constants.CONSTANT.IncludeIgnore`   |
+| images/known-classes   | list | bbclasses to be known to be used in images            | `oelint_parse.constants.CONSTANT.ImagesClasses`   |
+| images/known-variables | list | variables known to be used in images                  | `oelint_parse.constants.CONSTANT.ImagesVariables` |
+| replacements/distros   | list | known distro overrides                                | `oelint_parse.constants.CONSTANT.DistrosKnown`    |
+| replacements/machines  | list | known machine overrides                               | `oelint_parse.constants.CONSTANT.MachinesKnown`   |
+| replacements/mirrors   | dict | known mirrors                                         | `oelint_parse.constants.CONSTANT.MirrorsKnown`    |
+| sets/base              | list | base set of variables always used for value expansion | `oelint_parse.constants.CONSTANT.SetsBase`        |
+| variables/known        | list | known variables                                       | `oelint_parse.constants.CONSTANT.VariablesKnown`  |
 
 For additional constants
 

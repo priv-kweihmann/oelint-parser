@@ -13,6 +13,10 @@
             "do_package"
         ]
     },
+    "ignore": {
+        "classes": [],
+        "include": []
+    },
     "images": {
         "known-classes": [
             "baremetal-image",
