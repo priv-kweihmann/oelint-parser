@@ -1,6 +1,42 @@
 # Table of Contents
 
 * [oelint\_parser](#oelint_parser)
+* [oelint\_parser.parser](#oelint_parser.parser)
+  * [get\_full\_scope](#oelint_parser.parser.get_full_scope)
+  * [prepare\_lines\_subparser](#oelint_parser.parser.prepare_lines_subparser)
+  * [prepare\_lines](#oelint_parser.parser.prepare_lines)
+  * [get\_items](#oelint_parser.parser.get_items)
+* [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
+  * [bb\_utils\_filter](#oelint_parser.inlinerep.bb_utils_filter)
+  * [bb\_utils\_contains](#oelint_parser.inlinerep.bb_utils_contains)
+  * [bb\_utils\_contains\_any](#oelint_parser.inlinerep.bb_utils_contains_any)
+  * [oe\_utils\_conditional](#oelint_parser.inlinerep.oe_utils_conditional)
+  * [oe\_utils\_ifelse](#oelint_parser.inlinerep.oe_utils_ifelse)
+  * [oe\_utils\_any\_distro\_features](#oelint_parser.inlinerep.oe_utils_any_distro_features)
+  * [oe\_utils\_all\_distro\_features](#oelint_parser.inlinerep.oe_utils_all_distro_features)
+  * [oe\_utils\_vartrue](#oelint_parser.inlinerep.oe_utils_vartrue)
+  * [oe\_utils\_less\_or\_equal](#oelint_parser.inlinerep.oe_utils_less_or_equal)
+  * [oe\_utils\_version\_less\_or\_equal](#oelint_parser.inlinerep.oe_utils_version_less_or_equal)
+  * [oe\_utils\_both\_contain](#oelint_parser.inlinerep.oe_utils_both_contain)
+  * [d\_getvar](#oelint_parser.inlinerep.d_getvar)
+  * [inlinerep](#oelint_parser.inlinerep.inlinerep)
+* [oelint\_parser.constants](#oelint_parser.constants)
+  * [Constants](#oelint_parser.constants.Constants)
+    * [GetByPath](#oelint_parser.constants.Constants.GetByPath)
+    * [AddConstants](#oelint_parser.constants.Constants.AddConstants)
+    * [RemoveConstants](#oelint_parser.constants.Constants.RemoveConstants)
+    * [OverrideConstants](#oelint_parser.constants.Constants.OverrideConstants)
+    * [FunctionsKnown](#oelint_parser.constants.Constants.FunctionsKnown)
+    * [FunctionsOrder](#oelint_parser.constants.Constants.FunctionsOrder)
+    * [MirrorsKnown](#oelint_parser.constants.Constants.MirrorsKnown)
+    * [VariablesKnown](#oelint_parser.constants.Constants.VariablesKnown)
+    * [DistrosKnown](#oelint_parser.constants.Constants.DistrosKnown)
+    * [MachinesKnown](#oelint_parser.constants.Constants.MachinesKnown)
+    * [ImagesClasses](#oelint_parser.constants.Constants.ImagesClasses)
+    * [ImagesVariables](#oelint_parser.constants.Constants.ImagesVariables)
+    * [SetsBase](#oelint_parser.constants.Constants.SetsBase)
+    * [ClassIgnore](#oelint_parser.constants.Constants.ClassIgnore)
+    * [IncludeIgnore](#oelint_parser.constants.Constants.IncludeIgnore)
 * [oelint\_parser.cls\_stash](#oelint_parser.cls_stash)
   * [Stash](#oelint_parser.cls_stash.Stash)
     * [StashList](#oelint_parser.cls_stash.Stash.StashList)
@@ -32,11 +68,6 @@
     * [GetValidNamedResources](#oelint_parser.cls_stash.Stash.GetValidNamedResources)
     * [IsImage](#oelint_parser.cls_stash.Stash.IsImage)
     * [IsPackageGroup](#oelint_parser.cls_stash.Stash.IsPackageGroup)
-* [oelint\_parser.parser](#oelint_parser.parser)
-  * [get\_full\_scope](#oelint_parser.parser.get_full_scope)
-  * [prepare\_lines\_subparser](#oelint_parser.parser.prepare_lines_subparser)
-  * [prepare\_lines](#oelint_parser.parser.prepare_lines)
-  * [get\_items](#oelint_parser.parser.get_items)
 * [oelint\_parser.cls\_item](#oelint_parser.cls_item)
   * [\_\_id\_regex\_\_](#oelint_parser.cls_item.__id_regex__)
   * [Item](#oelint_parser.cls_item.Item)
@@ -169,40 +200,623 @@
     * [match](#oelint_parser.rpl_regex.RegexRpl.match)
     * [sub](#oelint_parser.rpl_regex.RegexRpl.sub)
     * [finditer](#oelint_parser.rpl_regex.RegexRpl.finditer)
-* [oelint\_parser.constants](#oelint_parser.constants)
-  * [Constants](#oelint_parser.constants.Constants)
-    * [GetByPath](#oelint_parser.constants.Constants.GetByPath)
-    * [AddConstants](#oelint_parser.constants.Constants.AddConstants)
-    * [RemoveConstants](#oelint_parser.constants.Constants.RemoveConstants)
-    * [OverrideConstants](#oelint_parser.constants.Constants.OverrideConstants)
-    * [FunctionsKnown](#oelint_parser.constants.Constants.FunctionsKnown)
-    * [FunctionsOrder](#oelint_parser.constants.Constants.FunctionsOrder)
-    * [MirrorsKnown](#oelint_parser.constants.Constants.MirrorsKnown)
-    * [VariablesKnown](#oelint_parser.constants.Constants.VariablesKnown)
-    * [DistrosKnown](#oelint_parser.constants.Constants.DistrosKnown)
-    * [MachinesKnown](#oelint_parser.constants.Constants.MachinesKnown)
-    * [ImagesClasses](#oelint_parser.constants.Constants.ImagesClasses)
-    * [ImagesVariables](#oelint_parser.constants.Constants.ImagesVariables)
-    * [SetsBase](#oelint_parser.constants.Constants.SetsBase)
-* [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
-  * [bb\_utils\_filter](#oelint_parser.inlinerep.bb_utils_filter)
-  * [bb\_utils\_contains](#oelint_parser.inlinerep.bb_utils_contains)
-  * [bb\_utils\_contains\_any](#oelint_parser.inlinerep.bb_utils_contains_any)
-  * [oe\_utils\_conditional](#oelint_parser.inlinerep.oe_utils_conditional)
-  * [oe\_utils\_ifelse](#oelint_parser.inlinerep.oe_utils_ifelse)
-  * [oe\_utils\_any\_distro\_features](#oelint_parser.inlinerep.oe_utils_any_distro_features)
-  * [oe\_utils\_all\_distro\_features](#oelint_parser.inlinerep.oe_utils_all_distro_features)
-  * [oe\_utils\_vartrue](#oelint_parser.inlinerep.oe_utils_vartrue)
-  * [oe\_utils\_less\_or\_equal](#oelint_parser.inlinerep.oe_utils_less_or_equal)
-  * [oe\_utils\_version\_less\_or\_equal](#oelint_parser.inlinerep.oe_utils_version_less_or_equal)
-  * [oe\_utils\_both\_contain](#oelint_parser.inlinerep.oe_utils_both_contain)
-  * [inlinerep](#oelint_parser.inlinerep.inlinerep)
 
 <a id="oelint_parser"></a>
 
 # oelint\_parser
 
 oelint_parser is a library to parse bitbake files.
+
+<a id="oelint_parser.parser"></a>
+
+# oelint\_parser.parser
+
+<a id="oelint_parser.parser.get_full_scope"></a>
+
+#### get\_full\_scope
+
+```python
+def get_full_scope(_string: str, offset: int, _sstart: int, _send: int) -> str
+```
+
+get full block of an inline statement
+
+**Arguments**:
+
+- `_string` _str_ - input string
+- `offset` _int_ - offset in string
+- `_sstart` _int_ - block start index
+- `_send` _int_ - block end index
+  
+
+**Returns**:
+
+- `str` - full block on inline statement
+
+<a id="oelint_parser.parser.prepare_lines_subparser"></a>
+
+#### prepare\_lines\_subparser
+
+```python
+def prepare_lines_subparser(_iter: Iterable,
+                            lineOffset: int,
+                            num: int,
+                            line: int,
+                            raw_line: str = None,
+                            negative: bool = False) -> tuple[dict, str, int]
+```
+
+preprocess raw input
+
+**Arguments**:
+
+- `_iter` _iterator_ - line interator object
+- `lineOffset` _int_ - current line index
+- `num` _int_ - internal line counter
+- `line` _int_ - input string
+- `raw_line` _string, optional_ - internal line representation. Defaults to None.
+- `negative` _bool_ - Negative branch inline expansion. Defaults to False
+  
+
+**Returns**:
+
+  tuple[dict, str, int]: preproccessed chunk, buffer for next iteration, number of lines
+
+<a id="oelint_parser.parser.prepare_lines"></a>
+
+#### prepare\_lines
+
+```python
+def prepare_lines(_file: str,
+                  lineOffset: int = 0,
+                  negative: bool = False) -> List[str]
+```
+
+break raw file input into preprocessed chunks
+
+**Arguments**:
+
+- `_file` _string_ - Full path to file
+- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
+- `negative` _bool_ - Negative branch inline expansion. Defaults to False
+  
+
+**Returns**:
+
+- `list` - preprocessed list of chunks
+
+<a id="oelint_parser.parser.get_items"></a>
+
+#### get\_items
+
+```python
+def get_items(stash: object,
+              _file: str,
+              lineOffset: int = 0,
+              new_style_override_syntax: bool = False,
+              negative: bool = False) -> List[Item]
+```
+
+parses file
+
+**Arguments**:
+
+- `stash` _oelint_parser.cls_stash.Stash_ - Stash object
+- `_file` _string_ - Full path to file
+- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
+- `new_style_override_syntax` _bool, optional_ - default to new override syntax (default: False)
+- `negative` _bool, optional_ - Negative branch inline expansion (default: False)
+  
+
+**Returns**:
+
+- `list` - List of oelint_parser.cls_item.* representations
+
+<a id="oelint_parser.inlinerep"></a>
+
+# oelint\_parser.inlinerep
+
+<a id="oelint_parser.inlinerep.bb_utils_filter"></a>
+
+#### bb\_utils\_filter
+
+```python
+def bb_utils_filter(_in: str, negative_clause: bool = False) -> str
+```
+
+bb.utils.filter emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.bb_utils_contains"></a>
+
+#### bb\_utils\_contains
+
+```python
+def bb_utils_contains(_in: str, negative_clause: bool = False) -> str
+```
+
+bb.utils.contains emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.bb_utils_contains_any"></a>
+
+#### bb\_utils\_contains\_any
+
+```python
+def bb_utils_contains_any(_in: str, negative_clause: bool = False) -> str
+```
+
+bb.utils.contains_any emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_conditional"></a>
+
+#### oe\_utils\_conditional
+
+```python
+def oe_utils_conditional(_in: str, negative_clause: bool = False) -> str
+```
+
+oe.utils.conditional emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_ifelse"></a>
+
+#### oe\_utils\_ifelse
+
+```python
+def oe_utils_ifelse(_in: str, negative_clause: bool = False) -> str
+```
+
+oe.utils.ifelse emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_any_distro_features"></a>
+
+#### oe\_utils\_any\_distro\_features
+
+```python
+def oe_utils_any_distro_features(_in: str,
+                                 negative_clause: bool = False) -> str
+```
+
+oe.utils.any_distro_features emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_all_distro_features"></a>
+
+#### oe\_utils\_all\_distro\_features
+
+```python
+def oe_utils_all_distro_features(_in: str,
+                                 negative_clause: bool = False) -> str
+```
+
+oe.utils.all_distro_features emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_vartrue"></a>
+
+#### oe\_utils\_vartrue
+
+```python
+def oe_utils_vartrue(_in: str, negative_clause: bool = False) -> str
+```
+
+oe.utils.vartrue emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_less_or_equal"></a>
+
+#### oe\_utils\_less\_or\_equal
+
+```python
+def oe_utils_less_or_equal(_in: str, negative_clause: bool = False) -> str
+```
+
+oe.utils.less_or_equal emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_version_less_or_equal"></a>
+
+#### oe\_utils\_version\_less\_or\_equal
+
+```python
+def oe_utils_version_less_or_equal(_in: str,
+                                   negative_clause: bool = False) -> str
+```
+
+oe.utils.version_less_or_equal emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.oe_utils_both_contain"></a>
+
+#### oe\_utils\_both\_contain
+
+```python
+def oe_utils_both_contain(_in: str, negative_clause: bool = False) -> str
+```
+
+oe.utils.both_contain emulation
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - True argument of the conditional or None if not applicable
+
+<a id="oelint_parser.inlinerep.d_getvar"></a>
+
+#### d\_getvar
+
+```python
+def d_getvar(_in: str) -> str
+```
+
+d.getVar emulation in inline block
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+  
+
+**Returns**:
+
+- `str` - Variable reference if found
+
+<a id="oelint_parser.inlinerep.inlinerep"></a>
+
+#### inlinerep
+
+```python
+def inlinerep(_in: str, negative_clause: bool = False) -> str
+```
+
+Replaces inline code expressions
+
+**Arguments**:
+
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
+  
+
+**Returns**:
+
+- `str` - Expanded string or None, if not applicable
+
+<a id="oelint_parser.constants"></a>
+
+# oelint\_parser.constants
+
+<a id="oelint_parser.constants.Constants"></a>
+
+## Constants Objects
+
+```python
+class Constants()
+```
+
+Interface for constants
+
+<a id="oelint_parser.constants.Constants.GetByPath"></a>
+
+#### GetByPath
+
+```python
+def GetByPath(path: str) -> Union[Dict, List]
+```
+
+Get constant from path
+
+**Arguments**:
+
+- `path` _str_ - / joined path in the constant structure
+  
+
+**Returns**:
+
+  Union[Dict, List]: Item in structure or empty dictionary
+
+<a id="oelint_parser.constants.Constants.AddConstants"></a>
+
+#### AddConstants
+
+```python
+def AddConstants(_dict: dict) -> None
+```
+
+Add constants to the existing
+
+**Arguments**:
+
+- `dict` _dict_ - constant dictionary to add
+
+<a id="oelint_parser.constants.Constants.RemoveConstants"></a>
+
+#### RemoveConstants
+
+```python
+def RemoveConstants(_dict: dict) -> None
+```
+
+Remove constants from the existing
+
+**Arguments**:
+
+- `dict` _dict_ - constant dictionary to remove
+
+<a id="oelint_parser.constants.Constants.OverrideConstants"></a>
+
+#### OverrideConstants
+
+```python
+def OverrideConstants(_dict: dict) -> None
+```
+
+Override constants in the existing db
+
+**Arguments**:
+
+- `dict` _dict]_ - constant dictionary with override values
+
+<a id="oelint_parser.constants.Constants.FunctionsKnown"></a>
+
+#### FunctionsKnown
+
+```python
+@property
+def FunctionsKnown() -> List[str]
+```
+
+Return known functions
+
+**Returns**:
+
+- `list` - list of known functions
+
+<a id="oelint_parser.constants.Constants.FunctionsOrder"></a>
+
+#### FunctionsOrder
+
+```python
+@property
+def FunctionsOrder() -> List[str]
+```
+
+Return function order
+
+**Returns**:
+
+- `list` - List of functions to order in their designated order
+
+<a id="oelint_parser.constants.Constants.MirrorsKnown"></a>
+
+#### MirrorsKnown
+
+```python
+@property
+def MirrorsKnown() -> Dict[str, str]
+```
+
+Return known mirrors and their replacements
+
+**Returns**:
+
+- `dict` - Dict of known mirrors and their replacements
+
+<a id="oelint_parser.constants.Constants.VariablesKnown"></a>
+
+#### VariablesKnown
+
+```python
+@property
+def VariablesKnown() -> List[str]
+```
+
+Known variables
+
+**Returns**:
+
+- `list` - List of known variables
+
+<a id="oelint_parser.constants.Constants.DistrosKnown"></a>
+
+#### DistrosKnown
+
+```python
+@property
+def DistrosKnown() -> List[str]
+```
+
+Known distros
+
+**Returns**:
+
+- `list` - List of known distros
+
+<a id="oelint_parser.constants.Constants.MachinesKnown"></a>
+
+#### MachinesKnown
+
+```python
+@property
+def MachinesKnown() -> List[str]
+```
+
+Known machines
+
+**Returns**:
+
+- `list` - List of known machines
+
+<a id="oelint_parser.constants.Constants.ImagesClasses"></a>
+
+#### ImagesClasses
+
+```python
+@property
+def ImagesClasses() -> List[str]
+```
+
+Classes that are used in images
+
+**Returns**:
+
+- `list` - Classes that are used in images
+
+<a id="oelint_parser.constants.Constants.ImagesVariables"></a>
+
+#### ImagesVariables
+
+```python
+@property
+def ImagesVariables() -> List[str]
+```
+
+Variables that are used in images
+
+**Returns**:
+
+- `list` - Variables that are used in images
+
+<a id="oelint_parser.constants.Constants.SetsBase"></a>
+
+#### SetsBase
+
+```python
+@property
+def SetsBase() -> Dict[str, str]
+```
+
+Base variable set
+
+**Returns**:
+
+- `dict` - dictionary with base variable set
+
+<a id="oelint_parser.constants.Constants.ClassIgnore"></a>
+
+#### ClassIgnore
+
+```python
+@property
+def ClassIgnore() -> List[str]
+```
+
+_summary_
+
+**Returns**:
+
+- `List[str]` - List of classes to ignore
+
+<a id="oelint_parser.constants.Constants.IncludeIgnore"></a>
+
+#### IncludeIgnore
+
+```python
+@property
+def IncludeIgnore() -> List[str]
+```
+
+Includes to ignore
+
+**Returns**:
+
+- `List[str]` - List of paths to ignore
 
 <a id="oelint_parser.cls_stash"></a>
 
@@ -874,111 +1488,6 @@ returns if the file is likely a packagegroup recipe or not
 **Returns**:
 
 - `bool` - True if _file is a packagegroup recipe
-
-<a id="oelint_parser.parser"></a>
-
-# oelint\_parser.parser
-
-<a id="oelint_parser.parser.get_full_scope"></a>
-
-#### get\_full\_scope
-
-```python
-def get_full_scope(_string: str, offset: int, _sstart: int, _send: int) -> str
-```
-
-get full block of an inline statement
-
-**Arguments**:
-
-- `_string` _str_ - input string
-- `offset` _int_ - offset in string
-- `_sstart` _int_ - block start index
-- `_send` _int_ - block end index
-  
-
-**Returns**:
-
-- `str` - full block on inline statement
-
-<a id="oelint_parser.parser.prepare_lines_subparser"></a>
-
-#### prepare\_lines\_subparser
-
-```python
-def prepare_lines_subparser(_iter: Iterable,
-                            lineOffset: int,
-                            num: int,
-                            line: int,
-                            raw_line: str = None,
-                            negative: bool = False) -> tuple[dict, str, int]
-```
-
-preprocess raw input
-
-**Arguments**:
-
-- `_iter` _iterator_ - line interator object
-- `lineOffset` _int_ - current line index
-- `num` _int_ - internal line counter
-- `line` _int_ - input string
-- `raw_line` _string, optional_ - internal line representation. Defaults to None.
-- `negative` _bool_ - Negative branch inline expansion. Defaults to False
-  
-
-**Returns**:
-
-  tuple[dict, str, int]: preproccessed chunk, buffer for next iteration, number of lines
-
-<a id="oelint_parser.parser.prepare_lines"></a>
-
-#### prepare\_lines
-
-```python
-def prepare_lines(_file: str,
-                  lineOffset: int = 0,
-                  negative: bool = False) -> List[str]
-```
-
-break raw file input into preprocessed chunks
-
-**Arguments**:
-
-- `_file` _string_ - Full path to file
-- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
-- `negative` _bool_ - Negative branch inline expansion. Defaults to False
-  
-
-**Returns**:
-
-- `list` - preprocessed list of chunks
-
-<a id="oelint_parser.parser.get_items"></a>
-
-#### get\_items
-
-```python
-def get_items(stash: object,
-              _file: str,
-              lineOffset: int = 0,
-              new_style_override_syntax: bool = False,
-              negative: bool = False) -> List[Item]
-```
-
-parses file
-
-**Arguments**:
-
-- `stash` _oelint_parser.cls_stash.Stash_ - Stash object
-- `_file` _string_ - Full path to file
-- `lineOffset` _int, optional_ - line offset counter. Defaults to 0.
-- `new_style_override_syntax` _bool, optional_ - default to new override syntax (default: False)
-- `negative` _bool, optional_ - Negative branch inline expansion (default: False)
-  
-
-**Returns**:
-
-- `list` - List of oelint_parser.cls_item.* representations
 
 <a id="oelint_parser.cls_item"></a>
 
@@ -2946,461 +3455,4 @@ replacement for re.finditer
 **Returns**:
 
 - `Scanner` - Scanner object or None
-
-<a id="oelint_parser.constants"></a>
-
-# oelint\_parser.constants
-
-<a id="oelint_parser.constants.Constants"></a>
-
-## Constants Objects
-
-```python
-class Constants()
-```
-
-Interface for constants
-
-<a id="oelint_parser.constants.Constants.GetByPath"></a>
-
-#### GetByPath
-
-```python
-def GetByPath(path: str) -> Union[Dict, List]
-```
-
-Get constant from path
-
-**Arguments**:
-
-- `path` _str_ - / joined path in the constant structure
-  
-
-**Returns**:
-
-  Union[Dict, List]: Item in structure or empty dictionary
-
-<a id="oelint_parser.constants.Constants.AddConstants"></a>
-
-#### AddConstants
-
-```python
-def AddConstants(_dict: dict) -> None
-```
-
-Add constants to the existing
-
-**Arguments**:
-
-- `dict` _dict_ - constant dictionary to add
-
-<a id="oelint_parser.constants.Constants.RemoveConstants"></a>
-
-#### RemoveConstants
-
-```python
-def RemoveConstants(_dict: dict) -> None
-```
-
-Remove constants from the existing
-
-**Arguments**:
-
-- `dict` _dict_ - constant dictionary to remove
-
-<a id="oelint_parser.constants.Constants.OverrideConstants"></a>
-
-#### OverrideConstants
-
-```python
-def OverrideConstants(_dict: dict) -> None
-```
-
-Override constants in the existing db
-
-**Arguments**:
-
-- `dict` _dict]_ - constant dictionary with override values
-
-<a id="oelint_parser.constants.Constants.FunctionsKnown"></a>
-
-#### FunctionsKnown
-
-```python
-@property
-def FunctionsKnown() -> List[str]
-```
-
-Return known functions
-
-**Returns**:
-
-- `list` - list of known functions
-
-<a id="oelint_parser.constants.Constants.FunctionsOrder"></a>
-
-#### FunctionsOrder
-
-```python
-@property
-def FunctionsOrder() -> List[str]
-```
-
-Return function order
-
-**Returns**:
-
-- `list` - List of functions to order in their designated order
-
-<a id="oelint_parser.constants.Constants.MirrorsKnown"></a>
-
-#### MirrorsKnown
-
-```python
-@property
-def MirrorsKnown() -> Dict[str, str]
-```
-
-Return known mirrors and their replacements
-
-**Returns**:
-
-- `dict` - Dict of known mirrors and their replacements
-
-<a id="oelint_parser.constants.Constants.VariablesKnown"></a>
-
-#### VariablesKnown
-
-```python
-@property
-def VariablesKnown() -> List[str]
-```
-
-Known variables
-
-**Returns**:
-
-- `list` - List of known variables
-
-<a id="oelint_parser.constants.Constants.DistrosKnown"></a>
-
-#### DistrosKnown
-
-```python
-@property
-def DistrosKnown() -> List[str]
-```
-
-Known distros
-
-**Returns**:
-
-- `list` - List of known distros
-
-<a id="oelint_parser.constants.Constants.MachinesKnown"></a>
-
-#### MachinesKnown
-
-```python
-@property
-def MachinesKnown() -> List[str]
-```
-
-Known machines
-
-**Returns**:
-
-- `list` - List of known machines
-
-<a id="oelint_parser.constants.Constants.ImagesClasses"></a>
-
-#### ImagesClasses
-
-```python
-@property
-def ImagesClasses() -> List[str]
-```
-
-Classes that are used in images
-
-**Returns**:
-
-- `list` - Classes that are used in images
-
-<a id="oelint_parser.constants.Constants.ImagesVariables"></a>
-
-#### ImagesVariables
-
-```python
-@property
-def ImagesVariables() -> List[str]
-```
-
-Variables that are used in images
-
-**Returns**:
-
-- `list` - Variables that are used in images
-
-<a id="oelint_parser.constants.Constants.SetsBase"></a>
-
-#### SetsBase
-
-```python
-@property
-def SetsBase() -> Dict[str, str]
-```
-
-Base variable set
-
-**Returns**:
-
-- `dict` - dictionary with base variable set
-
-<a id="oelint_parser.inlinerep"></a>
-
-# oelint\_parser.inlinerep
-
-<a id="oelint_parser.inlinerep.bb_utils_filter"></a>
-
-#### bb\_utils\_filter
-
-```python
-def bb_utils_filter(_in: str, negative_clause: bool = False) -> str
-```
-
-bb.utils.filter emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.bb_utils_contains"></a>
-
-#### bb\_utils\_contains
-
-```python
-def bb_utils_contains(_in: str, negative_clause: bool = False) -> str
-```
-
-bb.utils.contains emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.bb_utils_contains_any"></a>
-
-#### bb\_utils\_contains\_any
-
-```python
-def bb_utils_contains_any(_in: str, negative_clause: bool = False) -> str
-```
-
-bb.utils.contains_any emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_conditional"></a>
-
-#### oe\_utils\_conditional
-
-```python
-def oe_utils_conditional(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.conditional emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_ifelse"></a>
-
-#### oe\_utils\_ifelse
-
-```python
-def oe_utils_ifelse(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.ifelse emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_any_distro_features"></a>
-
-#### oe\_utils\_any\_distro\_features
-
-```python
-def oe_utils_any_distro_features(_in: str,
-                                 negative_clause: bool = False) -> str
-```
-
-oe.utils.any_distro_features emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_all_distro_features"></a>
-
-#### oe\_utils\_all\_distro\_features
-
-```python
-def oe_utils_all_distro_features(_in: str,
-                                 negative_clause: bool = False) -> str
-```
-
-oe.utils.all_distro_features emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_vartrue"></a>
-
-#### oe\_utils\_vartrue
-
-```python
-def oe_utils_vartrue(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.vartrue emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_less_or_equal"></a>
-
-#### oe\_utils\_less\_or\_equal
-
-```python
-def oe_utils_less_or_equal(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.less_or_equal emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_version_less_or_equal"></a>
-
-#### oe\_utils\_version\_less\_or\_equal
-
-```python
-def oe_utils_version_less_or_equal(_in: str,
-                                   negative_clause: bool = False) -> str
-```
-
-oe.utils.version_less_or_equal emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_both_contain"></a>
-
-#### oe\_utils\_both\_contain
-
-```python
-def oe_utils_both_contain(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.both_contain emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.inlinerep"></a>
-
-#### inlinerep
-
-```python
-def inlinerep(_in: str, negative_clause: bool = False) -> str
-```
-
-Replaces inline code expressions
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - Expanded string or None, if not applicable
 

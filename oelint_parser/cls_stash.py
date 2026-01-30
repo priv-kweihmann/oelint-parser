@@ -18,7 +18,10 @@ __class_id_regex__ = regex.compile(r"^(nativesdk-)*(.+)(-native)*(-cross)*")
 __class_id_native_regex__ = regex.compile(r"^(.+)(-native)$")
 __class_id_cross_regex__ = regex.compile(r"^(.+)(-cross)$")
 __variable_pattern_regex__ = regex.compile(r"\$\{(.+?)\}")
-__variable_pattern_regex_2__ = regex.compile(r"d.getVar\(.(.+?).(True|False|,|\s+)*\)")
+__variable_pattern_regex_2__ = regex.compile(
+    r"d.getVar\(.(.+?).(True|False|,|\s+)*\)")
+__oe_utils_read_file_regex__ = regex.compile(
+    r"\{@\s*(.*)oe\.utils\.read_file\((?P<file>.*)\)\}")
 
 
 class Stash():
@@ -196,7 +199,8 @@ class Stash():
                     if item.Origin not in self.__map:
                         self.__map[item.Origin] = []
                     self.__map[item.Origin].append(_file)
-                    _maxline = max(x.Line for x in self.__list if x.Origin == item.Origin)
+                    _maxline = max(
+                        x.Line for x in self.__list if x.Origin == item.Origin)
                     for r in res:
                         # pretend that we are adding the file to the end of the original
                         r.Line += _maxline
@@ -294,10 +298,12 @@ class Stash():
             list -- list of bbappend without a matching bb
         """
         __linked_appends = set()
-        __appends = {x.Origin for x in self.__list if x.Origin.endswith('.bbappend')}
+        __appends = {
+            x.Origin for x in self.__list if x.Origin.endswith('.bbappend')}
         for k, v in self.__map.items():
             if k.endswith('.bb'):
-                __linked_appends.update(x for x in v if x.endswith('.bbappend'))
+                __linked_appends.update(
+                    x for x in v if x.endswith('.bbappend'))
         return sorted({x for x in __appends if x not in __linked_appends})
 
     @functools.cache  # noqa: B019
@@ -343,7 +349,8 @@ class Stash():
             attr_ = x.GetAttributes()
             res = False
             for name in attname:
-                res |= name in attr_ and (not attvalue or any(x == attr_.get(name) for x in attvalue))
+                res |= name in attr_ and (not attvalue or any(
+                    x == attr_.get(name) for x in attvalue))
             return res
 
         return [x for x in items if _filter(x, attname, attvalue)]
@@ -389,11 +396,14 @@ class Stash():
         if not isinstance(attributeValue, (list, set, tuple)):
             attributeValue = [attributeValue] if attributeValue else []
         if filename:
-            in_list = self.__get_items_by_file(tuple(in_list), filename, nolink=nolink)
+            in_list = self.__get_items_by_file(
+                tuple(in_list), filename, nolink=nolink)
         if classifier:
-            in_list = self.__get_items_by_classifier(tuple(in_list), tuple(classifier))
+            in_list = self.__get_items_by_classifier(
+                tuple(in_list), tuple(classifier))
         if attribute:
-            in_list = self.__get_items_by_attribute(tuple(in_list), tuple(attribute), tuple(attributeValue))
+            in_list = self.__get_items_by_attribute(
+                tuple(in_list), tuple(attribute), tuple(attributeValue))
         return sorted(set(in_list), key=lambda x: x.Line)
 
     def GetItemsFor(self,
@@ -444,7 +454,14 @@ class Stash():
                                 attributeValue=attributeValue,
                                 nolink=nolink)
 
-        _res += self.GetItemsFor(filename=filename, classifier=Unset.CLASSIFIER)
+        _res += self.GetItemsFor(filename=filename,
+                                 classifier=Unset.CLASSIFIER)
+
+        if filename is None:
+            if _res:
+                filename = _res[0].Origin
+            else:
+                return {}
         _exp = {
             "PN": self.GuessRecipeName(filename),
             "PV": self.GuessRecipeVersion(filename),
@@ -668,7 +685,8 @@ class Stash():
         Returns:
             str -- recipe name
         """
-        tmp_ = RegexRpl.sub(__class_id_regex__, r"\2", self.GuessRecipeName(_file))
+        tmp_ = RegexRpl.sub(__class_id_regex__, r"\2",
+                            self.GuessRecipeName(_file))
         tmp_ = RegexRpl.sub(__class_id_native_regex__, r"\1", tmp_)
         tmp_ = RegexRpl.sub(__class_id_cross_regex__, r"\1", tmp_)
         return tmp_
@@ -711,9 +729,10 @@ class Stash():
         if INLINE_BLOCK in value and objref is not None:
             value = self._ReverseInlineBlock(objref)
         res = str(value)
-        for m in list(RegexRpl.finditer(__variable_pattern_regex__, value)) + list(RegexRpl.finditer(__variable_pattern_regex_2__, value)):
+
+        def _expand(res, _file, m, quote: str = ''):
             if m.group(1) in spare:
-                continue
+                return res
             _comp = [x for x in self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
                                                  attribute=Variable.ATTR_VAR, attributeValue=m.group(1)) if not x.AppendOperation()]
             if any(_comp):
@@ -733,7 +752,8 @@ class Stash():
                     _rpl = seen[m.group(1)]
                 elif m.group(1) in baseset:
                     seen[m.group(1)] = ""
-                    _rpl = self.ExpandTerm(_file, baseset[m.group(1)], seen=seen)
+                    _rpl = self.ExpandTerm(
+                        _file, baseset[m.group(1)], seen=seen)
                     seen[m.group(1)] = _rpl
                 else:
                     _rpl = m.group(1)
@@ -745,9 +765,23 @@ class Stash():
             elif m.group(1) in ["PV"]:
                 res = res.replace(m.group(0), self.GuessRecipeVersion(_file))
             elif m.group(1) in ["FILE"]:
-                res = res.replace(m.group(0), f'"{_file}"')
-            elif not any(_comp):
-                continue
+                res = res.replace(m.group(0), f'{quote}{_file}{quote}')
+            elif m.group(1) in ["THISDIR"]:
+                res = res.replace(
+                    m.group(0), f'{quote}{os.path.dirname(_file)}{quote}')
+            return res
+        for m in list(RegexRpl.finditer(__variable_pattern_regex__, value)):
+            res = _expand(res, _file, m)
+        for m in list(RegexRpl.finditer(__variable_pattern_regex_2__, value)):
+            res = _expand(res, _file, m, quote='"')
+        for m in list(RegexRpl.finditer(__oe_utils_read_file_regex__, value)):
+            try:
+                _fullpath = self.ExpandTerm(_file, m.group(
+                    "file"), spare=spare, seen=seen).strip("'\"")
+                with open(_fullpath) as i:
+                    res = i.read()
+            except (FileNotFoundError, PermissionError, NotADirectoryError):
+                res = ''
         return res
 
     @functools.cache  # noqa: B019
@@ -799,7 +833,8 @@ class Stash():
             for name in [x for x in self.SafeLineSplit(item.VarValueStripped) if x]:
                 _url = self.GetScrComponents(name)
                 if "name" in _url["options"]:
-                    res.add(_url["options"]["name"].replace("${PN}", _recipe_name))
+                    res.add(_url["options"]["name"].replace(
+                        "${PN}", _recipe_name))
         return res
 
     @functools.cache  # noqa: B019
@@ -814,9 +849,11 @@ class Stash():
         """
         res = False
 
-        _inherits = self.GetItemsFor(filename=_file, classifier=Inherit.CLASSIFIER)
+        _inherits = self.GetItemsFor(
+            filename=_file, classifier=Inherit.CLASSIFIER)
         for item in _inherits:
-            res |= any(True for x in item.get_items() if x in CONSTANTS.ImagesClasses)
+            res |= any(True for x in item.get_items()
+                       if x in CONSTANTS.ImagesClasses)
 
         for _var in CONSTANTS.ImagesVariables:
             res |= any(self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
@@ -834,5 +871,6 @@ class Stash():
         Returns:
             bool -- True if _file is a packagegroup recipe
         """
-        _inherits = self.GetItemsFor(filename=_file, classifier=Inherit.CLASSIFIER)
+        _inherits = self.GetItemsFor(
+            filename=_file, classifier=Inherit.CLASSIFIER)
         return any(x for x in _inherits if "packagegroup" in x.get_items())
