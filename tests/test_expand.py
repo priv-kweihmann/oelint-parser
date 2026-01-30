@@ -39,7 +39,65 @@ class OelintLinking(unittest.TestCase):
                                                           attributeValue="A")
         self.assertTrue(_stash, msg="Stash has no items")
         for item in _stash[0].get_items():
-            self.assertEqual(self.__stash.ExpandTerm(_file, item), '${@some.function(d, foo)}/abc')
+            self.assertEqual(self.__stash.ExpandTerm(
+                _file, item), '${@some.function(d, foo)}/abc')
+
+    def test_expand_thisdir(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Variable
+        self.__stash = Stash()
+        _file = self._create_tempfile(
+            '''
+            A = "${THISDIR}"
+            ''')
+        self.__stash.AddFile(_file)
+        self.__stash.Finalize()
+
+        _stash: list[Variable] = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                                          attribute=Variable.ATTR_VAR,
+                                                          attributeValue="A")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for item in _stash[0].get_items():
+            self.assertEqual(self.__stash.ExpandTerm(
+                _file, item), os.path.dirname(_file))
+
+    def test_expand_thisdir_py(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Variable
+        self.__stash = Stash()
+        _file = self._create_tempfile(
+            '''
+            A = "${@d.getVar('THISDIR')}"
+            ''')
+        self.__stash.AddFile(_file)
+        self.__stash.Finalize()
+
+        _stash: list[Variable] = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                                          attribute=Variable.ATTR_VAR,
+                                                          attributeValue="A")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for item in _stash[0].get_items():
+            self.assertEqual(self.__stash.ExpandTerm(
+                _file, item), os.path.dirname(_file))
+
+    def test_expand_readfile(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Variable
+        self.__stash = Stash()
+        _cnt = textwrap.dedent('''
+            A = "${@oe.utils.read_file('${FILE}')}"
+            ''')
+        _file = self._create_tempfile(_cnt)
+        self.__stash.AddFile(_file)
+        self.__stash.Finalize()
+
+        _stash: list[Variable] = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                                          attribute=Variable.ATTR_VAR,
+                                                          attributeValue="A")
+        self.assertTrue(_stash, msg="Stash has no items")
+        for item in _stash:
+            self.assertEqual(self.__stash.ExpandTerm(
+                _file, item.VarValue, objref=item).strip(), _cnt.strip())
 
     def test_expand_inline_block(self):
         from oelint_parser.cls_stash import Stash
@@ -57,7 +115,8 @@ class OelintLinking(unittest.TestCase):
                                                           attributeValue="A")
         self.assertTrue(_stash, msg="Stash has no items")
         for item in _stash[0].get_items():
-            self.assertEqual(self.__stash.ExpandTerm(_file, item, objref=_stash[0]), '${@some.function(d, foo)}/abc')
+            self.assertEqual(self.__stash.ExpandTerm(
+                _file, item, objref=_stash[0]), '${@some.function(d, foo)}/abc')
 
     def test_expand_multiple_inline_block(self):
         from oelint_parser.cls_stash import Stash
@@ -96,7 +155,8 @@ class OelintLinking(unittest.TestCase):
                                                           attributeValue="A")
         self.assertTrue(_stash, msg="Stash has no items")
         for item in _stash[0].get_items():
-            self.assertEqual(self.__stash.ExpandTerm(_file, item, objref=_stash[0]), '${@some.function(d, foo)}/200/abc')
+            self.assertEqual(self.__stash.ExpandTerm(
+                _file, item, objref=_stash[0]), '${@some.function(d, foo)}/200/abc')
 
     def test_expand_nested_python_ref(self):
         from oelint_parser.cls_stash import Stash
@@ -116,7 +176,8 @@ class OelintLinking(unittest.TestCase):
                                                           attributeValue="A")
         self.assertTrue(_stash, msg="Stash has no items")
         for item in _stash[0].get_items():
-            self.assertEqual(self.__stash.ExpandTerm(_file, item, objref=_stash[0]), '${@some.function(d, 200)}/abc')
+            self.assertEqual(self.__stash.ExpandTerm(
+                _file, item, objref=_stash[0]), '${@some.function(d, 200)}/abc')
 
     def test_expand_file_ref(self):
         from oelint_parser.cls_stash import Stash
@@ -135,7 +196,8 @@ class OelintLinking(unittest.TestCase):
                                                           attributeValue="A")
         self.assertTrue(_stash, msg="Stash has no items")
         for item in _stash[0].get_items():
-            self.assertEqual(self.__stash.ExpandTerm(_file, item, objref=_stash[0]), f'${{@some.function(d, "{_file}")}}/abc')
+            self.assertEqual(self.__stash.ExpandTerm(
+                _file, item, objref=_stash[0]), f'${{@some.function(d, "{_file}")}}/abc')
 
     def test_expandvar_ref_other(self):
         from oelint_parser.cls_stash import Stash
@@ -149,8 +211,10 @@ class OelintLinking(unittest.TestCase):
         self.__stash.AddFile(_file)
         self.__stash.Finalize()
 
-        res = self.__stash.ExpandVar(_file, attribute=Variable.ATTR_VAR, attributeValue='A')
-        self.assertEqual(' '.join(res.get('A', '')), '${@some.function(d, foo)}/abc')
+        res = self.__stash.ExpandVar(
+            _file, attribute=Variable.ATTR_VAR, attributeValue='A')
+        self.assertEqual(' '.join(res.get('A', '')),
+                         '${@some.function(d, foo)}/abc')
 
     def test_expandvar_inline_block(self):
         from oelint_parser.cls_stash import Stash
@@ -163,8 +227,10 @@ class OelintLinking(unittest.TestCase):
         self.__stash.AddFile(_file)
         self.__stash.Finalize()
 
-        res = self.__stash.ExpandVar(_file, attribute=Variable.ATTR_VAR, attributeValue='A')
-        self.assertEqual(' '.join(res.get('A', '')), '${@some.function(d, foo)}/abc')
+        res = self.__stash.ExpandVar(
+            _file, attribute=Variable.ATTR_VAR, attributeValue='A')
+        self.assertEqual(' '.join(res.get('A', '')),
+                         '${@some.function(d, foo)}/abc')
 
     def test_expandvar_multiple_inline_block(self):
         from oelint_parser.cls_stash import Stash
@@ -177,8 +243,10 @@ class OelintLinking(unittest.TestCase):
         self.__stash.AddFile(_file)
         self.__stash.Finalize()
 
-        res = self.__stash.ExpandVar(_file, attribute=Variable.ATTR_VAR, attributeValue='A')
-        self.assertEqual(' '.join(res.get('A', '')), '${@some.function(d, foo)}/abc ${@some.function2(d, foo)}/def')
+        res = self.__stash.ExpandVar(
+            _file, attribute=Variable.ATTR_VAR, attributeValue='A')
+        self.assertEqual(' '.join(res.get(
+            'A', '')), '${@some.function(d, foo)}/abc ${@some.function2(d, foo)}/def')
 
     def test_expandvar_nested_ref(self):
         from oelint_parser.cls_stash import Stash
@@ -193,8 +261,10 @@ class OelintLinking(unittest.TestCase):
         self.__stash.AddFile(_file)
         self.__stash.Finalize()
 
-        res = self.__stash.ExpandVar(_file, attribute=Variable.ATTR_VAR, attributeValue='A')
-        self.assertEqual(' '.join(res.get('A', '')), '${@some.function(d, foo)}/200/abc')
+        res = self.__stash.ExpandVar(
+            _file, attribute=Variable.ATTR_VAR, attributeValue='A')
+        self.assertEqual(' '.join(res.get('A', '')),
+                         '${@some.function(d, foo)}/200/abc')
 
     def test_expandvar_nested_python_ref(self):
         from oelint_parser.cls_stash import Stash
@@ -209,8 +279,12 @@ class OelintLinking(unittest.TestCase):
         self.__stash.AddFile(_file)
         self.__stash.Finalize()
 
-        res = self.__stash.ExpandVar(_file, attribute=Variable.ATTR_VAR, attributeValue='A')
-        self.assertEqual(' '.join(res.get('A', '')), '${@some.function(d, 200)}/abc')
+        res = self.__stash.ExpandVar(
+            _file, attribute=Variable.ATTR_VAR, attributeValue='A')
+        import logging
+        logging.warning(res)
+        self.assertEqual(' '.join(res.get('A', '')),
+                         '${@some.function(d, 200)}/abc')
 
     def test_expandvar_file_ref(self):
         from oelint_parser.cls_stash import Stash
@@ -224,5 +298,7 @@ class OelintLinking(unittest.TestCase):
         self.__stash.AddFile(_file)
         self.__stash.Finalize()
 
-        res = self.__stash.ExpandVar(_file, attribute=Variable.ATTR_VAR, attributeValue='A')
-        self.assertEqual(' '.join(res.get('A', '')), f'${{@some.function(d, "{_file}")}}/abc')
+        res = self.__stash.ExpandVar(
+            _file, attribute=Variable.ATTR_VAR, attributeValue='A')
+        self.assertEqual(' '.join(res.get('A', '')),
+                         f'${{@some.function(d, "{_file}")}}/abc')
