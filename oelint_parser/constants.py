@@ -16,7 +16,7 @@ class Constants():
         Args:
             file_ (str, optional): File to load. Defaults to DEFAULT_DB.
         """
-        self.__db = self.__load_db(file_)
+        self.__db = file_ if isinstance(file_, dict) else self.__load_db(file_)
 
     def __load_db(self, path: str) -> dict:
         try:
