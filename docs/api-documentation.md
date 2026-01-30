@@ -22,6 +22,7 @@
   * [inlinerep](#oelint_parser.inlinerep.inlinerep)
 * [oelint\_parser.constants](#oelint_parser.constants)
   * [Constants](#oelint_parser.constants.Constants)
+    * [\_\_init\_\_](#oelint_parser.constants.Constants.__init__)
     * [GetByPath](#oelint_parser.constants.Constants.GetByPath)
     * [AddConstants](#oelint_parser.constants.Constants.AddConstants)
     * [RemoveConstants](#oelint_parser.constants.Constants.RemoveConstants)
@@ -591,6 +592,20 @@ class Constants()
 ```
 
 Interface for constants
+
+<a id="oelint_parser.constants.Constants.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(file_: str = DEFAULT_DB) -> None
+```
+
+Constants interface
+
+**Arguments**:
+
+- `file_` _str, optional_ - File to load. Defaults to DEFAULT_DB.
 
 <a id="oelint_parser.constants.Constants.GetByPath"></a>
 

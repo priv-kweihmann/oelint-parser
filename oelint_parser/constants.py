@@ -10,8 +10,13 @@ DEFAULT_DB = os.path.join(os.path.dirname(
 class Constants():
     """Interface for constants"""
 
-    def __init__(self) -> None:
-        self.__db = self.__load_db(DEFAULT_DB)
+    def __init__(self, file_: str = DEFAULT_DB) -> None:
+        """Constants interface
+
+        Args:
+            file_ (str, optional): File to load. Defaults to DEFAULT_DB.
+        """
+        self.__db = self.__load_db(file_)
 
     def __load_db(self, path: str) -> dict:
         try:
