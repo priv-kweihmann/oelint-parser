@@ -80,7 +80,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-  "regex == 2026.1.15",
+  "regex == 2026.2.19",
   "Deprecated ~= 1.2"
 ]
 dynamic = ["optional-dependencies"]
