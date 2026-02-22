@@ -193,7 +193,7 @@ class Stash():
         # Match bbappends to bbs
         if _file.endswith(".bbappend"):
             bn_this = os.path.basename(_file).replace(
-                ".bbappend", "").replace("%", ".*")
+                ".bbappend", ".bb$").replace("%", ".*")
             _maxline = 0
             for item in self.__list:
                 if RegexRpl.match(bn_this, os.path.basename(item.Origin)):
