@@ -194,16 +194,16 @@ class Stash():
         if _file.endswith(".bbappend"):
             bn_this = os.path.basename(_file).replace(
                 ".bbappend", "").replace("%", ".*")
+            _maxline = 0
             for item in self.__list:
                 if RegexRpl.match(bn_this, os.path.basename(item.Origin)):
                     if item.Origin not in self.__map:
                         self.__map[item.Origin] = []
                     self.__map[item.Origin].append(_file)
-                    _maxline = max(
-                        x.Line for x in self.__list if x.Origin == item.Origin)
-                    for r in res:
-                        # pretend that we are adding the file to the end of the original
-                        r.Line += _maxline
+                    _maxline = max(_maxline, item.Line)
+            for r in res:
+                # pretend that we are adding the file to the end of the original
+                r.Line += _maxline
         self.AddDistroMachineFromLayer(_file)
         self.__list += res
 
