@@ -380,7 +380,7 @@ class Stash():
         """
         if not filename:
             return []
-        return [x.Origin for x in self.__get_items_by_file(self.__list, filename) if x.Origin != filename]
+        return [x.Origin for x in self.__get_items_by_file(frozenset(self.__list), filename) if x.Origin != filename]
 
     def Reduce(self,
                in_list: Iterable[Item],
