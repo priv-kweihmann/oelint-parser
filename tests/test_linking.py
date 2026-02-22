@@ -7,6 +7,8 @@ class OelintLinking(unittest.TestCase):
 
     RECIPE_1 = os.path.join(os.path.dirname(__file__), "testlayer/recipes-bar/test_1.bb")
     RECIPE_2 = os.path.join(os.path.dirname(__file__), "testlayer/recipes-bar/test_2.bb")
+    EMPTY_RECIPE = os.path.join(os.path.dirname(__file__), "testlayer/recipes-bar/empty_1.bb")
+    EMPTY_RECIPE_APPEND = os.path.join(os.path.dirname(__file__), "testlayer/recipes-bar/empty_1.bbappend")
 
     def setUp(self):
         sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../"))
@@ -17,6 +19,8 @@ class OelintLinking(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintLinking.RECIPE_1)
         self.__stash.AddFile(OelintLinking.RECIPE_2)
+        self.__stash.AddFile(OelintLinking.EMPTY_RECIPE)
+        self.__stash.AddFile(OelintLinking.EMPTY_RECIPE_APPEND)
         self.__stash.Finalize()
 
         _stash = self.__stash.GetItemsFor(filename=OelintLinking.RECIPE_1)
@@ -29,3 +33,8 @@ class OelintLinking(unittest.TestCase):
         _links = sorted({os.path.basename(y.Origin) for y in _stash})
         self.assertEqual(_links, ['global-foo.bbclass', 'recipe-foo.bbclass',
                          'test.inc', 'test2.inc', 'test3.inc', 'test_2.bb'])
+
+        _stash = self.__stash.GetItemsFor(filename=OelintLinking.EMPTY_RECIPE)
+        self.assertTrue(_stash, msg="Stash has items")
+        _links = sorted({os.path.basename(y.Origin) for y in _stash})
+        self.assertEqual(_links, ['empty_1.bbappend'])

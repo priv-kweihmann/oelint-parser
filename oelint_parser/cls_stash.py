@@ -195,12 +195,10 @@ class Stash():
             bn_this = os.path.basename(_file).replace(
                 ".bbappend", ".bb$").replace("%", ".*")
             _maxline = 0
-            for item in self.__list:
-                if RegexRpl.match(bn_this, os.path.basename(item.Origin)):
-                    if item.Origin not in self.__map:
-                        self.__map[item.Origin] = []
-                    self.__map[item.Origin].append(_file)
-                    _maxline = max(_maxline, item.Line)
+            for x in self.__map:
+                if RegexRpl.match(bn_this, os.path.basename(x)):
+                    self.__map[x].append(_file)
+                    _maxline = max(_maxline, max((i.Line for i in self.__list if i.Origin == x), default=0))
             for r in res:
                 # pretend that we are adding the file to the end of the original
                 r.Line += _maxline
@@ -290,6 +288,7 @@ class Stash():
         for k in self.__map.keys():
             for item in self.__map[k][:]:
                 self.__map[k] += self.__map[item]
+            self.__map[k].append(k)
             self.__map[k] = list(set(self.__map[k]))
         # Reset caches
         self._clear_cached()
@@ -301,7 +300,7 @@ class Stash():
         Returns:
             list -- List of bb files in stash
         """
-        return sorted({x.Origin for x in self.__list if x.Origin.endswith(".bb")})
+        return sorted({x for x in self.__map if x.endswith(".bb")})
 
     @functools.cache  # noqa: B019
     def GetLoneAppends(self) -> List[str]:
