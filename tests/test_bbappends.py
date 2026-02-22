@@ -38,6 +38,15 @@ class OelintBBAppendsTest(unittest.TestCase):
         self.assertEqual(len(self.__stash.GetLoneAppends()), 0, msg="No lone appends")
         self.assertEqual(len(self.__stash.GetRecipes()), 1, msg="One recipe")
 
+    def test_bbappend_and_recipe_reversed_order(self):
+        from oelint_parser.cls_stash import Stash
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintBBAppendsTest.RECIPE_APPEND)
+        self.__stash.AddFile(OelintBBAppendsTest.RECIPE)
+        self.__stash.Finalize()
+        self.assertEqual(len(self.__stash.GetLoneAppends()), 0, msg="No lone appends")
+        self.assertEqual(len(self.__stash.GetRecipes()), 1, msg="One recipe")
+
     def test_bbappend_doesnt_append_inc(self):
         from oelint_parser.cls_stash import Stash
         self.__stash = Stash()
