@@ -464,7 +464,7 @@ class Stash():
                 return {}
         _exp = {
             "PN": self.GuessRecipeName(filename),
-            "PV": self.GuessRecipeVersion(filename),
+            "PV": self.GuessRecipeVersion(filename) or "1.0",
             "BPN": self.GuessBaseRecipeName(filename),
         }
         _exp = {**_exp, **CONSTANTS.SetsBase}
@@ -692,7 +692,7 @@ class Stash():
         return tmp_
 
     @functools.cache  # noqa: B019
-    def GuessRecipeVersion(self, _file: str) -> str:
+    def GuessRecipeVersion(self, _file: str) -> str | None:
         """Get recipe version from filename
 
         Arguments:
@@ -702,7 +702,8 @@ class Stash():
             str -- recipe version
         """
         _name, _ = os.path.splitext(os.path.basename(_file))
-        return _name.split("_")[-1]
+        _pn, *_pv = _name.split("_")
+        return [*_pv, None][0]
 
     def _ReverseInlineBlock(self, varref: Variable) -> str:
         res = varref.VarValueStripped
@@ -763,7 +764,7 @@ class Stash():
             elif m.group(1) in ["BPN"]:
                 res = res.replace(m.group(0), self.GuessBaseRecipeName(_file))
             elif m.group(1) in ["PV"]:
-                res = res.replace(m.group(0), self.GuessRecipeVersion(_file))
+                res = res.replace(m.group(0), self.GuessRecipeVersion(_file) or "1.0")
             elif m.group(1) in ["FILE"]:
                 res = res.replace(m.group(0), f'{quote}{_file}{quote}')
             elif m.group(1) in ["THISDIR"]:

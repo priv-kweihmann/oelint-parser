@@ -6,12 +6,11 @@ import unittest
 
 class OelintLinking(unittest.TestCase):
 
-    def _create_tempfile(self, _input):
+    def _create_tempfile(self, _input, _file = 'testfile.bb'):
         self.__created_files = getattr(self, '__created_files', {})
         self._collected_tmpdirs = getattr(self, '_collect_tmpdirs', [])
         self._tmpdir = getattr(self, '_tmpdir', tempfile.mkdtemp())
         self._collected_tmpdirs.append(self._tmpdir)
-        _file = 'testfile.bb'
         _path = os.path.join(self._tmpdir, _file)
         os.makedirs(os.path.dirname(_path), exist_ok=True)
 
@@ -302,3 +301,22 @@ class OelintLinking(unittest.TestCase):
             _file, attribute=Variable.ATTR_VAR, attributeValue='A')
         self.assertEqual(' '.join(res.get('A', '')),
                          f'${{@some.function(d, "{_file}")}}/abc')
+
+    def test_expand_pv(self):
+        from oelint_parser.cls_stash import Stash
+        from oelint_parser.cls_item import Variable
+
+        for file_name, file_content, expected in [
+            ('myrecipe.bb',     'A = "b"',    '1.0'),
+            ('myrecipe.bb',     'PV = "2.1"', '2.1'),
+            ('myrecipe_1.0.bb', 'A = "b"',    '1.0'),
+            ('myrecipe_3.3.bb', 'A = "b"',    '3.3'),
+            ('myrecipe_3.1.bb', 'PV = "4.2"', '4.2'),
+        ]:
+            self.__stash = Stash()
+            _file = self._create_tempfile(file_content, file_name)
+            self.__stash.AddFile(_file)
+            self.__stash.Finalize()
+
+            res = self.__stash.ExpandTerm(_file, '${PV}')
+            self.assertEqual(res, expected)
