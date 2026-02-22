@@ -206,7 +206,7 @@ class Stash():
                 r.Line += _maxline
         elif _file.endswith(".bb"):
             bn_this = os.path.basename(_file).replace(".bb", "")
-            _maxline = max(r.Line for r in res)
+            _maxline = max((r.Line for r in res), default=0)
             for item in self.__list:
                 if not item.Origin.endswith(".bbappend"):
                     continue
