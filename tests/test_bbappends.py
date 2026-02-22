@@ -53,13 +53,10 @@ class OelintBBAppendsTest(unittest.TestCase):
         self.__stash.AddFile(OelintBBAppendsTest.RECIPE_APPEND)
         self.__stash.Finalize()
 
-        # Python's name mangling forces us to mangle the attribute name ourselves
-        stash_map = self.__stash._Stash__map
-
-        inc_linked_to_bbappend = OelintBBAppendsTest.RECIPE_INC in stash_map.get(OelintBBAppendsTest.RECIPE_APPEND, {})
+        inc_linked_to_bbappend = OelintBBAppendsTest.RECIPE_INC in self.__stash.GetLinksForFile(OelintBBAppendsTest.RECIPE_APPEND)
         self.assertTrue(inc_linked_to_bbappend, msg="include file is linked to the bbappend")
 
-        bbappend_linked_to_inc = OelintBBAppendsTest.RECIPE_APPEND in stash_map.get(OelintBBAppendsTest.RECIPE_INC, {})
+        bbappend_linked_to_inc = OelintBBAppendsTest.RECIPE_APPEND in self.__stash.GetLinksForFile(OelintBBAppendsTest.RECIPE_APPEND)
         self.assertFalse(bbappend_linked_to_inc, msg="bbappend is not linked to the include file")
 
 
