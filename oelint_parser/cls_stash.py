@@ -204,6 +204,19 @@ class Stash():
             for r in res:
                 # pretend that we are adding the file to the end of the original
                 r.Line += _maxline
+        elif _file.endswith(".bb"):
+            bn_this = os.path.basename(_file).replace(".bb", "")
+            _maxline = max(r.Line for r in res)
+            for item in self.__list:
+                if not item.Origin.endswith(".bbappend"):
+                    continue
+                bn_that = os.path.basename(item.Origin).replace(
+                    ".bbappend", "").replace("%", ".*")
+                if RegexRpl.match(bn_that, bn_this):
+                    self.__map[_file].append(item.Origin)
+                    # pretend that we are adding that bbappend to the end of this recipe
+                    item.Line = max(item.Line, item.InFileLine + _maxline)
+
         self.AddDistroMachineFromLayer(_file)
         self.__list += res
 
