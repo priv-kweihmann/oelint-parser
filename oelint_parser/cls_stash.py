@@ -3,7 +3,7 @@ import glob
 import hashlib
 import os
 from collections import UserList
-from typing import Iterable, List, Union
+from typing import Iterable, List, Set, Union
 from urllib.parse import urlparse
 
 import regex
@@ -887,3 +887,41 @@ class Stash():
         _inherits = self.GetItemsFor(
             filename=_file, classifier=Inherit.CLASSIFIER)
         return any(x for x in _inherits if "packagegroup" in x.get_items())
+
+    @functools.cache  # noqa: B019
+    def GetPackagesDynamic(self, _file: str) -> Set[str]:
+        """returns set of dynamic package patterns defined for _file
+
+        Args:
+            _file {str} -- Full path to file
+
+        Returns:
+            Set[str] -- set of dynamic package patterns
+        """
+        packages_dynamic = set()
+        items = self.GetItemsFor(filename=_file,
+                                 classifier=Variable.CLASSIFIER,
+                                 attribute=Variable.ATTR_VAR,
+                                 attributeValue="PACKAGES_DYNAMIC")
+        for i in items:
+            packages_dynamic.update(self.SafeLineSplit(self.ExpandTerm(_file, i.VarValueStripped)))
+
+        return packages_dynamic
+
+    @functools.cache  # noqa: B019
+    def IsDynamicPackage(self, _file: str, name: str) -> bool:
+        """returns if the name is likely a dynamic package or not
+
+        Args:
+            _file {str} -- Full path to file
+            name {str} -- Name to check
+
+        Returns:
+            bool -- True if name is a dynamic package
+        """
+        expanded = self.ExpandTerm(_file, name)
+        for pattern in self.GetPackagesDynamic(_file):
+            if RegexRpl.match(pattern, expanded):
+                return True
+
+        return False
