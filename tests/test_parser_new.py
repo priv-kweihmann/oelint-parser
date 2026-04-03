@@ -8,8 +8,10 @@ from logging import log
 class OelintParserTestNew(unittest.TestCase):
 
     RECIPE = os.path.join(os.path.dirname(__file__), "test-recipe-new_1.0.bb")
-    RECIPE_2 = os.path.join(os.path.dirname(__file__), "test-recipe-new_2.0.bb")
-    RECIPE_NATIVE = os.path.join(os.path.dirname(__file__), "test-recipe-new-native_1.0.bb")
+    RECIPE_2 = os.path.join(os.path.dirname(
+        __file__), "test-recipe-new_2.0.bb")
+    RECIPE_NATIVE = os.path.join(os.path.dirname(
+        __file__), "test-recipe-new-native_1.0.bb")
 
     def setUp(self):
         sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../"))
@@ -75,11 +77,13 @@ class OelintParserTestNew(unittest.TestCase):
         self.assertTrue(_stash, msg="Stash has items")
         for x in _stash:
             self.assertEqual(x.Value, '"5c274e52576976bd70565cd72505db41"')
-            self.assertEqual(x.ValueStripped, '5c274e52576976bd70565cd72505db41')
+            self.assertEqual(
+                x.ValueStripped, '5c274e52576976bd70565cd72505db41')
             self.assertEqual(x.VarName, 'SRC_URI')
             self.assertEqual(x.Flag, "foo.md5sum")
             self.assertEqual(x.VarOp, " = ")
-            self.assertEqual(x.get_items(), ["SRC_URI", "foo.md5sum", " = ", '5c274e52576976bd70565cd72505db41'])
+            self.assertEqual(x.get_items(), [
+                             "SRC_URI", "foo.md5sum", " = ", '5c274e52576976bd70565cd72505db41'])
 
     def test_var_rdepends(self):
         from oelint_parser.cls_item import Variable
@@ -140,16 +144,20 @@ class OelintParserTestNew(unittest.TestCase):
                                           attributeValue="X")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
-            value = self.__stash.ExpandTerm(OelintParserTestNew.RECIPE, x.VarValueStripped)
-            self.assertEqual(value, "test-recipe-new-1.0", msg=f'{x.VarValueStripped} -> {value}')
+            value = self.__stash.ExpandTerm(
+                OelintParserTestNew.RECIPE, x.VarValueStripped)
+            self.assertEqual(value, "test-recipe-new-1.0",
+                             msg=f'{x.VarValueStripped} -> {value}')
 
         _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
                                           attribute=Variable.ATTR_VAR,
                                           attributeValue="Y")
         self.assertTrue(_stash, msg="Stash has no items")
         for x in _stash:
-            value = self.__stash.ExpandTerm(OelintParserTestNew.RECIPE, x.VarValueStripped)
-            self.assertEqual(value, "test-recipe-new-1.0", msg=f'{x.VarValueStripped} -> {value}')
+            value = self.__stash.ExpandTerm(
+                OelintParserTestNew.RECIPE, x.VarValueStripped)
+            self.assertEqual(value, "test-recipe-new-1.0",
+                             msg=f'{x.VarValueStripped} -> {value}')
 
     def test_var_p(self):
         from oelint_parser.cls_item import Variable
@@ -163,7 +171,8 @@ class OelintParserTestNew(unittest.TestCase):
                                           attributeValue="Y")
         self.assertTrue(_stash, msg="Stash has items")
         for x in _stash:
-            value = self.__stash.ExpandTerm(OelintParserTestNew.RECIPE, x.VarValueStripped)
+            value = self.__stash.ExpandTerm(
+                OelintParserTestNew.RECIPE, x.VarValueStripped)
             self.assertEqual(value, "test-recipe-new-1.0")
 
     def test_override_syntax_detection(self):
@@ -185,11 +194,15 @@ class OelintParserTestNew(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserTestNew.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue='SRCREV')
+        _stash = self.__stash.GetItemsFor(
+            classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue='SRCREV_foo')
         self.assertTrue(_stash, msg="Stash has items")
-        for x in _stash:
-            self.assertEqual(x.SubItems, ['foo'])
-            self.assertEqual(x.OverrideDelimiter, '_')
+        self.assertEqual(_stash[0].SubItems, [])
+        self.assertEqual(_stash[1].SubItems, ['more', 'to', 'come'])
+
+        _stash = self.__stash.GetItemsFor(
+            classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue='SRCREV_FORMAT')
+        self.assertEqual(len(_stash), 1, msg="Stash has 1 item")
 
     def test_var_isappend(self):
         from oelint_parser.cls_item import Variable

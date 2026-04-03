@@ -171,8 +171,6 @@ class Item():
         """
         if ":" in name:
             self.__OverrideDelimiter = ":"
-        if any(name.startswith(x) for x in ['SRCREV_']):
-            self.__OverrideDelimiter = "_"
         chunks = name.split(self.__OverrideDelimiter)
         _suffix = []
         _var = [chunks[0]]
