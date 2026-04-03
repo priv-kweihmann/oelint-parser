@@ -14,6 +14,8 @@ RDEPENDS:${PN}-test += "foo"
 Y = "${P}"
 
 SRCREV_foo = "abcd"
+SRCREV_FORMAT = "abcd"
+SRCREV_foo:more:to:come = "abcd"
 
 C  += "1"
 
