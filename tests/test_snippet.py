@@ -64,3 +64,47 @@ class TestOelintSnippets(TestBaseClass):
 
         _stash = self.__stash.GetItemsFor()
         assert len(_stash.data) == 1
+
+    def test_handler_after_def_blocks(self):
+        # 'python ...() {}' event handlers following one or more 'def' helper
+        # blocks must still parse as a single Function with the complete body,
+        # not be merged with the preceding 'addhandler' line and have the body
+        # spill out as loose Items.
+        from oelint_parser.cls_item import Function, Item, PythonBlock
+        from oelint_parser.cls_stash import Stash
+
+        path = self.create_tempfile(
+            'test-handler.bb',
+            '''
+            def _helper_a(d):
+                return d.getVar('A')
+
+            def _helper_b(d):
+                return d.getVar('B')
+
+            addhandler myclass_eventhandler
+            python myclass_eventhandler() {
+                if bb.event.getName(e) == "ConfigParsed":
+                    _helper_a(e.data)
+            }
+            ''',
+        )
+
+        self.__stash = Stash()
+        self.__stash.AddFile(path)
+
+        _funcs = self.__stash.GetItemsFor(classifier=Function.CLASSIFIER)
+        assert len(_funcs) == 1
+        assert _funcs[0].FuncName == 'myclass_eventhandler'
+        assert _funcs[0].IsPython
+        # the whole body, up to the closing brace, belongs to the handler
+        assert 'bb.event.getName' in _funcs[0].RealRaw
+        assert _funcs[0].RealRaw.rstrip().endswith('}')
+
+        # both helpers stay recognised as Python blocks
+        assert len(self.__stash.GetItemsFor(classifier=PythonBlock.CLASSIFIER)) == 2
+
+        # the handler body must not leak out as loose base Items
+        _loose = [x for x in self.__stash.GetItemsFor()
+                  if type(x) is Item and 'python' in x.RealRaw]
+        assert not _loose

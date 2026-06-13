@@ -215,7 +215,14 @@ def prepare_lines(_file: str, lineOffset: int = 0, negative: bool = False) -> Li
                     _iter, lineOffset, num, line, negative=negative)
                 num += length
                 prep_lines.append(item)
-                if nextbuf:
+                # A comment or 'def' block peeks the line that terminates it and
+                # hands it back as a leftover buffer. That leftover can itself be
+                # another such block, peeking yet another terminating line, so the
+                # buffer must be drained fully here. Stopping after a single pass
+                # leaves the second leftover to be glued onto the next raw line
+                # above, which misparses e.g. an 'addhandler' followed by its
+                # 'python ...() {}' event handler.
+                while nextbuf:
                     item, nextbuf, length = prepare_lines_subparser(
                         _iter, lineOffset, num, nextbuf, negative=negative)
                     num += length
