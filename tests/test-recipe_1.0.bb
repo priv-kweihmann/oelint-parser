@@ -81,3 +81,7 @@ unset Z
 unset A[my-flag]
 
 INHERIT += "foo bar"
+
+SRC_URI += "\
+    file://etc-NetworkManager-system\x2dconnections.mount \
+"

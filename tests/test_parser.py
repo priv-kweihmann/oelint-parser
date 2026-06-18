@@ -6,7 +6,8 @@ import sys
 class OelintParserTest(unittest.TestCase):
 
     RECIPE = os.path.join(os.path.dirname(__file__), "test-recipe_1.0.bb")
-    RECIPE_LAYER = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-foo_1.0.bb")
+    RECIPE_LAYER = os.path.join(os.path.dirname(
+        __file__), "testlayer/recipes-foo/recipe-foo_1.0.bb")
 
     def setUp(self):
         sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../"))
@@ -51,7 +52,8 @@ class OelintParserTest(unittest.TestCase):
         _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
                                           attribute=Variable.ATTR_VAR,
                                           attributeValue="SOME.VAR.WITH.PERIODS")
-        self.assertTrue(_stash, msg="Stash has no items for SOME.VAR.WITH.PERIODS")
+        self.assertTrue(
+            _stash, msg="Stash has no items for SOME.VAR.WITH.PERIODS")
 
         for x in _stash:
             self.assertEqual(x.VarValue, '"foo"')
@@ -125,8 +127,10 @@ class OelintParserTest(unittest.TestCase):
         self.assertEqual(_woval[0].Name, "PYTHON_ABI")
         self.assertEqual(_woval[0].Value, "")
 
-        self.assertTrue(not any(x.Name in ['something', 'SOMETHING']) for x in _withval)
-        self.assertTrue(not any(x.Name in ['something', 'SOMETHING']) for x in _woval)
+        self.assertTrue(
+            not any(x.Name in ['something', 'SOMETHING']) for x in _withval)
+        self.assertTrue(
+            not any(x.Name in ['something', 'SOMETHING']) for x in _woval)
 
     def test_FlagAssignment(self):
         from oelint_parser.cls_item import FlagAssignment
@@ -212,7 +216,8 @@ class OelintParserTest(unittest.TestCase):
         self.assertEqual(x.FuncNameComplete, "do_example")
         self.assertIn('bbwarn "This is an example warning"', x.FuncBody)
         self.assertEqual(x.IsAppend(), False)
-        self.assertEqual(x.FuncBodyStripped, 'bbwarn "This is an example warning"')
+        self.assertEqual(x.FuncBodyStripped,
+                         'bbwarn "This is an example warning"')
         self.assertEqual(x.GetDistroEntry(), "")
         self.assertEqual(x.GetMachineEntry(), "")
 
@@ -222,7 +227,8 @@ class OelintParserTest(unittest.TestCase):
         self.assertEqual(x.FuncName, "do_something")
         self.assertIn('bb.warn("This is another example warning")', x.FuncBody)
         self.assertEqual(x.IsAppend(), True)
-        self.assertEqual(x.FuncBodyStripped, 'bb.warn("This is another example warning")')
+        self.assertEqual(x.FuncBodyStripped,
+                         'bb.warn("This is another example warning")')
         self.assertEqual(x.GetDistroEntry(), "")
         self.assertEqual(x.GetMachineEntry(), "")
         self.assertEqual(x.OverrideDelimiter, "_")
@@ -237,7 +243,8 @@ class OelintParserTest(unittest.TestCase):
         _stash = self.__stash.GetItemsFor(classifier=Function.CLASSIFIER)
         self.assertTrue(_stash, msg="Stash has no items")
 
-        _filteredStash = [x for x in _stash if x.FuncName in ["", "__anonymous"]]
+        _filteredStash = [
+            x for x in _stash if x.FuncName in ["", "__anonymous"]]
         self.assertEqual(len(_filteredStash), 3)
 
         for item in _filteredStash:
@@ -298,7 +305,8 @@ class OelintParserTest(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserTest.RECIPE)
 
-        res = self.__stash.ExpandVar(OelintParserTest.RECIPE, attribute=Variable.ATTR_VAR, attributeValue='RDEPENDS')
+        res = self.__stash.ExpandVar(
+            OelintParserTest.RECIPE, attribute=Variable.ATTR_VAR, attributeValue='RDEPENDS')
 
         self.assertIn('RDEPENDS_test-recipe-test', res)
 
@@ -343,7 +351,8 @@ class OelintParserTest(unittest.TestCase):
                                           attribute=Variable.ATTR_VAR,
                                           attributeValue="UPSTREAM_CHECK_REGEX")
         self.assertTrue(_stash, msg="Stash has no items")
-        self.assertFalse(_stash[0].IsMultiLine(), msg="UPSTREAM_CHECK_REGEX is no multiline")
+        self.assertFalse(_stash[0].IsMultiLine(),
+                         msg="UPSTREAM_CHECK_REGEX is no multiline")
 
     def test_multiline_ml(self):
         from oelint_parser.cls_item import Variable
@@ -470,11 +479,13 @@ class OelintParserTest(unittest.TestCase):
 
         assert len(_stash) == 2
 
-        _stash = _stash.reduce(attribute=Export.ATTR_NAME, attributeValue='PYTHON_ABI')
+        _stash = _stash.reduce(attribute=Export.ATTR_NAME,
+                               attributeValue='PYTHON_ABI')
 
         assert len(_stash) == 1
 
-        _stash = _stash.reduce(attribute=Export.ATTR_NAME, attributeValue='NOT_EXISTING_VALUE')
+        _stash = _stash.reduce(attribute=Export.ATTR_NAME,
+                               attributeValue='NOT_EXISTING_VALUE')
 
         assert not any(_stash)
 
@@ -511,11 +522,15 @@ class OelintParserTest(unittest.TestCase):
         self.assertTrue(_stash, msg="Stash has no items")
         self.assertEqual(len(_stash), 4, msg="Only 4 items are found")
         for x in _stash:
-            self.assertIn(x.Class, ['someclass', '${CLASS_TO_INHERIT}', 'foo bar'])
+            self.assertIn(
+                x.Class, ['someclass', '${CLASS_TO_INHERIT}', 'foo bar'])
 
-        self.assertTrue(any('inherit_defer' in x.Statement for x in _stash), msg='inherit_defer found')
-        self.assertTrue(any('inherit' in x.Statement for x in _stash), msg='inherit found')
-        self.assertTrue(any('INHERIT' in x.Statement for x in _stash), msg='INHERIT found')
+        self.assertTrue(
+            any('inherit_defer' in x.Statement for x in _stash), msg='inherit_defer found')
+        self.assertTrue(
+            any('inherit' in x.Statement for x in _stash), msg='inherit found')
+        self.assertTrue(
+            any('INHERIT' in x.Statement for x in _stash), msg='INHERIT found')
 
     def test_multi_filter(self):
         from oelint_parser.cls_item import Variable, Function
@@ -524,21 +539,26 @@ class OelintParserTest(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintParserTest.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=[Variable.CLASSIFIER, Function.CLASSIFIER])
+        _stash = self.__stash.GetItemsFor(
+            classifier=[Variable.CLASSIFIER, Function.CLASSIFIER])
         self.assertTrue(_stash, msg="Stash has items")
-        self.assertTrue(all(isinstance(x, (Function, Variable)) for x in _stash))
+        self.assertTrue(all(isinstance(x, (Function, Variable))
+                        for x in _stash))
 
         _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
                                           attribute=Variable.ATTR_VAR, attributeValue=['SOMEVAR', 'LICENSE'])
         self.assertTrue(_stash, msg="Stash has items")
-        self.assertTrue(all(x.VarName in ['SOMEVAR', 'LICENSE']) for x in _stash)
+        self.assertTrue(
+            all(x.VarName in ['SOMEVAR', 'LICENSE']) for x in _stash)
         self.assertEqual(len(_stash), 3)
 
         _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
-                                          attribute=(Variable.ATTR_VAR, Variable.ATTR_VARVALSTRIPPED),
+                                          attribute=(
+                                              Variable.ATTR_VAR, Variable.ATTR_VARVALSTRIPPED),
                                           attributeValue='destination')
         self.assertTrue(_stash, msg="Stash has items")
-        self.assertTrue(all(x.VarName in ['SOMEVAR', 'YETANOTHERVAR']) for x in _stash)
+        self.assertTrue(
+            all(x.VarName in ['SOMEVAR', 'YETANOTHERVAR']) for x in _stash)
         self.assertEqual(len(_stash), 2)
 
     def test_unset(self):
@@ -598,6 +618,23 @@ class OelintParserTest(unittest.TestCase):
         _stash[0].FuncBody = 'abc'
 
         self.assertNotEqual(_stash[0].FuncBodyStripped, first)
+
+    def test_escaped_hex(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintParserTest.RECIPE)
+
+        _stash = self.__stash.GetItemsFor(
+            classifier=Variable.CLASSIFIER, attribute=Variable.ATTR_VAR, attributeValue="SRC_URI")
+
+        self.assertTrue(_stash, msg=f"Stash has no items {_stash}")
+
+        import logging
+        logging.warning(_stash)
+
+        self.assertEqual(len(_stash[0].get_items()), 1)
 
 
 if __name__ == "__main__":
