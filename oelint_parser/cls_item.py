@@ -44,7 +44,7 @@ class Item():
         self.__Raw = rawtext
         self.__Origin = origin
         self.__InFileLine = infileline
-        self.__IncludedFrom = []
+        self.__IncludedFrom = set()
         self.__InlineBlocks = inline_blocks
         self.__RealRaw = realraw or rawtext
         self.__OverrideDelimiter = ':' if new_style_override_syntax else '_'
@@ -136,6 +136,19 @@ class Item():
     @property
     def InlineBlocks(self) -> List[Tuple[str, str]]:
         return self.__InlineBlocks
+
+    @property
+    def IncludedFrom(self) -> set[str]:
+        """List of files that include this item
+
+        Returns:
+            set: filenames that include this
+        """
+        return self.__IncludedFrom
+
+    @IncludedFrom.setter
+    def IncludedFrom(self, value: set[str]) -> None:
+        self.__IncludedFrom.update(value)
 
     @staticmethod
     def safe_linesplit(string: str) -> List[str]:

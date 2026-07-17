@@ -198,7 +198,8 @@ class Stash():
             for x in self.__map:
                 if RegexRpl.match(bn_this, os.path.basename(x)):
                     self.__map[x].append(_file)
-                    _maxline = max(_maxline, max((i.Line for i in self.__list if i.Origin == x), default=0))
+                    _maxline = max(_maxline, max(
+                        (i.Line for i in self.__list if i.Origin == x), default=0))
             for r in res:
                 # pretend that we are adding the file to the end of the original
                 r.Line += _maxline
@@ -290,6 +291,11 @@ class Stash():
                 self.__map[k] += self.__map[item]
             self.__map[k].append(k)
             self.__map[k] = list(set(self.__map[k]))
+
+        for k, v in self.__map.items():
+            for item in self.GetItemsFor(k):
+                item.IncludedFrom = v
+
         # Reset caches
         self._clear_cached()
 
@@ -776,7 +782,8 @@ class Stash():
             elif m.group(1) in ["BPN"]:
                 res = res.replace(m.group(0), self.GuessBaseRecipeName(_file))
             elif m.group(1) in ["PV"]:
-                res = res.replace(m.group(0), self.GuessRecipeVersion(_file) or "1.0")
+                res = res.replace(
+                    m.group(0), self.GuessRecipeVersion(_file) or "1.0")
             elif m.group(1) in ["FILE"]:
                 res = res.replace(m.group(0), f'{quote}{_file}{quote}')
             elif m.group(1) in ["THISDIR"]:
@@ -904,7 +911,8 @@ class Stash():
                                  attribute=Variable.ATTR_VAR,
                                  attributeValue="PACKAGES_DYNAMIC")
         for i in items:
-            packages_dynamic.update(self.SafeLineSplit(self.ExpandTerm(_file, i.VarValueStripped)))
+            packages_dynamic.update(self.SafeLineSplit(
+                self.ExpandTerm(_file, i.VarValueStripped)))
 
         return packages_dynamic
 

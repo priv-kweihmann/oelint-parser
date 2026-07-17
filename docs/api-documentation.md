@@ -1,25 +1,44 @@
 # Table of Contents
 
 * [oelint\_parser](#oelint_parser)
+* [oelint\_parser.cls\_stash](#oelint_parser.cls_stash)
+  * [Stash](#oelint_parser.cls_stash.Stash)
+    * [StashList](#oelint_parser.cls_stash.Stash.StashList)
+    * [\_\_init\_\_](#oelint_parser.cls_stash.Stash.__init__)
+    * [AddFile](#oelint_parser.cls_stash.Stash.AddFile)
+    * [FingerPrint](#oelint_parser.cls_stash.Stash.FingerPrint)
+    * [Append](#oelint_parser.cls_stash.Stash.Append)
+    * [Remove](#oelint_parser.cls_stash.Stash.Remove)
+    * [AddDistroMachineFromLayer](#oelint_parser.cls_stash.Stash.AddDistroMachineFromLayer)
+    * [Finalize](#oelint_parser.cls_stash.Stash.Finalize)
+    * [GetRecipes](#oelint_parser.cls_stash.Stash.GetRecipes)
+    * [GetLoneAppends](#oelint_parser.cls_stash.Stash.GetLoneAppends)
+    * [GetConfFiles](#oelint_parser.cls_stash.Stash.GetConfFiles)
+    * [GetBBClasses](#oelint_parser.cls_stash.Stash.GetBBClasses)
+    * [GetLinksForFile](#oelint_parser.cls_stash.Stash.GetLinksForFile)
+    * [Reduce](#oelint_parser.cls_stash.Stash.Reduce)
+    * [GetItemsFor](#oelint_parser.cls_stash.Stash.GetItemsFor)
+    * [ExpandVar](#oelint_parser.cls_stash.Stash.ExpandVar)
+    * [GetFiles](#oelint_parser.cls_stash.Stash.GetFiles)
+    * [GetLayerRoot](#oelint_parser.cls_stash.Stash.GetLayerRoot)
+    * [FindLocalOrLayer](#oelint_parser.cls_stash.Stash.FindLocalOrLayer)
+    * [GetScrComponents](#oelint_parser.cls_stash.Stash.GetScrComponents)
+    * [SafeLineSplit](#oelint_parser.cls_stash.Stash.SafeLineSplit)
+    * [GuessRecipeName](#oelint_parser.cls_stash.Stash.GuessRecipeName)
+    * [GuessBaseRecipeName](#oelint_parser.cls_stash.Stash.GuessBaseRecipeName)
+    * [GuessRecipeVersion](#oelint_parser.cls_stash.Stash.GuessRecipeVersion)
+    * [ExpandTerm](#oelint_parser.cls_stash.Stash.ExpandTerm)
+    * [GetValidPackageNames](#oelint_parser.cls_stash.Stash.GetValidPackageNames)
+    * [GetValidNamedResources](#oelint_parser.cls_stash.Stash.GetValidNamedResources)
+    * [IsImage](#oelint_parser.cls_stash.Stash.IsImage)
+    * [IsPackageGroup](#oelint_parser.cls_stash.Stash.IsPackageGroup)
+    * [GetPackagesDynamic](#oelint_parser.cls_stash.Stash.GetPackagesDynamic)
+    * [IsDynamicPackage](#oelint_parser.cls_stash.Stash.IsDynamicPackage)
 * [oelint\_parser.parser](#oelint_parser.parser)
   * [get\_full\_scope](#oelint_parser.parser.get_full_scope)
   * [prepare\_lines\_subparser](#oelint_parser.parser.prepare_lines_subparser)
   * [prepare\_lines](#oelint_parser.parser.prepare_lines)
   * [get\_items](#oelint_parser.parser.get_items)
-* [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
-  * [bb\_utils\_filter](#oelint_parser.inlinerep.bb_utils_filter)
-  * [bb\_utils\_contains](#oelint_parser.inlinerep.bb_utils_contains)
-  * [bb\_utils\_contains\_any](#oelint_parser.inlinerep.bb_utils_contains_any)
-  * [oe\_utils\_conditional](#oelint_parser.inlinerep.oe_utils_conditional)
-  * [oe\_utils\_ifelse](#oelint_parser.inlinerep.oe_utils_ifelse)
-  * [oe\_utils\_any\_distro\_features](#oelint_parser.inlinerep.oe_utils_any_distro_features)
-  * [oe\_utils\_all\_distro\_features](#oelint_parser.inlinerep.oe_utils_all_distro_features)
-  * [oe\_utils\_vartrue](#oelint_parser.inlinerep.oe_utils_vartrue)
-  * [oe\_utils\_less\_or\_equal](#oelint_parser.inlinerep.oe_utils_less_or_equal)
-  * [oe\_utils\_version\_less\_or\_equal](#oelint_parser.inlinerep.oe_utils_version_less_or_equal)
-  * [oe\_utils\_both\_contain](#oelint_parser.inlinerep.oe_utils_both_contain)
-  * [d\_getvar](#oelint_parser.inlinerep.d_getvar)
-  * [inlinerep](#oelint_parser.inlinerep.inlinerep)
 * [oelint\_parser.cls\_item](#oelint_parser.cls_item)
   * [\_\_id\_regex\_\_](#oelint_parser.cls_item.__id_regex__)
   * [Item](#oelint_parser.cls_item.Item)
@@ -32,6 +51,7 @@
     * [IsFromClass](#oelint_parser.cls_item.Item.IsFromClass)
     * [OverrideDelimiter](#oelint_parser.cls_item.Item.OverrideDelimiter)
     * [IsNewStyleOverrideSyntax](#oelint_parser.cls_item.Item.IsNewStyleOverrideSyntax)
+    * [IncludedFrom](#oelint_parser.cls_item.Item.IncludedFrom)
     * [safe\_linesplit](#oelint_parser.cls_item.Item.safe_linesplit)
     * [get\_items](#oelint_parser.cls_item.Item.get_items)
     * [extract\_sub](#oelint_parser.cls_item.Item.extract_sub)
@@ -170,45 +190,738 @@
     * [SetsBase](#oelint_parser.constants.Constants.SetsBase)
     * [ClassIgnore](#oelint_parser.constants.Constants.ClassIgnore)
     * [IncludeIgnore](#oelint_parser.constants.Constants.IncludeIgnore)
-* [oelint\_parser.cls\_stash](#oelint_parser.cls_stash)
-  * [Stash](#oelint_parser.cls_stash.Stash)
-    * [StashList](#oelint_parser.cls_stash.Stash.StashList)
-    * [\_\_init\_\_](#oelint_parser.cls_stash.Stash.__init__)
-    * [AddFile](#oelint_parser.cls_stash.Stash.AddFile)
-    * [FingerPrint](#oelint_parser.cls_stash.Stash.FingerPrint)
-    * [Append](#oelint_parser.cls_stash.Stash.Append)
-    * [Remove](#oelint_parser.cls_stash.Stash.Remove)
-    * [AddDistroMachineFromLayer](#oelint_parser.cls_stash.Stash.AddDistroMachineFromLayer)
-    * [Finalize](#oelint_parser.cls_stash.Stash.Finalize)
-    * [GetRecipes](#oelint_parser.cls_stash.Stash.GetRecipes)
-    * [GetLoneAppends](#oelint_parser.cls_stash.Stash.GetLoneAppends)
-    * [GetConfFiles](#oelint_parser.cls_stash.Stash.GetConfFiles)
-    * [GetBBClasses](#oelint_parser.cls_stash.Stash.GetBBClasses)
-    * [GetLinksForFile](#oelint_parser.cls_stash.Stash.GetLinksForFile)
-    * [Reduce](#oelint_parser.cls_stash.Stash.Reduce)
-    * [GetItemsFor](#oelint_parser.cls_stash.Stash.GetItemsFor)
-    * [ExpandVar](#oelint_parser.cls_stash.Stash.ExpandVar)
-    * [GetFiles](#oelint_parser.cls_stash.Stash.GetFiles)
-    * [GetLayerRoot](#oelint_parser.cls_stash.Stash.GetLayerRoot)
-    * [FindLocalOrLayer](#oelint_parser.cls_stash.Stash.FindLocalOrLayer)
-    * [GetScrComponents](#oelint_parser.cls_stash.Stash.GetScrComponents)
-    * [SafeLineSplit](#oelint_parser.cls_stash.Stash.SafeLineSplit)
-    * [GuessRecipeName](#oelint_parser.cls_stash.Stash.GuessRecipeName)
-    * [GuessBaseRecipeName](#oelint_parser.cls_stash.Stash.GuessBaseRecipeName)
-    * [GuessRecipeVersion](#oelint_parser.cls_stash.Stash.GuessRecipeVersion)
-    * [ExpandTerm](#oelint_parser.cls_stash.Stash.ExpandTerm)
-    * [GetValidPackageNames](#oelint_parser.cls_stash.Stash.GetValidPackageNames)
-    * [GetValidNamedResources](#oelint_parser.cls_stash.Stash.GetValidNamedResources)
-    * [IsImage](#oelint_parser.cls_stash.Stash.IsImage)
-    * [IsPackageGroup](#oelint_parser.cls_stash.Stash.IsPackageGroup)
-    * [GetPackagesDynamic](#oelint_parser.cls_stash.Stash.GetPackagesDynamic)
-    * [IsDynamicPackage](#oelint_parser.cls_stash.Stash.IsDynamicPackage)
+* [oelint\_parser.inlinerep](#oelint_parser.inlinerep)
+  * [bb\_utils\_filter](#oelint_parser.inlinerep.bb_utils_filter)
+  * [bb\_utils\_contains](#oelint_parser.inlinerep.bb_utils_contains)
+  * [bb\_utils\_contains\_any](#oelint_parser.inlinerep.bb_utils_contains_any)
+  * [oe\_utils\_conditional](#oelint_parser.inlinerep.oe_utils_conditional)
+  * [oe\_utils\_ifelse](#oelint_parser.inlinerep.oe_utils_ifelse)
+  * [oe\_utils\_any\_distro\_features](#oelint_parser.inlinerep.oe_utils_any_distro_features)
+  * [oe\_utils\_all\_distro\_features](#oelint_parser.inlinerep.oe_utils_all_distro_features)
+  * [oe\_utils\_vartrue](#oelint_parser.inlinerep.oe_utils_vartrue)
+  * [oe\_utils\_less\_or\_equal](#oelint_parser.inlinerep.oe_utils_less_or_equal)
+  * [oe\_utils\_version\_less\_or\_equal](#oelint_parser.inlinerep.oe_utils_version_less_or_equal)
+  * [oe\_utils\_both\_contain](#oelint_parser.inlinerep.oe_utils_both_contain)
+  * [d\_getvar](#oelint_parser.inlinerep.d_getvar)
+  * [inlinerep](#oelint_parser.inlinerep.inlinerep)
 
 <a id="oelint_parser"></a>
 
 # oelint\_parser
 
 oelint_parser is a library to parse bitbake files.
+
+<a id="oelint_parser.cls_stash"></a>
+
+# oelint\_parser.cls\_stash
+
+<a id="oelint_parser.cls_stash.Stash"></a>
+
+## Stash Objects
+
+```python
+class Stash()
+```
+
+The Stash object is the central storage for extracting the bitbake information.
+
+<a id="oelint_parser.cls_stash.Stash.StashList"></a>
+
+## StashList Objects
+
+```python
+class StashList(UserList)
+```
+
+Extended list of Items.
+
+<a id="oelint_parser.cls_stash.Stash.StashList.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(stash: 'Stash', items: Iterable[Item]) -> None
+```
+
+StashList - Extended list of Items.
+
+**Arguments**:
+
+- `stash` _Stash_ - Parent stash object
+- `items` _Iterable_ - Iterable input
+
+<a id="oelint_parser.cls_stash.Stash.StashList.insert"></a>
+
+#### insert
+
+```python
+def insert(index: int, item: Item) -> None
+```
+
+Insert into list
+
+**Arguments**:
+
+- `index` _int_ - index where to insert
+- `item` _Item_ - object to insert
+
+<a id="oelint_parser.cls_stash.Stash.StashList.append"></a>
+
+#### append
+
+```python
+def append(item: Union[Item, Iterable[Item]]) -> None
+```
+
+Append to list
+
+**Arguments**:
+
+- `item` _Union[Item, Iterable[Item]]_ - Item or Iterable of Items
+
+<a id="oelint_parser.cls_stash.Stash.StashList.extend"></a>
+
+#### extend
+
+```python
+def extend(other: 'Stash.StashList') -> None
+```
+
+Extend list
+
+**Arguments**:
+
+- `other` _Stash.StashList_ - Other stash other
+
+<a id="oelint_parser.cls_stash.Stash.StashList.remove"></a>
+
+#### remove
+
+```python
+def remove(item: Union[Item, Iterable[Item]]) -> None
+```
+
+Remove from list
+
+**Arguments**:
+
+- `item` _Item_ - Item(s) to remove
+
+<a id="oelint_parser.cls_stash.Stash.StashList.reduce"></a>
+
+#### reduce
+
+```python
+def reduce(filename: str = None,
+           classifier: Union[Iterable[str], str] = None,
+           attribute: Union[Iterable[str], str] = None,
+           attributeValue: Union[Iterable[str], str] = None,
+           nolink: bool = False) -> 'Stash.StashList'
+```
+
+Filters the list.
+
+NOTE: This is a destructive operation.
+If you want to have a copy returned use
+
+Stash.Reduce(<this object>,...) instead.
+
+**Arguments**:
+
+- `filename` _str, optional_ - Full path to file. Defaults to None.
+- `classifier` _Union[Iterable[str], str], optional_ - (iterable of) class specifier (e.g. Variable). Defaults to None.
+- `attribute` _Union[Iterable[str], str], optional_ - (iterable of) class attribute name. Defaults to None.
+- `attributeValue` _Union[Iterable[str], str], optional_ - (iterable of) value of the class attribute value. Defaults to None.
+- `nolink` _bool, optional_ - Consider linked files. Defaults to False.
+  
+
+**Returns**:
+
+- `Stash.StashList` - self
+
+<a id="oelint_parser.cls_stash.Stash.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(quiet: bool = False,
+             new_style_override_syntax: bool = False,
+             negative_inline: bool = False) -> None
+```
+
+Stash object
+
+**Arguments**:
+
+- `quiet` _bool, optional_ - No progress printing. Defaults to False.
+- `new_style_override_syntax` _bool, optional_ - Enforce new override syntax. Defaults to False.
+- `negative_inline` _bool, optional_ - Negative branch inline expansion. Defaults to False.
+
+<a id="oelint_parser.cls_stash.Stash.AddFile"></a>
+
+#### AddFile
+
+```python
+def AddFile(_file: str,
+            lineOffset: int = 0,
+            forcedLink: str = None) -> List[Item]
+```
+
+Adds a file to the stash
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+  
+
+**Arguments**:
+
+- `lineOffset` _int_ - Line offset from the file that include this file (default: {0})
+- `forcedLink` _type_ - Force link against a file (default: {None})
+  
+
+**Returns**:
+
+- `list` - List of {oelint_parser.cls_item.Item}
+
+<a id="oelint_parser.cls_stash.Stash.FingerPrint"></a>
+
+#### FingerPrint
+
+```python
+@property
+def FingerPrint() -> str
+```
+
+Get the SHA1 fingerprint of the current Stash
+
+**Returns**:
+
+- `str` - hexdigest checksum
+
+<a id="oelint_parser.cls_stash.Stash.Append"></a>
+
+#### Append
+
+```python
+def Append(item: Union[Item, Iterable[Item]]) -> None
+```
+
+appends one or mote items to the stash
+
+**Arguments**:
+
+- `item` _Item_ - Item(s) to append
+
+<a id="oelint_parser.cls_stash.Stash.Remove"></a>
+
+#### Remove
+
+```python
+def Remove(item: Union[Item, Iterable[Item]]) -> None
+```
+
+removes one or more items from the stash
+
+**Arguments**:
+
+- `item` _Item_ - Item(s) to remove
+
+<a id="oelint_parser.cls_stash.Stash.AddDistroMachineFromLayer"></a>
+
+#### AddDistroMachineFromLayer
+
+```python
+def AddDistroMachineFromLayer(path: str) -> None
+```
+
+adds machine and distro configuration from the layer of the provided file
+
+**Arguments**:
+
+- `path` _str_ - Path to file
+
+<a id="oelint_parser.cls_stash.Stash.Finalize"></a>
+
+#### Finalize
+
+```python
+def Finalize() -> None
+```
+
+finalize the dependencies within the stash
+
+<a id="oelint_parser.cls_stash.Stash.GetRecipes"></a>
+
+#### GetRecipes
+
+```python
+@functools.cache
+def GetRecipes() -> None
+```
+
+Get bb files in stash
+
+**Returns**:
+
+- `list` - List of bb files in stash
+
+<a id="oelint_parser.cls_stash.Stash.GetLoneAppends"></a>
+
+#### GetLoneAppends
+
+```python
+@functools.cache
+def GetLoneAppends() -> List[str]
+```
+
+Get bbappend without a matching bb
+
+**Returns**:
+
+- `list` - list of bbappend without a matching bb
+
+<a id="oelint_parser.cls_stash.Stash.GetConfFiles"></a>
+
+#### GetConfFiles
+
+```python
+@functools.cache
+def GetConfFiles() -> List[str]
+```
+
+Get configurations files
+
+**Returns**:
+
+- `List[str]` - List of configuration files
+
+<a id="oelint_parser.cls_stash.Stash.GetBBClasses"></a>
+
+#### GetBBClasses
+
+```python
+@functools.cache
+def GetBBClasses() -> List[str]
+```
+
+Get bbclass files
+
+**Returns**:
+
+- `List[str]` - List of bbclass files
+
+<a id="oelint_parser.cls_stash.Stash.GetLinksForFile"></a>
+
+#### GetLinksForFile
+
+```python
+@functools.cache
+def GetLinksForFile(filename: str) -> List[str]
+```
+
+Get file which this file is linked against
+
+**Arguments**:
+
+- `filename` _str_ - full path to file
+  
+
+**Returns**:
+
+- `list` - list of full paths the file is linked against
+
+<a id="oelint_parser.cls_stash.Stash.Reduce"></a>
+
+#### Reduce
+
+```python
+def Reduce(in_list: Iterable[Item],
+           filename: str = None,
+           classifier: Union[Iterable[str], str] = None,
+           attribute: Union[Iterable[str], str] = None,
+           attributeValue: Union[Iterable[str], str] = None,
+           nolink: bool = False) -> List[Item]
+```
+
+Reduce a list by filtering
+
+**Arguments**:
+
+- `in_list` _Stash.StashList_ - Input list.
+- `filename` _str, optional_ - Full path to file. Defaults to None.
+- `classifier` _Union[Iterable[str], str], optional_ - (iterable of) class specifier (e.g. Variable). Defaults to None.
+- `attribute` _Union[Iterable[str], str], optional_ - (iterable of) class attribute name. Defaults to None.
+- `attributeValue` _Union[Iterable[str], str], optional_ - (iterable of) value of the class attribute value. Defaults to None.
+- `nolink` _bool, optional_ - Consider linked files. Defaults to False.
+  
+
+**Returns**:
+
+- `List[Item]` - Returns a list of items fitting the set filters
+
+<a id="oelint_parser.cls_stash.Stash.GetItemsFor"></a>
+
+#### GetItemsFor
+
+```python
+def GetItemsFor(filename: str = None,
+                classifier: Union[Iterable[str], str] = None,
+                attribute: Union[Iterable[str], str] = None,
+                attributeValue: Union[Iterable[str], str] = None,
+                nolink: bool = False) -> 'Stash.StashList'
+```
+
+Get items for filename
+
+**Arguments**:
+
+- `filename` _str, optional_ - Full path to file. Defaults to None.
+- `classifier` _Union[Iterable[str], str], optional_ - (iterable of) class specifier (e.g. Variable). Defaults to None.
+- `attribute` _Union[Iterable[str], str], optional_ - (iterable of) class attribute name. Defaults to None.
+- `attributeValue` _Union[Iterable[str], str], optional_ - (iterable of) value of the class attribute value. Defaults to None.
+- `nolink` _bool, optional_ - Consider linked files. Defaults to False.
+  
+
+**Returns**:
+
+- `Stash.StashList` - Returns a list of items fitting the set filters
+
+<a id="oelint_parser.cls_stash.Stash.ExpandVar"></a>
+
+#### ExpandVar
+
+```python
+def ExpandVar(filename: str = None,
+              attribute: Union[Iterable[str], str] = None,
+              attributeValue: Union[Iterable[str], str] = None,
+              nolink: bool = False) -> dict
+```
+
+Expand variable to dictionary
+
+**Arguments**:
+
+- `filename` _str_ - Full path to file (default: {None})
+- `attribute` _str_ - class attribute name (default: {None})
+- `attributeValue` _str_ - value of the class attribute name (default: {None})
+- `nolink` _bool_ - Consider linked files (default: {False})
+  
+
+**Returns**:
+
+- `{dict}` - expanded variables from call + base set of variables
+
+<a id="oelint_parser.cls_stash.Stash.GetFiles"></a>
+
+#### GetFiles
+
+```python
+@functools.cache
+def GetFiles(_file: str, pattern: str) -> List[str]
+```
+
+Get files matching SRC_URI entries
+
+**Arguments**:
+
+- `_file` _str_ - Full path to filename
+- `pattern` _str_ - glob pattern to apply
+  
+
+**Returns**:
+
+- `list` - list of files matching pattern
+
+<a id="oelint_parser.cls_stash.Stash.GetLayerRoot"></a>
+
+#### GetLayerRoot
+
+```python
+@functools.cache
+def GetLayerRoot(name: str) -> str
+```
+
+Find the path to the layer root of a file
+
+**Arguments**:
+
+- `name` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - path to layer root or empty string
+
+<a id="oelint_parser.cls_stash.Stash.FindLocalOrLayer"></a>
+
+#### FindLocalOrLayer
+
+```python
+@functools.cache
+def FindLocalOrLayer(name: str, localdir: str) -> str
+```
+
+Find file in local dir or in layer
+
+**Arguments**:
+
+- `name` _str_ - filename
+- `localdir` _str_ - path to local dir
+  
+
+**Returns**:
+
+- `str` - path to found file or None
+
+<a id="oelint_parser.cls_stash.Stash.GetScrComponents"></a>
+
+#### GetScrComponents
+
+```python
+@functools.cache
+def GetScrComponents(string: str) -> dict
+```
+
+Return SRC_URI components
+
+**Arguments**:
+
+- `string` _str_ - raw string
+  
+
+**Returns**:
+
+- `dict` - scheme: protocol used, src: source URI, options: parsed options
+
+<a id="oelint_parser.cls_stash.Stash.SafeLineSplit"></a>
+
+#### SafeLineSplit
+
+```python
+@functools.cache
+def SafeLineSplit(string: str) -> List[str]
+```
+
+Split line in a safe manner
+
+**Arguments**:
+
+- `string` _str_ - raw input
+  
+
+**Returns**:
+
+- `list` - safely split input
+
+<a id="oelint_parser.cls_stash.Stash.GuessRecipeName"></a>
+
+#### GuessRecipeName
+
+```python
+@functools.cache
+def GuessRecipeName(_file: str) -> str
+```
+
+Get the recipe name from filename
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe name
+
+<a id="oelint_parser.cls_stash.Stash.GuessBaseRecipeName"></a>
+
+#### GuessBaseRecipeName
+
+```python
+@functools.cache
+def GuessBaseRecipeName(_file: str) -> str
+```
+
+Get the base recipe name from filename (aka BPN)
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe name
+
+<a id="oelint_parser.cls_stash.Stash.GuessRecipeVersion"></a>
+
+#### GuessRecipeVersion
+
+```python
+@functools.cache
+def GuessRecipeVersion(_file: str) -> str | None
+```
+
+Get recipe version from filename
+
+**Arguments**:
+
+- `_file` _str_ - filename
+  
+
+**Returns**:
+
+- `str` - recipe version
+
+<a id="oelint_parser.cls_stash.Stash.ExpandTerm"></a>
+
+#### ExpandTerm
+
+```python
+def ExpandTerm(_file: str,
+               value: str,
+               spare: List[str] = None,
+               seen: List[str] = None,
+               objref: Variable = None) -> str
+```
+
+Expand a variable (replacing all variables by known content)
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+- `value` _str_ - Variable value to expand
+- `spare` _list[str]_ - items to keep unexpanded (default: None)
+- `seen` _list[str]_ - seen items (default: None)
+- `objref` _Variable_ - reference to the calling variable instance (default: None)
+  
+
+**Returns**:
+
+- `str` - expanded value
+
+<a id="oelint_parser.cls_stash.Stash.GetValidPackageNames"></a>
+
+#### GetValidPackageNames
+
+```python
+@functools.cache
+def GetValidPackageNames(_file: str, strippn: bool = False) -> List[str]
+```
+
+Get known valid names for packages
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+- `strippn` _bool_ - strip the package name (default: False)
+  
+
+**Returns**:
+
+- `list` - list of valid package names
+
+<a id="oelint_parser.cls_stash.Stash.GetValidNamedResources"></a>
+
+#### GetValidNamedResources
+
+```python
+@functools.cache
+def GetValidNamedResources(_file: str) -> List[str]
+```
+
+Get list of valid SRCREV resource names
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `list` - list of valid SRCREV resource names
+
+<a id="oelint_parser.cls_stash.Stash.IsImage"></a>
+
+#### IsImage
+
+```python
+@functools.cache
+def IsImage(_file: str) -> bool
+```
+
+returns if the file is likely an image recipe or not
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `bool` - True if _file is an image recipe
+
+<a id="oelint_parser.cls_stash.Stash.IsPackageGroup"></a>
+
+#### IsPackageGroup
+
+```python
+@functools.cache
+def IsPackageGroup(_file: str) -> bool
+```
+
+returns if the file is likely a packagegroup recipe or not
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `bool` - True if _file is a packagegroup recipe
+
+<a id="oelint_parser.cls_stash.Stash.GetPackagesDynamic"></a>
+
+#### GetPackagesDynamic
+
+```python
+@functools.cache
+def GetPackagesDynamic(_file: str) -> Set[str]
+```
+
+returns set of dynamic package patterns defined for _file
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+  
+
+**Returns**:
+
+- `Set[str]` - set of dynamic package patterns
+
+<a id="oelint_parser.cls_stash.Stash.IsDynamicPackage"></a>
+
+#### IsDynamicPackage
+
+```python
+@functools.cache
+def IsDynamicPackage(_file: str, name: str) -> bool
+```
+
+returns if the name is likely a dynamic package or not
+
+**Arguments**:
+
+- `_file` _str_ - Full path to file
+- `name` _str_ - Name to check
+  
+
+**Returns**:
+
+- `bool` - True if name is a dynamic package
 
 <a id="oelint_parser.parser"></a>
 
@@ -314,272 +1027,6 @@ parses file
 **Returns**:
 
 - `list` - List of oelint_parser.cls_item.* representations
-
-<a id="oelint_parser.inlinerep"></a>
-
-# oelint\_parser.inlinerep
-
-<a id="oelint_parser.inlinerep.bb_utils_filter"></a>
-
-#### bb\_utils\_filter
-
-```python
-def bb_utils_filter(_in: str, negative_clause: bool = False) -> str
-```
-
-bb.utils.filter emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.bb_utils_contains"></a>
-
-#### bb\_utils\_contains
-
-```python
-def bb_utils_contains(_in: str, negative_clause: bool = False) -> str
-```
-
-bb.utils.contains emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.bb_utils_contains_any"></a>
-
-#### bb\_utils\_contains\_any
-
-```python
-def bb_utils_contains_any(_in: str, negative_clause: bool = False) -> str
-```
-
-bb.utils.contains_any emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_conditional"></a>
-
-#### oe\_utils\_conditional
-
-```python
-def oe_utils_conditional(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.conditional emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_ifelse"></a>
-
-#### oe\_utils\_ifelse
-
-```python
-def oe_utils_ifelse(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.ifelse emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_any_distro_features"></a>
-
-#### oe\_utils\_any\_distro\_features
-
-```python
-def oe_utils_any_distro_features(_in: str,
-                                 negative_clause: bool = False) -> str
-```
-
-oe.utils.any_distro_features emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_all_distro_features"></a>
-
-#### oe\_utils\_all\_distro\_features
-
-```python
-def oe_utils_all_distro_features(_in: str,
-                                 negative_clause: bool = False) -> str
-```
-
-oe.utils.all_distro_features emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_vartrue"></a>
-
-#### oe\_utils\_vartrue
-
-```python
-def oe_utils_vartrue(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.vartrue emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_less_or_equal"></a>
-
-#### oe\_utils\_less\_or\_equal
-
-```python
-def oe_utils_less_or_equal(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.less_or_equal emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_version_less_or_equal"></a>
-
-#### oe\_utils\_version\_less\_or\_equal
-
-```python
-def oe_utils_version_less_or_equal(_in: str,
-                                   negative_clause: bool = False) -> str
-```
-
-oe.utils.version_less_or_equal emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.oe_utils_both_contain"></a>
-
-#### oe\_utils\_both\_contain
-
-```python
-def oe_utils_both_contain(_in: str, negative_clause: bool = False) -> str
-```
-
-oe.utils.both_contain emulation
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - True argument of the conditional or None if not applicable
-
-<a id="oelint_parser.inlinerep.d_getvar"></a>
-
-#### d\_getvar
-
-```python
-def d_getvar(_in: str) -> str
-```
-
-d.getVar emulation in inline block
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-  
-
-**Returns**:
-
-- `str` - Variable reference if found
-
-<a id="oelint_parser.inlinerep.inlinerep"></a>
-
-#### inlinerep
-
-```python
-def inlinerep(_in: str, negative_clause: bool = False) -> str
-```
-
-Replaces inline code expressions
-
-**Arguments**:
-
-- `_in` _str_ - Input string
-- `negative_clause` _bool_ - return negative branch
-  
-
-**Returns**:
-
-- `str` - Expanded string or None, if not applicable
 
 <a id="oelint_parser.cls_item"></a>
 
@@ -748,6 +1195,21 @@ New style override syntax detected
 **Returns**:
 
 - `bool` - True if new style has been detected
+
+<a id="oelint_parser.cls_item.Item.IncludedFrom"></a>
+
+#### IncludedFrom
+
+```python
+@property
+def IncludedFrom() -> set[str]
+```
+
+List of files that include this item
+
+**Returns**:
+
+- `set` - filenames that include this
 
 <a id="oelint_parser.cls_item.Item.safe_linesplit"></a>
 
@@ -2816,715 +3278,269 @@ Includes to ignore
 
 - `List[str]` - List of paths to ignore
 
-<a id="oelint_parser.cls_stash"></a>
+<a id="oelint_parser.inlinerep"></a>
 
-# oelint\_parser.cls\_stash
+# oelint\_parser.inlinerep
 
-<a id="oelint_parser.cls_stash.Stash"></a>
+<a id="oelint_parser.inlinerep.bb_utils_filter"></a>
 
-## Stash Objects
-
-```python
-class Stash()
-```
-
-The Stash object is the central storage for extracting the bitbake information.
-
-<a id="oelint_parser.cls_stash.Stash.StashList"></a>
-
-## StashList Objects
+#### bb\_utils\_filter
 
 ```python
-class StashList(UserList)
+def bb_utils_filter(_in: str, negative_clause: bool = False) -> str
 ```
 
-Extended list of Items.
-
-<a id="oelint_parser.cls_stash.Stash.StashList.__init__"></a>
-
-#### \_\_init\_\_
-
-```python
-def __init__(stash: 'Stash', items: Iterable[Item]) -> None
-```
-
-StashList - Extended list of Items.
+bb.utils.filter emulation
 
 **Arguments**:
 
-- `stash` _Stash_ - Parent stash object
-- `items` _Iterable_ - Iterable input
-
-<a id="oelint_parser.cls_stash.Stash.StashList.insert"></a>
-
-#### insert
-
-```python
-def insert(index: int, item: Item) -> None
-```
-
-Insert into list
-
-**Arguments**:
-
-- `index` _int_ - index where to insert
-- `item` _Item_ - object to insert
-
-<a id="oelint_parser.cls_stash.Stash.StashList.append"></a>
-
-#### append
-
-```python
-def append(item: Union[Item, Iterable[Item]]) -> None
-```
-
-Append to list
-
-**Arguments**:
-
-- `item` _Union[Item, Iterable[Item]]_ - Item or Iterable of Items
-
-<a id="oelint_parser.cls_stash.Stash.StashList.extend"></a>
-
-#### extend
-
-```python
-def extend(other: 'Stash.StashList') -> None
-```
-
-Extend list
-
-**Arguments**:
-
-- `other` _Stash.StashList_ - Other stash other
-
-<a id="oelint_parser.cls_stash.Stash.StashList.remove"></a>
-
-#### remove
-
-```python
-def remove(item: Union[Item, Iterable[Item]]) -> None
-```
-
-Remove from list
-
-**Arguments**:
-
-- `item` _Item_ - Item(s) to remove
-
-<a id="oelint_parser.cls_stash.Stash.StashList.reduce"></a>
-
-#### reduce
-
-```python
-def reduce(filename: str = None,
-           classifier: Union[Iterable[str], str] = None,
-           attribute: Union[Iterable[str], str] = None,
-           attributeValue: Union[Iterable[str], str] = None,
-           nolink: bool = False) -> 'Stash.StashList'
-```
-
-Filters the list.
-
-NOTE: This is a destructive operation.
-If you want to have a copy returned use
-
-Stash.Reduce(<this object>,...) instead.
-
-**Arguments**:
-
-- `filename` _str, optional_ - Full path to file. Defaults to None.
-- `classifier` _Union[Iterable[str], str], optional_ - (iterable of) class specifier (e.g. Variable). Defaults to None.
-- `attribute` _Union[Iterable[str], str], optional_ - (iterable of) class attribute name. Defaults to None.
-- `attributeValue` _Union[Iterable[str], str], optional_ - (iterable of) value of the class attribute value. Defaults to None.
-- `nolink` _bool, optional_ - Consider linked files. Defaults to False.
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `Stash.StashList` - self
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.__init__"></a>
+<a id="oelint_parser.inlinerep.bb_utils_contains"></a>
 
-#### \_\_init\_\_
-
-```python
-def __init__(quiet: bool = False,
-             new_style_override_syntax: bool = False,
-             negative_inline: bool = False) -> None
-```
-
-Stash object
-
-**Arguments**:
-
-- `quiet` _bool, optional_ - No progress printing. Defaults to False.
-- `new_style_override_syntax` _bool, optional_ - Enforce new override syntax. Defaults to False.
-- `negative_inline` _bool, optional_ - Negative branch inline expansion. Defaults to False.
-
-<a id="oelint_parser.cls_stash.Stash.AddFile"></a>
-
-#### AddFile
+#### bb\_utils\_contains
 
 ```python
-def AddFile(_file: str,
-            lineOffset: int = 0,
-            forcedLink: str = None) -> List[Item]
+def bb_utils_contains(_in: str, negative_clause: bool = False) -> str
 ```
 
-Adds a file to the stash
+bb.utils.contains emulation
 
 **Arguments**:
 
-- `_file` _str_ - Full path to file
-  
-
-**Arguments**:
-
-- `lineOffset` _int_ - Line offset from the file that include this file (default: {0})
-- `forcedLink` _type_ - Force link against a file (default: {None})
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `list` - List of {oelint_parser.cls_item.Item}
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.FingerPrint"></a>
+<a id="oelint_parser.inlinerep.bb_utils_contains_any"></a>
 
-#### FingerPrint
-
-```python
-@property
-def FingerPrint() -> str
-```
-
-Get the SHA1 fingerprint of the current Stash
-
-**Returns**:
-
-- `str` - hexdigest checksum
-
-<a id="oelint_parser.cls_stash.Stash.Append"></a>
-
-#### Append
+#### bb\_utils\_contains\_any
 
 ```python
-def Append(item: Union[Item, Iterable[Item]]) -> None
+def bb_utils_contains_any(_in: str, negative_clause: bool = False) -> str
 ```
 
-appends one or mote items to the stash
+bb.utils.contains_any emulation
 
 **Arguments**:
 
-- `item` _Item_ - Item(s) to append
-
-<a id="oelint_parser.cls_stash.Stash.Remove"></a>
-
-#### Remove
-
-```python
-def Remove(item: Union[Item, Iterable[Item]]) -> None
-```
-
-removes one or more items from the stash
-
-**Arguments**:
-
-- `item` _Item_ - Item(s) to remove
-
-<a id="oelint_parser.cls_stash.Stash.AddDistroMachineFromLayer"></a>
-
-#### AddDistroMachineFromLayer
-
-```python
-def AddDistroMachineFromLayer(path: str) -> None
-```
-
-adds machine and distro configuration from the layer of the provided file
-
-**Arguments**:
-
-- `path` _str_ - Path to file
-
-<a id="oelint_parser.cls_stash.Stash.Finalize"></a>
-
-#### Finalize
-
-```python
-def Finalize() -> None
-```
-
-finalize the dependencies within the stash
-
-<a id="oelint_parser.cls_stash.Stash.GetRecipes"></a>
-
-#### GetRecipes
-
-```python
-@functools.cache
-def GetRecipes() -> None
-```
-
-Get bb files in stash
-
-**Returns**:
-
-- `list` - List of bb files in stash
-
-<a id="oelint_parser.cls_stash.Stash.GetLoneAppends"></a>
-
-#### GetLoneAppends
-
-```python
-@functools.cache
-def GetLoneAppends() -> List[str]
-```
-
-Get bbappend without a matching bb
-
-**Returns**:
-
-- `list` - list of bbappend without a matching bb
-
-<a id="oelint_parser.cls_stash.Stash.GetConfFiles"></a>
-
-#### GetConfFiles
-
-```python
-@functools.cache
-def GetConfFiles() -> List[str]
-```
-
-Get configurations files
-
-**Returns**:
-
-- `List[str]` - List of configuration files
-
-<a id="oelint_parser.cls_stash.Stash.GetBBClasses"></a>
-
-#### GetBBClasses
-
-```python
-@functools.cache
-def GetBBClasses() -> List[str]
-```
-
-Get bbclass files
-
-**Returns**:
-
-- `List[str]` - List of bbclass files
-
-<a id="oelint_parser.cls_stash.Stash.GetLinksForFile"></a>
-
-#### GetLinksForFile
-
-```python
-@functools.cache
-def GetLinksForFile(filename: str) -> List[str]
-```
-
-Get file which this file is linked against
-
-**Arguments**:
-
-- `filename` _str_ - full path to file
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `list` - list of full paths the file is linked against
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.Reduce"></a>
+<a id="oelint_parser.inlinerep.oe_utils_conditional"></a>
 
-#### Reduce
+#### oe\_utils\_conditional
 
 ```python
-def Reduce(in_list: Iterable[Item],
-           filename: str = None,
-           classifier: Union[Iterable[str], str] = None,
-           attribute: Union[Iterable[str], str] = None,
-           attributeValue: Union[Iterable[str], str] = None,
-           nolink: bool = False) -> List[Item]
+def oe_utils_conditional(_in: str, negative_clause: bool = False) -> str
 ```
 
-Reduce a list by filtering
+oe.utils.conditional emulation
 
 **Arguments**:
 
-- `in_list` _Stash.StashList_ - Input list.
-- `filename` _str, optional_ - Full path to file. Defaults to None.
-- `classifier` _Union[Iterable[str], str], optional_ - (iterable of) class specifier (e.g. Variable). Defaults to None.
-- `attribute` _Union[Iterable[str], str], optional_ - (iterable of) class attribute name. Defaults to None.
-- `attributeValue` _Union[Iterable[str], str], optional_ - (iterable of) value of the class attribute value. Defaults to None.
-- `nolink` _bool, optional_ - Consider linked files. Defaults to False.
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `List[Item]` - Returns a list of items fitting the set filters
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.GetItemsFor"></a>
+<a id="oelint_parser.inlinerep.oe_utils_ifelse"></a>
 
-#### GetItemsFor
+#### oe\_utils\_ifelse
 
 ```python
-def GetItemsFor(filename: str = None,
-                classifier: Union[Iterable[str], str] = None,
-                attribute: Union[Iterable[str], str] = None,
-                attributeValue: Union[Iterable[str], str] = None,
-                nolink: bool = False) -> 'Stash.StashList'
+def oe_utils_ifelse(_in: str, negative_clause: bool = False) -> str
 ```
 
-Get items for filename
+oe.utils.ifelse emulation
 
 **Arguments**:
 
-- `filename` _str, optional_ - Full path to file. Defaults to None.
-- `classifier` _Union[Iterable[str], str], optional_ - (iterable of) class specifier (e.g. Variable). Defaults to None.
-- `attribute` _Union[Iterable[str], str], optional_ - (iterable of) class attribute name. Defaults to None.
-- `attributeValue` _Union[Iterable[str], str], optional_ - (iterable of) value of the class attribute value. Defaults to None.
-- `nolink` _bool, optional_ - Consider linked files. Defaults to False.
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `Stash.StashList` - Returns a list of items fitting the set filters
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.ExpandVar"></a>
+<a id="oelint_parser.inlinerep.oe_utils_any_distro_features"></a>
 
-#### ExpandVar
+#### oe\_utils\_any\_distro\_features
 
 ```python
-def ExpandVar(filename: str = None,
-              attribute: Union[Iterable[str], str] = None,
-              attributeValue: Union[Iterable[str], str] = None,
-              nolink: bool = False) -> dict
+def oe_utils_any_distro_features(_in: str,
+                                 negative_clause: bool = False) -> str
 ```
 
-Expand variable to dictionary
+oe.utils.any_distro_features emulation
 
 **Arguments**:
 
-- `filename` _str_ - Full path to file (default: {None})
-- `attribute` _str_ - class attribute name (default: {None})
-- `attributeValue` _str_ - value of the class attribute name (default: {None})
-- `nolink` _bool_ - Consider linked files (default: {False})
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `{dict}` - expanded variables from call + base set of variables
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.GetFiles"></a>
+<a id="oelint_parser.inlinerep.oe_utils_all_distro_features"></a>
 
-#### GetFiles
+#### oe\_utils\_all\_distro\_features
 
 ```python
-@functools.cache
-def GetFiles(_file: str, pattern: str) -> List[str]
+def oe_utils_all_distro_features(_in: str,
+                                 negative_clause: bool = False) -> str
 ```
 
-Get files matching SRC_URI entries
+oe.utils.all_distro_features emulation
 
 **Arguments**:
 
-- `_file` _str_ - Full path to filename
-- `pattern` _str_ - glob pattern to apply
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `list` - list of files matching pattern
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.GetLayerRoot"></a>
+<a id="oelint_parser.inlinerep.oe_utils_vartrue"></a>
 
-#### GetLayerRoot
+#### oe\_utils\_vartrue
 
 ```python
-@functools.cache
-def GetLayerRoot(name: str) -> str
+def oe_utils_vartrue(_in: str, negative_clause: bool = False) -> str
 ```
 
-Find the path to the layer root of a file
+oe.utils.vartrue emulation
 
 **Arguments**:
 
-- `name` _str_ - filename
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `str` - path to layer root or empty string
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.FindLocalOrLayer"></a>
+<a id="oelint_parser.inlinerep.oe_utils_less_or_equal"></a>
 
-#### FindLocalOrLayer
+#### oe\_utils\_less\_or\_equal
 
 ```python
-@functools.cache
-def FindLocalOrLayer(name: str, localdir: str) -> str
+def oe_utils_less_or_equal(_in: str, negative_clause: bool = False) -> str
 ```
 
-Find file in local dir or in layer
+oe.utils.less_or_equal emulation
 
 **Arguments**:
 
-- `name` _str_ - filename
-- `localdir` _str_ - path to local dir
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `str` - path to found file or None
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.GetScrComponents"></a>
+<a id="oelint_parser.inlinerep.oe_utils_version_less_or_equal"></a>
 
-#### GetScrComponents
+#### oe\_utils\_version\_less\_or\_equal
 
 ```python
-@functools.cache
-def GetScrComponents(string: str) -> dict
+def oe_utils_version_less_or_equal(_in: str,
+                                   negative_clause: bool = False) -> str
 ```
 
-Return SRC_URI components
+oe.utils.version_less_or_equal emulation
 
 **Arguments**:
 
-- `string` _str_ - raw string
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `dict` - scheme: protocol used, src: source URI, options: parsed options
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.SafeLineSplit"></a>
+<a id="oelint_parser.inlinerep.oe_utils_both_contain"></a>
 
-#### SafeLineSplit
+#### oe\_utils\_both\_contain
 
 ```python
-@functools.cache
-def SafeLineSplit(string: str) -> List[str]
+def oe_utils_both_contain(_in: str, negative_clause: bool = False) -> str
 ```
 
-Split line in a safe manner
+oe.utils.both_contain emulation
 
 **Arguments**:
 
-- `string` _str_ - raw input
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `list` - safely split input
+- `str` - True argument of the conditional or None if not applicable
 
-<a id="oelint_parser.cls_stash.Stash.GuessRecipeName"></a>
+<a id="oelint_parser.inlinerep.d_getvar"></a>
 
-#### GuessRecipeName
+#### d\_getvar
 
 ```python
-@functools.cache
-def GuessRecipeName(_file: str) -> str
+def d_getvar(_in: str) -> str
 ```
 
-Get the recipe name from filename
+d.getVar emulation in inline block
 
 **Arguments**:
 
-- `_file` _str_ - filename
+- `_in` _str_ - Input string
   
 
 **Returns**:
 
-- `str` - recipe name
+- `str` - Variable reference if found
 
-<a id="oelint_parser.cls_stash.Stash.GuessBaseRecipeName"></a>
+<a id="oelint_parser.inlinerep.inlinerep"></a>
 
-#### GuessBaseRecipeName
+#### inlinerep
 
 ```python
-@functools.cache
-def GuessBaseRecipeName(_file: str) -> str
+def inlinerep(_in: str, negative_clause: bool = False) -> str
 ```
 
-Get the base recipe name from filename (aka BPN)
+Replaces inline code expressions
 
 **Arguments**:
 
-- `_file` _str_ - filename
+- `_in` _str_ - Input string
+- `negative_clause` _bool_ - return negative branch
   
 
 **Returns**:
 
-- `str` - recipe name
-
-<a id="oelint_parser.cls_stash.Stash.GuessRecipeVersion"></a>
-
-#### GuessRecipeVersion
-
-```python
-@functools.cache
-def GuessRecipeVersion(_file: str) -> str | None
-```
-
-Get recipe version from filename
-
-**Arguments**:
-
-- `_file` _str_ - filename
-  
-
-**Returns**:
-
-- `str` - recipe version
-
-<a id="oelint_parser.cls_stash.Stash.ExpandTerm"></a>
-
-#### ExpandTerm
-
-```python
-def ExpandTerm(_file: str,
-               value: str,
-               spare: List[str] = None,
-               seen: List[str] = None,
-               objref: Variable = None) -> str
-```
-
-Expand a variable (replacing all variables by known content)
-
-**Arguments**:
-
-- `_file` _str_ - Full path to file
-- `value` _str_ - Variable value to expand
-- `spare` _list[str]_ - items to keep unexpanded (default: None)
-- `seen` _list[str]_ - seen items (default: None)
-- `objref` _Variable_ - reference to the calling variable instance (default: None)
-  
-
-**Returns**:
-
-- `str` - expanded value
-
-<a id="oelint_parser.cls_stash.Stash.GetValidPackageNames"></a>
-
-#### GetValidPackageNames
-
-```python
-@functools.cache
-def GetValidPackageNames(_file: str, strippn: bool = False) -> List[str]
-```
-
-Get known valid names for packages
-
-**Arguments**:
-
-- `_file` _str_ - Full path to file
-- `strippn` _bool_ - strip the package name (default: False)
-  
-
-**Returns**:
-
-- `list` - list of valid package names
-
-<a id="oelint_parser.cls_stash.Stash.GetValidNamedResources"></a>
-
-#### GetValidNamedResources
-
-```python
-@functools.cache
-def GetValidNamedResources(_file: str) -> List[str]
-```
-
-Get list of valid SRCREV resource names
-
-**Arguments**:
-
-- `_file` _str_ - Full path to file
-  
-
-**Returns**:
-
-- `list` - list of valid SRCREV resource names
-
-<a id="oelint_parser.cls_stash.Stash.IsImage"></a>
-
-#### IsImage
-
-```python
-@functools.cache
-def IsImage(_file: str) -> bool
-```
-
-returns if the file is likely an image recipe or not
-
-**Arguments**:
-
-- `_file` _str_ - Full path to file
-  
-
-**Returns**:
-
-- `bool` - True if _file is an image recipe
-
-<a id="oelint_parser.cls_stash.Stash.IsPackageGroup"></a>
-
-#### IsPackageGroup
-
-```python
-@functools.cache
-def IsPackageGroup(_file: str) -> bool
-```
-
-returns if the file is likely a packagegroup recipe or not
-
-**Arguments**:
-
-- `_file` _str_ - Full path to file
-  
-
-**Returns**:
-
-- `bool` - True if _file is a packagegroup recipe
-
-<a id="oelint_parser.cls_stash.Stash.GetPackagesDynamic"></a>
-
-#### GetPackagesDynamic
-
-```python
-@functools.cache
-def GetPackagesDynamic(_file: str) -> Set[str]
-```
-
-returns set of dynamic package patterns defined for _file
-
-**Arguments**:
-
-- `_file` _str_ - Full path to file
-  
-
-**Returns**:
-
-- `Set[str]` - set of dynamic package patterns
-
-<a id="oelint_parser.cls_stash.Stash.IsDynamicPackage"></a>
-
-#### IsDynamicPackage
-
-```python
-@functools.cache
-def IsDynamicPackage(_file: str, name: str) -> bool
-```
-
-returns if the name is likely a dynamic package or not
-
-**Arguments**:
-
-- `_file` _str_ - Full path to file
-- `name` _str_ - Name to check
-  
-
-**Returns**:
-
-- `bool` - True if name is a dynamic package
+- `str` - Expanded string or None, if not applicable
 

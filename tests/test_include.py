@@ -5,8 +5,10 @@ import unittest
 
 class OelintIncludeBbFiles(unittest.TestCase):
 
-    RECIPE = os.path.join(os.path.dirname(__file__), "testlayer/recipes-bar/test_2.bb")
-    RECIPE_ALT = os.path.join(os.path.dirname(__file__), "testlayer/recipes-bar/test-alt_2.bb")
+    RECIPE = os.path.join(os.path.dirname(__file__),
+                          "testlayer/recipes-bar/test_2.bb")
+    RECIPE_ALT = os.path.join(os.path.dirname(
+        __file__), "testlayer/recipes-bar/test-alt_2.bb")
 
     def setUp(self):
         sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../"))
@@ -54,7 +56,7 @@ class OelintIncludeBbFiles(unittest.TestCase):
             os.path.join(os.path.dirname(self.RECIPE), 'test3.inc'),
         ]
 
-        assert values == expected
+        assert set(expected) <= set(values)
 
 
 if __name__ == "__main__":

@@ -6,12 +6,18 @@ import sys
 
 class OelintBBClassTest(unittest.TestCase):
 
-    RECIPE = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-foo_1.0.bb")
-    RECIPE_MULTILINEINHERIT = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-foo_2.0.bb")
-    RECIPE_WITHPATHS = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-foo_3.0.bb")
-    RECIPE_WITHPATHS_NRES = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-foo_3.1.bb")
-    RECIPE_GLOBAL = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-bar_1.0.bb")
-    RECIPE_RECIPE = os.path.join(os.path.dirname(__file__), "testlayer/recipes-foo/recipe-baz_1.0.bb")
+    RECIPE = os.path.join(os.path.dirname(__file__),
+                          "testlayer/recipes-foo/recipe-foo_1.0.bb")
+    RECIPE_MULTILINEINHERIT = os.path.join(os.path.dirname(
+        __file__), "testlayer/recipes-foo/recipe-foo_2.0.bb")
+    RECIPE_WITHPATHS = os.path.join(os.path.dirname(
+        __file__), "testlayer/recipes-foo/recipe-foo_3.0.bb")
+    RECIPE_WITHPATHS_NRES = os.path.join(os.path.dirname(
+        __file__), "testlayer/recipes-foo/recipe-foo_3.1.bb")
+    RECIPE_GLOBAL = os.path.join(os.path.dirname(
+        __file__), "testlayer/recipes-foo/recipe-bar_1.0.bb")
+    RECIPE_RECIPE = os.path.join(os.path.dirname(
+        __file__), "testlayer/recipes-foo/recipe-baz_1.0.bb")
 
     def setUp(self):
         sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../"))
@@ -62,6 +68,26 @@ class OelintBBClassTest(unittest.TestCase):
 
         self.assertTrue(_found, msg="No element of a layer bbclass was added")
 
+    def test_included_from(self):
+        from oelint_parser.cls_item import Variable
+        from oelint_parser.cls_stash import Stash
+
+        self.__stash = Stash()
+        self.__stash.AddFile(OelintBBClassTest.RECIPE_GLOBAL)
+        self.__stash.Finalize()
+
+        _stash = self.__stash.GetItemsFor(classifier=Variable.CLASSIFIER,
+                                          attribute=Variable.ATTR_VAR,
+                                          attributeValue="SUB_INC")
+        self.assertTrue(_stash, msg="Stash has no items")
+
+        item = _stash[0]
+        _inc_list = [os.path.basename(x) for x in item.IncludedFrom]
+        self.assertIn('sub.inc', _inc_list)
+        self.assertIn('test.inc', _inc_list)
+        self.assertIn('recipe-bar_1.0.bb', _inc_list)
+        self.assertIn('global-foo.bbclass', _inc_list)
+
     def test_var_a_recipe(self):
         from oelint_parser.cls_item import Variable
         from oelint_parser.cls_stash import Stash
@@ -100,11 +126,15 @@ class OelintBBClassTest(unittest.TestCase):
         self.__stash = Stash()
         self.__stash.AddFile(OelintBBClassTest.RECIPE)
 
-        _stash = self.__stash.GetItemsFor(classifier=FunctionExports.CLASSIFIER)
+        _stash = self.__stash.GetItemsFor(
+            classifier=FunctionExports.CLASSIFIER)
         self.assertTrue(_stash, msg="Stash has no items")
-        self.assertEqual(_stash[0].FuncNames, "do_install do_somenotexistingtask")
-        self.assertEqual(_stash[0].get_items(), ["do_install", "do_somenotexistingtask"])
-        self.assertEqual(_stash[0].get_items_unaliased(), ["foo-do_install", "foo-do_somenotexistingtask"])
+        self.assertEqual(_stash[0].FuncNames,
+                         "do_install do_somenotexistingtask")
+        self.assertEqual(_stash[0].get_items(), [
+                         "do_install", "do_somenotexistingtask"])
+        self.assertEqual(_stash[0].get_items_unaliased(), [
+                         "foo-do_install", "foo-do_somenotexistingtask"])
         self.assertEqual(_stash[0].IsFromClass, True)
 
     def test_isfromclass(self):
@@ -145,8 +175,10 @@ class OelintBBClassTest(unittest.TestCase):
 
         inh_item: Inherit = _stash[0]
 
-        self.assertIn(os.path.join(os.path.dirname(__file__), "testlayer/classes/foo.bbclass"), inh_item.FilePaths)
-        self.assertIn(os.path.join(os.path.dirname(__file__), "testlayer/classes-recipe/recipe-foo.bbclass"), inh_item.FilePaths)
+        self.assertIn(os.path.join(os.path.dirname(__file__),
+                      "testlayer/classes/foo.bbclass"), inh_item.FilePaths)
+        self.assertIn(os.path.join(os.path.dirname(
+            __file__), "testlayer/classes-recipe/recipe-foo.bbclass"), inh_item.FilePaths)
 
     def test_inherit_filepaths_non_resolve(self):
         from oelint_parser.cls_item import Inherit
