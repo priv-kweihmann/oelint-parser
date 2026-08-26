@@ -320,3 +320,41 @@ class OelintLinking(unittest.TestCase):
 
             res = self.__stash.ExpandTerm(_file, '${PV}')
             self.assertEqual(res, expected)
+
+    def test_expand_include_pv_from_filename(self):
+        # an include path resolves ${PV} from the filename, not from a PV the
+        # recipe assigns further down (matches how bitbake parses a require).
+        from oelint_parser.cls_stash import Stash
+        self.__stash = Stash()
+        _file = self._create_tempfile(
+            '''
+            require foo-common_${PV}.inc
+            PV = "2025.01+fslc+git${SRCPV}"
+            ''', 'foo_2025.01.bb')
+        self.__stash.AddFile(_file)
+        self.__stash.Finalize()
+
+        # default expansion honours the assigned PV
+        self.assertEqual(self.__stash.ExpandTerm(_file, 'foo-common_${PV}.inc'),
+                         'foo-common_2025.01+fslc+git${SRCPV}.inc')
+        # include expansion uses the filename version
+        self.assertEqual(
+            self.__stash.ExpandTerm(_file, 'foo-common_${PV}.inc', for_include=True),
+            'foo-common_2025.01.inc')
+
+    def test_expand_include_pn_from_filename(self):
+        # same rule for PN/BPN: an include path resolves against the filename,
+        # not an in-recipe rename
+        from oelint_parser.cls_stash import Stash
+        self.__stash = Stash()
+        _file = self._create_tempfile(
+            '''
+            require ${BPN}-${PV}.inc
+            PN = "renamed"
+            ''', 'realname_1.0.bb')
+        self.__stash.AddFile(_file)
+        self.__stash.Finalize()
+
+        self.assertEqual(
+            self.__stash.ExpandTerm(_file, '${BPN}-${PV}.inc', for_include=True),
+            'realname-1.0.inc')

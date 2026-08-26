@@ -5,6 +5,7 @@
   * [Stash](#oelint_parser.cls_stash.Stash)
     * [StashList](#oelint_parser.cls_stash.Stash.StashList)
     * [\_\_init\_\_](#oelint_parser.cls_stash.Stash.__init__)
+    * [LayerPaths](#oelint_parser.cls_stash.Stash.LayerPaths)
     * [AddFile](#oelint_parser.cls_stash.Stash.AddFile)
     * [FingerPrint](#oelint_parser.cls_stash.Stash.FingerPrint)
     * [Append](#oelint_parser.cls_stash.Stash.Append)
@@ -346,7 +347,8 @@ Stash.Reduce(<this object>,...) instead.
 ```python
 def __init__(quiet: bool = False,
              new_style_override_syntax: bool = False,
-             negative_inline: bool = False) -> None
+             negative_inline: bool = False,
+             layer_paths: List[str] = None) -> None
 ```
 
 Stash object
@@ -356,6 +358,22 @@ Stash object
 - `quiet` _bool, optional_ - No progress printing. Defaults to False.
 - `new_style_override_syntax` _bool, optional_ - Enforce new override syntax. Defaults to False.
 - `negative_inline` _bool, optional_ - Negative branch inline expansion. Defaults to False.
+- `layer_paths` _list[str], optional_ - Extra layer roots to search when resolving a require/include path (mirrors BBPATH). Defaults to None.
+
+<a id="oelint_parser.cls_stash.Stash.LayerPaths"></a>
+
+#### LayerPaths
+
+```python
+@property
+def LayerPaths() -> List[str]
+```
+
+Extra layer roots searched when resolving a require/include path
+
+**Returns**:
+
+- `list[str]` - absolute layer roots (empty when none configured)
 
 <a id="oelint_parser.cls_stash.Stash.AddFile"></a>
 
@@ -783,7 +801,8 @@ def ExpandTerm(_file: str,
                value: str,
                spare: List[str] = None,
                seen: List[str] = None,
-               objref: Variable = None) -> str
+               objref: Variable = None,
+               for_include: bool = False) -> str
 ```
 
 Expand a variable (replacing all variables by known content)
@@ -795,6 +814,9 @@ Expand a variable (replacing all variables by known content)
 - `spare` _list[str]_ - items to keep unexpanded (default: None)
 - `seen` _list[str]_ - seen items (default: None)
 - `objref` _Variable_ - reference to the calling variable instance (default: None)
+- `for_include` _bool_ - expand a require/include path (default: False).
+  When True, PN/BPN/PV resolve from the filename, not from an
+  assigned value, matching how bitbake resolves an include path.
   
 
 **Returns**:
