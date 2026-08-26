@@ -119,13 +119,14 @@ class Stash():
                                            nolink=nolink)
             return self
 
-    def __init__(self, quiet: bool = False, new_style_override_syntax: bool = False, negative_inline: bool = False) -> None:
+    def __init__(self, quiet: bool = False, new_style_override_syntax: bool = False, negative_inline: bool = False, layer_paths: List[str] = None) -> None:
         """Stash object
 
         Args:
             quiet (bool, optional): No progress printing. Defaults to False.
             new_style_override_syntax (bool, optional): Enforce new override syntax. Defaults to False.
             negative_inline (bool, optional): Negative branch inline expansion. Defaults to False.
+            layer_paths (list[str], optional): Extra layer roots to search when resolving a require/include path (mirrors BBPATH). Defaults to None.
         """
         self.__list = []
         self.__seen_files = set()
@@ -134,9 +135,19 @@ class Stash():
         self.__quiet = quiet
         self.__new_style_override_syntax = new_style_override_syntax
         self.__negative_inline = negative_inline
-        self.__fingerprint = hashlib.sha1(f'{self.__new_style_override_syntax}:{self.__negative_inline}'.encode())  # noqa: DUO130, S324
+        self.__layer_paths = [os.path.abspath(x) for x in (layer_paths or [])]
+        self.__fingerprint = hashlib.sha1(f'{self.__new_style_override_syntax}:{self.__negative_inline}:{chr(0).join(self.__layer_paths)}'.encode())  # noqa: DUO130, S324
 
         self._clear_cached()
+
+    @property
+    def LayerPaths(self) -> List[str]:
+        """Extra layer roots searched when resolving a require/include path
+
+        Returns:
+            list[str] -- absolute layer roots (empty when none configured)
+        """
+        return list(self.__layer_paths)
 
     def _clear_cached(self):
         """Clear cached values"""
@@ -633,6 +644,13 @@ class Stash():
                     return os.path.join(_curdir, name)
                 else:
                     break
+        # opt-in fallback: search the extra layer roots (mirrors BBPATH).
+        # an absolute name was already probed by the local check above.
+        if not os.path.isabs(name):
+            for _root in self.__layer_paths:
+                _candidate = os.path.join(_root, name)
+                if os.path.exists(_candidate):
+                    return _candidate
         return ""
 
     def _replace_with_known_mirrors(self, _in: dict) -> dict:
@@ -729,7 +747,7 @@ class Stash():
             res = res.replace(*reversed(item), 1)
         return res
 
-    def ExpandTerm(self, _file: str, value: str, spare: List[str] = None, seen: List[str] = None, objref: Variable = None) -> str:
+    def ExpandTerm(self, _file: str, value: str, spare: List[str] = None, seen: List[str] = None, objref: Variable = None, for_include: bool = False) -> str:
         """Expand a variable (replacing all variables by known content)
 
         Arguments:
@@ -738,6 +756,9 @@ class Stash():
             spare {list[str]} -- items to keep unexpanded (default: None)
             seen {list[str]} -- seen items (default: None)
             objref {Variable} -- reference to the calling variable instance (default: None)
+            for_include {bool} -- expand a require/include path (default: False).
+                When True, PN/BPN/PV resolve from the filename, not from an
+                assigned value, matching how bitbake resolves an include path.
 
         Returns:
             str -- expanded value
@@ -752,8 +773,11 @@ class Stash():
         def _expand(res, _file, m, quote: str = ''):
             if m.group(1) in spare:
                 return res
-            _comp = [x for x in self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
-                                                 attribute=Variable.ATTR_VAR, attributeValue=m.group(1)) if not x.AppendOperation()]
+            if for_include and m.group(1) in ["PN", "BPN", "PV"]:
+                _comp = []
+            else:
+                _comp = [x for x in self.GetItemsFor(filename=_file, classifier=Variable.CLASSIFIER,
+                                                     attribute=Variable.ATTR_VAR, attributeValue=m.group(1)) if not x.AppendOperation()]
             if any(_comp):
                 if m.group(1) in seen.keys():
                     _rpl = seen[m.group(1)]
@@ -763,7 +787,7 @@ class Stash():
                         cnt = self._ReverseInlineBlock(_comp[0])
                     else:
                         cnt = _comp[0].VarValueStripped
-                    _rpl = self.ExpandTerm(_file, cnt, seen=seen)
+                    _rpl = self.ExpandTerm(_file, cnt, seen=seen, for_include=for_include)
                     seen[m.group(1)] = _rpl
                 res = res.replace(m.group(0), _rpl)
             elif m.group(1) in baseset:
@@ -772,7 +796,7 @@ class Stash():
                 elif m.group(1) in baseset:
                     seen[m.group(1)] = ""
                     _rpl = self.ExpandTerm(
-                        _file, baseset[m.group(1)], seen=seen)
+                        _file, baseset[m.group(1)], seen=seen, for_include=for_include)
                     seen[m.group(1)] = _rpl
                 else:
                     _rpl = m.group(1)
@@ -782,8 +806,12 @@ class Stash():
             elif m.group(1) in ["BPN"]:
                 res = res.replace(m.group(0), self.GuessBaseRecipeName(_file))
             elif m.group(1) in ["PV"]:
-                res = res.replace(
-                    m.group(0), self.GuessRecipeVersion(_file) or "1.0")
+                # for an include path a versionless filename means empty PV,
+                # not the "1.0" default (which would resolve to a wrong file).
+                _pv = self.GuessRecipeVersion(_file)
+                if _pv is None:
+                    _pv = "" if for_include else "1.0"
+                res = res.replace(m.group(0), _pv)
             elif m.group(1) in ["FILE"]:
                 res = res.replace(m.group(0), f'{quote}{_file}{quote}')
             elif m.group(1) in ["THISDIR"]:
@@ -797,7 +825,7 @@ class Stash():
         for m in list(RegexRpl.finditer(__oe_utils_read_file_regex__, value)):
             try:
                 _fullpath = self.ExpandTerm(_file, m.group(
-                    "file"), spare=spare, seen=seen).strip("'\"")
+                    "file"), spare=spare, seen=seen, for_include=for_include).strip("'\"")
                 with open(_fullpath) as i:
                     res = i.read()
             except (FileNotFoundError, PermissionError, NotADirectoryError):

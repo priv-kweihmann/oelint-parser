@@ -429,7 +429,8 @@ def get_items(stash: object,
                     good = True
                     break
                 elif k == "include":
-                    includename = stash.ExpandTerm(_file, m.group("incname"))
+                    includename = stash.ExpandTerm(
+                        _file, m.group("incname"), for_include=True)
                     _path = stash.FindLocalOrLayer(
                         includename, os.path.dirname(_file))
                     if _path:
