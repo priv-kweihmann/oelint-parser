@@ -113,11 +113,19 @@ def prepare_lines_subparser(_iter: Iterable, lineOffset: int, num: int, line: in
         res = buffer
         next_ = ''
         if RegexRpl.search(__next_line_regex__, res):
-            _, line = _iter.__next__()
-            while RegexRpl.search(__next_line_regex__, line):
-                res += line
+            try:
                 _, line = _iter.__next__()
-            res += line
+                while RegexRpl.search(__next_line_regex__, line):
+                    res += line
+                    _, line = _iter.__next__()
+                res += line
+            except StopIteration:
+                # A line ending on a continuation backslash with nothing
+                # following it (end of file) has no next line to join in -
+                # stop cleanly instead of letting StopIteration escape this
+                # ordinary function and propagate all the way up to the
+                # caller.
+                pass
         elif RegexRpl.match(__func_start_regexp__, res):
             _, line = _iter.__next__()
             stopiter = False
