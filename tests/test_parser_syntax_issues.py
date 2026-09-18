@@ -1,6 +1,7 @@
 import unittest
 import os
 import sys
+import tempfile
 
 
 class OelintParserSyntaxIssuesTest(unittest.TestCase):
@@ -9,6 +10,27 @@ class OelintParserSyntaxIssuesTest(unittest.TestCase):
 
     def setUp(self):
         sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../"))
+
+    def test_trailing_continuation_at_end_of_file_does_not_raise(self):
+        # A statement continued with a trailing "\" whose line is the very
+        # last line of the file used to raise an uncaught StopIteration from
+        # prepare_lines_subparser's `iterate()`, since that branch called
+        # `_iter.__next__()` without expecting iteration to ever end there.
+        from oelint_parser.cls_item import Inherit
+        from oelint_parser.cls_stash import Stash
+
+        content = "inherit \\\n    cmake \\\n    pkgconfig \\\n"
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".bb", delete=False) as handle:
+            handle.write(content)
+            path = handle.name
+        try:
+            stash = Stash()
+            stash.AddFile(path)
+            items = stash.GetItemsFor(classifier=Inherit.CLASSIFIER)
+            self.assertTrue(items, msg="Stash has no items")
+            self.assertEqual(items[0].get_items(), ["cmake", "pkgconfig"])
+        finally:
+            os.remove(path)
 
     def test_pythonblock(self):
         from oelint_parser.cls_item import PythonBlock
